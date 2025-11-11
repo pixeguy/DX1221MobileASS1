@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import com.example.sampleapp.mgp2d.core.GameActivity;
+import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
+
+import java.util.ArrayList;
 
 public class MainGameScene extends GameScene {
     private Bitmap backgroundBitmap;
@@ -15,9 +18,13 @@ public class MainGameScene extends GameScene {
     private float backgroundPosition = 0;
     private int screenWidth;
     private int screenHeight;
+    boolean isTouching = false;
 
     private PlayerObj player;
     private ButtonObj[] buttons;
+    private LootButtonObj lootBtn;
+    ArrayList<GameEntity> objList = new ArrayList<>();
+    private GameEntity draggingObj;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,23 +37,30 @@ public class MainGameScene extends GameScene {
         backgroundBitmap1 = Bitmap.createScaledBitmap(bmp,screenWidth,screenHeight,true);
 
         player = new PlayerObj();
-        player.onCreate();
+        player.onCreate(new Vector2(0,0),new Vector2(100,100),R.drawable.pause);
 
         buttons = new ButtonObj[1];
         for (int i = 0; i < buttons.length; i++)
         {
             buttons[i] = new ButtonObj();
-            buttons[i].onCreate();
+            buttons[i].onCreate(new Vector2(1,1),new Vector2(10,10),R.drawable.pause);
         }
+        lootBtn = new LootButtonObj();
+        lootBtn.onCreate(new Vector2(400,400),new Vector2(200,200),R.drawable.flystar,LootType.Loot1);
+
+
+        //hardcoding in the obj list for now
+        objList.add(player);
+        objList.add(buttons[0]);
+        objList.add(lootBtn);
     }
 
     @Override
     public void onUpdate(float dt) {
         backgroundPosition = (backgroundPosition - dt * 500) % (float) screenWidth;
-        player.onUpdate(dt);
-        for(ButtonObj button : buttons)
+        for(GameEntity obj : objList)
         {
-            //button.onUpdate(dt);
+            obj.onUpdate(dt);
         }
 
         MotionEvent e = GameActivity.instance.getMotionEvent();
@@ -55,24 +69,28 @@ public class MainGameScene extends GameScene {
 
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    // Example: move player up when screen is touched
-                    for(ButtonObj button : buttons)
-                    {
-                        if(button.checkIfPressed(touchPos))
+                    if(!isTouching){
+
+                        if(lootBtn.checkIfPressed(touchPos))
                         {
-                            System.out.println("Wohoo");
+                            lootBtn.OnClick(touchPos);
+                            LootObj lootobj = new LootObj();
+                            lootobj.onCreate(touchPos, lootBtn.loot.itemScale.multiply(100), lootBtn.loot.spriteID);
+                            objList.add(lootobj);
+                            draggingObj = lootobj;
                         }
+                        isTouching = true;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    // Handle drag
-                    //float x = e.getX();
-                    //float y = e.getY();
-
-                    //player._position = new Vector2(x,y);
+                    if(draggingObj != null)
+                    {
+                        draggingObj._position = touchPos;
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
-                    // Touch released
+                    isTouching = false;
+                    if(draggingObj != null) {draggingObj = null;}
                     break;
             }
 
@@ -83,11 +101,9 @@ public class MainGameScene extends GameScene {
     public void onRender(Canvas canvas) {
         canvas.drawBitmap(backgroundBitmap,backgroundPosition,0,null);
         canvas.drawBitmap(backgroundBitmap1,backgroundPosition + screenWidth,0,null);
-        player.onRender(canvas);
-        for(ButtonObj button : buttons)
+        for(GameEntity obj : objList)
         {
-            button.onRender(canvas);
+            obj.onRender(canvas);
         }
     }
-
 }
