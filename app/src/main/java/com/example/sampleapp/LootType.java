@@ -3,7 +3,7 @@ package com.example.sampleapp;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public enum LootType {
-    Loot1(R.drawable.splash,new Vector2(1,1),100),
+    Loot1(R.drawable.splash,new Vector2(1,2),100),
     Loot2(R.drawable.ic_launcher_foreground,new Vector2(1,1),200);
 
 
