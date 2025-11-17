@@ -44,7 +44,6 @@ public class SampleCoin extends GameEntity {
         super.onUpdate(dt);
         if(canDestroy())
         {return;}
-        spritess.update(dt);
 
         MotionEvent event = GameActivity.instance.getMotionEvent();
         if(event == null){return;}
@@ -69,7 +68,7 @@ public class SampleCoin extends GameEntity {
         if(canDestroy())
             return;
 
-        spritess.render(canvas, (int) _position.x, (int) _position.y, null);
+        spritess.render(canvas, (int) _position.x, (int) _position.y, new Vector2(1,1), null);
         UpdateBounds();
      }
 }

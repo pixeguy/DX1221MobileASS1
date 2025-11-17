@@ -10,20 +10,31 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 
 import com.example.sampleapp.R;
+import com.example.sampleapp.SpriteList;
 
 public abstract class GameEntity {
     public Vector2 _scale = new Vector2(1,1);
     public Vector2 _position = new Vector2(0, 0);
     public Bitmap sprite;
+    public AnimatedSprite animatedSprite;
     private boolean _isCreated = false;
-    public void onCreate(Vector2 pos, Vector2 scale, int spriteID) {
+
+    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
         _isCreated = true;
         Context ctx = GameActivity.instance;
-        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteID);
+        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
         _position = new Vector2(pos.x,pos.y);
         _scale = new Vector2(scale.x,scale.y);
-        sprite = Bitmap.createScaledBitmap(bmp,(int)_scale.x,(int)_scale.y,true);
+        sprite = Bitmap.createScaledBitmap(bmp,100,100,true);
+
+        animatedSprite = new AnimatedSprite(sprite,spriteAnim.rows, spriteAnim.columns,spriteAnim.fps,spriteAnim.startFrame,spriteAnim.endFrame);
     }
+
+    public void SetAnimation(SpriteList nextAnim)
+    {
+        animatedSprite = new AnimatedSprite(sprite,nextAnim.rows,nextAnim.columns,nextAnim.fps,nextAnim.startFrame, nextAnim.endFrame);
+    }
+
     public Vector2 getPosition() { return _position.copy(); }
     public void setPosition(Vector2 position) { _position = position; }
 
@@ -34,12 +45,17 @@ public abstract class GameEntity {
     public void destroy() { _isDone = true; }
     public boolean canDestroy() { return _isDone; }
 
-    public void onUpdate(float dt) {}
+    public void onUpdate(float dt) {
+        if(animatedSprite != null){
+        animatedSprite.update(dt);}
+    }
 
     public void onRender(Canvas canvas){
-        float drawX = _position.x - (_scale.x / 2f);
-        float drawY = _position.y - (_scale.y / 2f);
-        canvas.drawBitmap(sprite, drawX, drawY, paint);
+        //float drawX = _position.x - (_scale.x / 2f);
+        //float drawY = _position.y - (_scale.y / 2f);
+        //canvas.drawBitmap(sprite, drawX, drawY, paint);
+
+        animatedSprite.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
     }
 
     private Paint paint = new Paint();

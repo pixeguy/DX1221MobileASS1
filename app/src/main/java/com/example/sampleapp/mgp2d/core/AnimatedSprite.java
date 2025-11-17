@@ -8,8 +8,8 @@ import android.graphics.Rect;
 
 public class AnimatedSprite {
     private final int _col;
-    private final int _width;
-    private final int _height;
+    public final int _width;
+    public final int _height;
     private int _currentFrame = 0;
     private int _startFrame = 0;
     private int _endFrame;
@@ -56,24 +56,21 @@ public class AnimatedSprite {
         }
     }
 
-    public void render(Canvas canvas, int x, int y, Paint paint) {
+    public void render(Canvas canvas, int x, int y, Vector2 scale, Paint paint) {
         int frameX = _currentFrame % _col;
         int frameY = _currentFrame / _col;
         int srcX = frameX * _width;
         int srcY = frameY & _height;
 
-        x -= (int) (0.5f * _width);
-        y -= (int) (0.5f * _height);
+        int scaledWidth = (int) (_width * scale.x);
+        int scaledHeight = (int) (_height * scale.y);
 
-        _src.left = srcX;
-        _src.top = srcY;
-        _src.right = srcX + _width;
-        _src.bottom = srcY + _height;
+        // Center relative to x and y
+        int left = x - scaledWidth / 2;
+        int top = y - scaledHeight / 2;
 
-        _dst.left = x;
-        _dst.top = y;
-        _dst.right = x + _width;
-        _dst.bottom = y + _height;
+        _src.set(srcX, srcY, srcX + _width, srcY + _height);
+        _dst.set(left, top, left + scaledWidth, top + scaledHeight);
 
         canvas.drawBitmap(_bmp, _src, _dst, paint);
     }

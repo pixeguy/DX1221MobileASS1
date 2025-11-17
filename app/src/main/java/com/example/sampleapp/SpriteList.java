@@ -3,7 +3,15 @@ package com.example.sampleapp;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 
 public enum SpriteList {
-    PlayerIdle(R.drawable.player_heli_body,1,7,24);
+    //PlayerAnimations
+    PlayerIdle(R.drawable.player_heli_body,1,7,24),
+
+    //other Animations
+    ExamplePause(R.drawable.pause,1,1,1),
+    ExampleItem(R.drawable.splash,1,1,1),
+    InventorySlot(R.drawable.inventoryslot,1,1,1);
+
+
 
     public final int spriteSheetID;
     public final int rows;

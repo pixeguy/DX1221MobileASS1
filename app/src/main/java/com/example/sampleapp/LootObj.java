@@ -11,16 +11,19 @@ public class LootObj extends GameEntity {
     private Vector2 pivotOffset = new Vector2(0, 0); // applied automatically when drawing
 
     public void onCreate(Vector2 pos,LootType loot) {
-        super.onCreate(pos,loot.itemScale.multiply(100), loot.spriteID);
+        super.onCreate(pos,loot.itemScale, loot.spriteID);
         lootType = loot;
         computePivot();
     }
 
     private void computePivot() {
         // pivot = shift the center so (0,0) is the top-left grid cell
+        int frameWidth = animatedSprite._width;
+        int frameHeight = animatedSprite._height;
+
         pivotOffset = new Vector2(
-                (lootType.itemScale.x - 1) * 100 / 2f,
-                (lootType.itemScale.y - 1) * 100 / 2f
+                (lootType.itemScale.x - 1) * frameWidth * 0.5f,
+                (lootType.itemScale.y - 1) * frameHeight * 0.5f
         );
     }
 
@@ -29,9 +32,7 @@ public class LootObj extends GameEntity {
         // apply pivot offset
         Vector2 finalPos = _position.add(pivotOffset);
 
-        float drawX = finalPos.x - (_scale.x / 2f);
-        float drawY = finalPos.y - (_scale.y / 2f);
-
-        canvas.drawBitmap(sprite, drawX, drawY, null);
+        //change scale later to normal size.
+        animatedSprite.render(canvas, (int) finalPos.x, (int) finalPos.y, _scale, null);
     }
 }
