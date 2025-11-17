@@ -43,7 +43,7 @@ public class MainGameScene extends GameScene {
 
         //init player
         player = new PlayerObj();
-        player.onCreate(new Vector2(0,0),new Vector2(100,100),R.drawable.pause);
+        player.onCreate(new Vector2(0,0),new Vector2(100,100),R.drawable.player_heli_body);
 
         //init temporary button
         lootBtn = new LootButtonObj();
@@ -73,6 +73,11 @@ public class MainGameScene extends GameScene {
         //hardcoding in the obj list for now
         objList.add(player);
         objList.add(lootBtn);
+
+
+        SampleCoin coin = new SampleCoin();
+        coin.onCreate(new Vector2(700,700),5);
+        objList.add(coin);
     }
 
     @Override
@@ -134,7 +139,7 @@ public class MainGameScene extends GameScene {
                                 int j = (int) slot.y;
 
                                 boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
-                                        int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
+                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
 
                                 //loop through the size of the object
                                 for (int x = 0; x < xSize; x++) {
@@ -149,8 +154,6 @@ public class MainGameScene extends GameScene {
                                         }
                                     }
                                 }
-
-
                             }
                         }
                     }
@@ -205,7 +208,6 @@ public class MainGameScene extends GameScene {
                     if(draggingObj != null) {draggingObj = null;}
                     break;
             }
-
         }
     }
 

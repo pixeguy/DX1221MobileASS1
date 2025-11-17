@@ -35,6 +35,7 @@ public abstract class GameEntity {
     public boolean canDestroy() { return _isDone; }
 
     public void onUpdate(float dt) {}
+
     public void onRender(Canvas canvas){
         float drawX = _position.x - (_scale.x / 2f);
         float drawY = _position.y - (_scale.y / 2f);
