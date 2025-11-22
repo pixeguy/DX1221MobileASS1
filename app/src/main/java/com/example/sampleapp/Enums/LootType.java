@@ -1,4 +1,4 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Enums;
 
 import com.example.sampleapp.mgp2d.core.Vector2;
 

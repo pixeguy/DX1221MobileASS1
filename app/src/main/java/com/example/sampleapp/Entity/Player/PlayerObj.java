@@ -1,13 +1,9 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Entity.Player;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
-import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

@@ -1,11 +1,18 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Scenes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.Entity.Inventory.LootObj;
+import com.example.sampleapp.Entity.Inventory.LootSlot;
+import com.example.sampleapp.Enums.LootType;
+import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.R;
+import com.example.sampleapp.Entity.SampleCoin;
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
@@ -45,11 +52,11 @@ public class MainGameScene extends GameScene {
 
         //init player
         player = new PlayerObj();
-        player.onCreate(new Vector2(0,0),new Vector2(1,1),SpriteList.PlayerIdle);
+        player.onCreate(new Vector2(0,0),new Vector2(1,1), SpriteList.PlayerIdle);
 
         //init temporary button
         lootBtn = new LootButtonObj();
-        lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3),SpriteList.ExamplePause,LootType.Loot1);
+        lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3),SpriteList.ExamplePause, LootType.Loot1);
 
         //init all the slots, vv long so i minimize it first
         {

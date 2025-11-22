@@ -1,8 +1,8 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Entity.Inventory;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

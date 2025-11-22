@@ -1,7 +1,9 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Entity.Buttons;
 
 import android.util.Log;
 
+import com.example.sampleapp.Enums.LootType;
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class LootButtonObj extends ButtonObj {

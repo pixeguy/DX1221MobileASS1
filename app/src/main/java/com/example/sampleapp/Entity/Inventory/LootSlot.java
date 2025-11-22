@@ -1,9 +1,10 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Entity.Inventory;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

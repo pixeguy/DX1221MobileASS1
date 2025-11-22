@@ -9,8 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 
-import com.example.sampleapp.R;
-import com.example.sampleapp.SpriteList;
+import com.example.sampleapp.Enums.SpriteList;
 
 public abstract class GameEntity {
     public Vector2 _scale = new Vector2(1,1);

@@ -1,6 +1,6 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Enums;
 
-import com.example.sampleapp.mgp2d.core.AnimatedSprite;
+import com.example.sampleapp.R;
 
 public enum SpriteList {
     //PlayerAnimations
