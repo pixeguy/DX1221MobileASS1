@@ -7,7 +7,7 @@ public enum LootType {
     Loot2(SpriteList.ExamplePause,new Vector2(1,1),200);
 
 
-    SpriteList spriteID;
+    public SpriteList spriteID;
 
     //itemScale != render scale. just item slot size
     public final Vector2 itemScale;

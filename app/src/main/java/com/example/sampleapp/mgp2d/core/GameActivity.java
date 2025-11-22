@@ -103,6 +103,9 @@ public class GameActivity extends FragmentActivity {
                 // Update current game scene
                 GameScene.getCurrent().onUpdate(deltaTime * _timeScale);
 
+                // Update go list
+                GameScene.getCurrent().UpdateGoList();
+
                 // Render current game scene
                 Canvas canvas = _surfaceHolder.lockCanvas(null);
                 if (canvas != null) {
