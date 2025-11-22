@@ -12,6 +12,8 @@ import android.graphics.PorterDuffColorFilter;
 import com.example.sampleapp.Enums.SpriteList;
 
 public abstract class GameEntity {
+    private static int _totalEntitiesCreated = 0;
+    public int _id = 0;
     public Vector2 _scale = new Vector2(1,1);
     public Vector2 _position = new Vector2(0, 0);
     public Bitmap sprite;
@@ -22,6 +24,7 @@ public abstract class GameEntity {
         _isCreated = true;
         Context ctx = GameActivity.instance;
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
+        _id = _totalEntitiesCreated++;
         _position = new Vector2(pos.x,pos.y);
         _scale = new Vector2(scale.x,scale.y);
         sprite = Bitmap.createScaledBitmap(bmp,100,100,true);

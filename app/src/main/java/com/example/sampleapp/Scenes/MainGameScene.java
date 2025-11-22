@@ -30,9 +30,7 @@ public class MainGameScene extends GameScene {
     private PlayerObj player;
     private LootButtonObj lootBtn;
     private LootSlot[][] slots; //  [col][row].....[x][y]
-    ArrayList<GameEntity> objList = new ArrayList<>();
     public final float lootGridSize = 100;
-
 
     //to store reference to current dragging obj
     private GameEntity draggingObj;
@@ -42,6 +40,7 @@ public class MainGameScene extends GameScene {
     @Override
     public void onCreate() {
         super.onCreate();
+
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources()
@@ -74,25 +73,25 @@ public class MainGameScene extends GameScene {
                     float worldY = slotStartPos.y + y * (scale.y * lootGridSize);
 
                     slots[x][y].onCreate(new Vector2(worldX, worldY), scale);
-                    objList.add(slots[x][y]);
+                    m_goList.add(slots[x][y]);
                 }
             }
         }
 
         //hardcoding in the obj list for now
-        objList.add(player);
-        objList.add(lootBtn);
+        m_goList.add(player);
+        m_goList.add(lootBtn);
 
 
         SampleCoin coin = new SampleCoin();
         coin.onCreate(new Vector2(700,700),5);
-        objList.add(coin);
+        m_goList.add(coin);
     }
 
     @Override
     public void onUpdate(float dt) {
         backgroundPosition = (backgroundPosition - dt * 500) % (float) screenWidth;
-        for(GameEntity obj : objList)
+        for(GameEntity obj : m_goList)
         {
             obj.onUpdate(dt);
         }
@@ -112,7 +111,7 @@ public class MainGameScene extends GameScene {
                             LootObj lootobj = new LootObj();
                             //grab lootType ref from btn
                             lootobj.onCreate(touchPos,lootBtn.loot);
-                            objList.add(lootobj);
+                            m_goList.add(lootobj);
 
                             //assign obj to reference so scene can use it
                             draggingObj = lootobj;
@@ -197,13 +196,13 @@ public class MainGameScene extends GameScene {
                             }
                             else{
                                 // if user cannot find any valid slots
-                                objList.remove(draggingObj);
+                                m_goList.remove(draggingObj);
                                 draggingObj = null;
                             }
                         }
                         else{
                             //user touch is not on any slot
-                            objList.remove(draggingObj);
+                            m_goList.remove(draggingObj);
                             draggingObj = null;
                         }
                     }
@@ -224,7 +223,7 @@ public class MainGameScene extends GameScene {
     public void onRender(Canvas canvas) {
         canvas.drawBitmap(backgroundBitmap,backgroundPosition,0,null);
         canvas.drawBitmap(backgroundBitmap1,backgroundPosition + screenWidth,0,null);
-        for(GameEntity obj : objList)
+        for(GameEntity obj : m_goList)
         {
             obj.onRender(canvas);
         }
