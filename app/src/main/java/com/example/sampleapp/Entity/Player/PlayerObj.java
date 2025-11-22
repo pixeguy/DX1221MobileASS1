@@ -1,17 +1,18 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Entity.Player;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import com.example.sampleapp.mgp2d.core.GameActivity;
+import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class PlayerObj extends GameEntity {
+
+    private AnimatedSprite animatedSpritez;
     @Override
-    public void onCreate(Vector2 pos, Vector2 scale, int spriteID) {
-        super.onCreate(pos,scale, spriteID);
+    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
+        super.onCreate(pos,scale,spriteAnim);
     }
     @Override
     public void onUpdate(float dt) {
@@ -21,6 +22,7 @@ public class PlayerObj extends GameEntity {
 
     @Override
     public void onRender(Canvas canvas) {
+
         super.onRender(canvas);
     }
 }

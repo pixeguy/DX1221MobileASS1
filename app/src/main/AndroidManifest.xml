@@ -12,14 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SampleApp"
         tools:ignore="DiscouragedApi">
-        <activity android:name=".MainMenu"
+        <activity android:name=".Scenes.MainMenu"
             android:screenOrientation="sensorLandscape">
         </activity>
-        <activity android:name=".HelpPage"
+        <activity android:name=".Scenes.HelpPage"
             android:screenOrientation="sensorLandscape">
         </activity>
 
-        <activity android:name=".SplashPage"
+        <activity android:name=".Scenes.SplashPage"
             android:exported="true"
             android:screenOrientation="sensorLandscape">
             <intent-filter>

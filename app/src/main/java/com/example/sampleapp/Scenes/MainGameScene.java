@@ -1,10 +1,18 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Scenes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.Entity.Inventory.LootObj;
+import com.example.sampleapp.Entity.Inventory.LootSlot;
+import com.example.sampleapp.Enums.LootType;
+import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.R;
+import com.example.sampleapp.Entity.SampleCoin;
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
@@ -18,16 +26,17 @@ public class MainGameScene extends GameScene {
     private float backgroundPosition = 0;
     private int screenWidth;
     private int screenHeight;
-    boolean isTouching = false;
 
     private PlayerObj player;
     private LootButtonObj lootBtn;
-    ArrayList<GameEntity> objList = new ArrayList<>();
     private LootSlot[][] slots; //  [col][row].....[x][y]
+    ArrayList<GameEntity> objList = new ArrayList<>();
+    public final float lootGridSize = 100;
 
 
     //to store reference to current dragging obj
     private GameEntity draggingObj;
+    boolean isTouching = false;
 
 
     @Override
@@ -43,26 +52,26 @@ public class MainGameScene extends GameScene {
 
         //init player
         player = new PlayerObj();
-        player.onCreate(new Vector2(0,0),new Vector2(100,100),R.drawable.pause);
+        player.onCreate(new Vector2(0,0),new Vector2(1,1), SpriteList.PlayerIdle);
 
         //init temporary button
         lootBtn = new LootButtonObj();
-        lootBtn.onCreate(new Vector2(400,400),new Vector2(200,200),R.drawable.flystar,LootType.Loot1);
+        lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3),SpriteList.ExamplePause, LootType.Loot1);
 
         //init all the slots, vv long so i minimize it first
         {
             slots = new LootSlot[5][5];
 
             Vector2 slotStartPos = new Vector2(700, 500);
-            Vector2 scale = new Vector2(100, 100);
+            Vector2 scale = new Vector2(1, 1);
 
             for (int x = 0; x < 5; x++) {          // column
                 for (int y = 0; y < 5; y++) {      // row
 
                     slots[x][y] = new LootSlot();
 
-                    float worldX = slotStartPos.x + x * scale.x;
-                    float worldY = slotStartPos.y + y * scale.y;
+                    float worldX = slotStartPos.x + x * (scale.x * lootGridSize);
+                    float worldY = slotStartPos.y + y * (scale.y * lootGridSize);
 
                     slots[x][y].onCreate(new Vector2(worldX, worldY), scale);
                     objList.add(slots[x][y]);
@@ -73,6 +82,11 @@ public class MainGameScene extends GameScene {
         //hardcoding in the obj list for now
         objList.add(player);
         objList.add(lootBtn);
+
+
+        SampleCoin coin = new SampleCoin();
+        coin.onCreate(new Vector2(700,700),5);
+        objList.add(coin);
     }
 
     @Override
@@ -110,7 +124,7 @@ public class MainGameScene extends GameScene {
                     if(draggingObj != null)
                     {
                         //drag obj with touching pos
-                        draggingObj._position = touchPos;
+                        draggingObj.setPosition(touchPos);
 
                         //make all slots normal colour
                         for (int a = 0; a < slots.length; a++) {
@@ -134,7 +148,7 @@ public class MainGameScene extends GameScene {
                                 int j = (int) slot.y;
 
                                 boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
-                                        int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
+                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
 
                                 //loop through the size of the object
                                 for (int x = 0; x < xSize; x++) {
@@ -149,8 +163,6 @@ public class MainGameScene extends GameScene {
                                         }
                                     }
                                 }
-
-
                             }
                         }
                     }
@@ -173,7 +185,7 @@ public class MainGameScene extends GameScene {
 
                             //check if item slots are valid
                             if(canPlaceItemInSlot(i,j,xSize,ySize)){
-                                draggingObj._position = slots[i][j]._position;
+                                draggingObj.setPosition(slots[i][j]._position);
                                 //change all slots that it occupies to occupied
                                 for (int x = 0; x < xSize; x++) {
                                     for (int y = 0; y < ySize; y++) {
@@ -205,7 +217,6 @@ public class MainGameScene extends GameScene {
                     if(draggingObj != null) {draggingObj = null;}
                     break;
             }
-
         }
     }
 
@@ -222,13 +233,7 @@ public class MainGameScene extends GameScene {
     //check if item was dropped within an item slot
     boolean isInsideSlot(Vector2 touchPos, LootSlot slot)
     {
-        float halfW = slot._scale.x / 2;
-        float halfH = slot._scale.y / 2;
-
-        return  touchPos.x >= slot._position.x - halfW &&
-                touchPos.x <= slot._position.x + halfW &&
-                touchPos.y >= slot._position.y - halfH &&
-                touchPos.y <= slot._position.y + halfH;
+        return slot.bounds.contains(touchPos.x,touchPos.y);
     }
 
     //checking for array size for inventory slots

@@ -1,4 +1,4 @@
-package com.example.sampleapp;
+package com.example.sampleapp.Scenes;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 
