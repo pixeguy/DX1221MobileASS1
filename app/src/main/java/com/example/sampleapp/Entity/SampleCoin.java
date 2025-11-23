@@ -7,6 +7,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -17,6 +19,9 @@ public class SampleCoin extends GameEntity {
     private AnimatedSprite spritess;
     private final RectF bounds = new RectF();
     private int value;
+
+    public Collider2D collider;
+
     private long lastTouchTime = -1L;
 
     public void onCreate(Vector2 position, int value){
@@ -25,6 +30,8 @@ public class SampleCoin extends GameEntity {
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), R.drawable.flystar);
         this.spritess = new AnimatedSprite(bmp,1,5,24);
+
+        collider = new CircleCollider2D(this, 11.f);
     }
 
     private void UpdateBounds()
@@ -58,10 +65,10 @@ public class SampleCoin extends GameEntity {
         float x = event.getX();
         float y = event.getY();
 
-        if(bounds.contains(x,y))
+        /*if(bounds.contains(x,y))
         {
             destroy();
-        }
+        }*/
     }
 
     @Override

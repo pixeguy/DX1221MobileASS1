@@ -20,16 +20,19 @@ public abstract class GameEntity {
     public AnimatedSprite animatedSprite;
     private boolean _isCreated = false;
 
-    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
+    public void onCreate(Vector2 pos, Vector2 scale) {
         _isCreated = true;
-        Context ctx = GameActivity.instance;
-        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
         _id = _totalEntitiesCreated++;
         _position = new Vector2(pos.x,pos.y);
         _scale = new Vector2(scale.x,scale.y);
-        sprite = Bitmap.createScaledBitmap(bmp,100,100,true);
+    }
 
-        animatedSprite = new AnimatedSprite(sprite,spriteAnim.rows, spriteAnim.columns,spriteAnim.fps,spriteAnim.startFrame,spriteAnim.endFrame);
+    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
+        onCreate(pos,scale);
+
+        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
+        sprite = Bitmap.createScaledBitmap(bmp,100,100,true);
+        animatedSprite = new AnimatedSprite(sprite,spriteAnim.rows, spriteAnim.columns,spriteAnim.fps);
     }
 
     public void SetAnimation(SpriteList nextAnim)
