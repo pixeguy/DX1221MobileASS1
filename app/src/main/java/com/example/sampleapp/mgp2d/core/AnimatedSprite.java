@@ -56,6 +56,8 @@ public class AnimatedSprite {
         }
     }
 
+
+
     public void render(Canvas canvas, int x, int y, Vector2 scale, Paint paint) {
         int frameX = _currentFrame % _col;
         int frameY = _currentFrame / _col;
@@ -71,6 +73,28 @@ public class AnimatedSprite {
 
         _src.set(srcX, srcY, srcX + _width, srcY + _height);
         _dst.set(left, top, left + scaledWidth, top + scaledHeight);
+
+        canvas.drawBitmap(_bmp, _src, _dst, paint);
+    }
+
+    public void render(Canvas canvas, int x, int y, Paint paint) {
+        int frameX = _currentFrame % _col;
+        int frameY = _currentFrame / _col;
+        int srcX = frameX * _width;
+        int srcY = frameY & _height;
+
+        x -= (int) (0.5f * _width);
+        y -= (int) (0.5f * _height);
+
+        _src.left = srcX;
+        _src.top = srcY;
+        _src.right = srcX + _width;
+        _src.bottom = srcY + _height;
+
+        _dst.left = x;
+        _dst.top = y;
+        _dst.right = x + _width;
+        _dst.bottom = y + _height;
 
         canvas.drawBitmap(_bmp, _src, _dst, paint);
     }

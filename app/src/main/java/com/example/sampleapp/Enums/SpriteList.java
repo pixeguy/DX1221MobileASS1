@@ -11,8 +11,6 @@ public enum SpriteList {
     ExampleItem(R.drawable.splash,1,1,1),
     InventorySlot(R.drawable.inventoryslot,1,1,1);
 
-
-
     public final int spriteSheetID;
     public final int rows;
     public final int columns;
