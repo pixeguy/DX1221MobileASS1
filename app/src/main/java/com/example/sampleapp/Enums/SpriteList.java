@@ -4,7 +4,7 @@ import com.example.sampleapp.R;
 
 public enum SpriteList {
     //PlayerAnimations
-    PlayerIdle(R.drawable.player_heli_body,1,7,24),
+    PlayerIdle(R.drawable.player_heli_body,1,1,24),
 
     //other Animations
     ExamplePause(R.drawable.pause,1,1,1),

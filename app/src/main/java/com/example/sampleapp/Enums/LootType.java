@@ -3,7 +3,7 @@ package com.example.sampleapp.Enums;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public enum LootType {
-    Loot1(SpriteList.ExampleItem,new Vector2(1,5),100),
+    Loot1(SpriteList.PlayerIdle,new Vector2(5,1),100),
     Loot2(SpriteList.ExamplePause,new Vector2(1,1),200);
 
 
@@ -11,7 +11,7 @@ public enum LootType {
 
     //itemScale != render scale. just item slot size
     public final Vector2 itemScale;
-    final int value;
+    public final int value;
 
     LootType(SpriteList spriteID, Vector2 itemScale, int value)
     {

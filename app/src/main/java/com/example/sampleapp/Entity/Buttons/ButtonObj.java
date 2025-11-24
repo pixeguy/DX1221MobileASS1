@@ -25,7 +25,7 @@ public class ButtonObj extends GameEntity {
 
     public void OnClick()
     {
-        System.out.println("ButtonClicked");
+
     }
 
     public boolean checkIfPressed(Vector2 posToCheck)

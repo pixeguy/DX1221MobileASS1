@@ -19,6 +19,7 @@ public abstract class GameEntity {
     public Bitmap sprite;
     public AnimatedSprite animatedSprite;
     private boolean _isCreated = false;
+    public boolean isActive = false;
 
     public void onCreate(Vector2 pos, Vector2 scale) {
         _isCreated = true;
@@ -34,8 +35,9 @@ public abstract class GameEntity {
         _scale = new Vector2(scale.x,scale.y);
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
-        sprite = Bitmap.createScaledBitmap(bmp,100,100,true);
+        sprite = Bitmap.createScaledBitmap(bmp,bmp.getWidth(),bmp.getHeight(),true);
         animatedSprite = new AnimatedSprite(sprite,spriteAnim.rows, spriteAnim.columns,spriteAnim.fps);
+        isActive = true;
     }
 
     public void SetAnimation(SpriteList nextAnim)
@@ -66,7 +68,7 @@ public abstract class GameEntity {
         animatedSprite.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
     }
 
-    private Paint paint = new Paint();
+    public Paint paint = new Paint();
     private boolean tinted = false;
     private int tintColor = 0x77FF0000; // default: semi-transparent red
 

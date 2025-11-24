@@ -31,6 +31,8 @@ public class PlayerObj extends GameEntity {
 
     private Vector2 facingDirection = new Vector2(0, 0);
 
+    public int value = 0;
+
     public PlayerObj() {
         super();
         instance = this;
