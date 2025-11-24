@@ -1,5 +1,6 @@
 package com.example.sampleapp.Collision.Colliders;
 
+import com.example.sampleapp.Collision.ColliderManager;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -20,6 +21,7 @@ public class Collider2D {
 
     protected Collider2D(GameEntity gameEntity) {
         this.gameEntity = gameEntity;
+        ColliderManager.GetInstance().m_colliders.add(this);
     }
 
     public Vector2 GetPosition() {

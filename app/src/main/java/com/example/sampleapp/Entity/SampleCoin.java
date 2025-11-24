@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.R;
@@ -31,7 +32,7 @@ public class SampleCoin extends GameEntity {
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), R.drawable.flystar);
         this.spritess = new AnimatedSprite(bmp,1,5,24);
 
-        collider = new CircleCollider2D(this, 11.f);
+        collider = new BoxCollider2D(this, 100.0f, 100.0f);
     }
 
     private void UpdateBounds()
@@ -77,6 +78,8 @@ public class SampleCoin extends GameEntity {
             return;
 
         spritess.render(canvas, (int) _position.x, (int) _position.y, new Vector2(1,1), null);
+
+
         UpdateBounds();
      }
 }

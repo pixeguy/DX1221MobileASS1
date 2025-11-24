@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.R;
@@ -41,12 +42,13 @@ public class PlayerObj extends GameEntity {
         onCreate(pos, scale);
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), R.drawable.playersprite);
         sprite = Bitmap.createScaledBitmap(bmp, 100, 100, false);
-        collider = new CircleCollider2D(this, scale.x * sprite.getWidth() - sprite.getWidth() / 2.0f);
+        collider = new CircleCollider2D(this, sprite.getWidth() * scale.x - sprite.getWidth() / 2.0f);
     }
 
     @Override
     public void onUpdate(float dt) {
         super.onUpdate(dt);
+
         _position.x += inputDirection.x * movementSpeed * dt;
         _position.y += inputDirection.y * movementSpeed * dt;
 

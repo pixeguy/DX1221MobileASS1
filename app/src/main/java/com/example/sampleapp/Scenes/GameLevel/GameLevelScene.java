@@ -3,6 +3,8 @@ package com.example.sampleapp.Scenes.GameLevel;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import com.example.sampleapp.Collision.ColliderManager;
+import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.BackgroundEntity;
@@ -49,17 +51,29 @@ public class GameLevelScene extends GameScene {
     public void onUpdate(float dt) {
         playerMovementJoystick.onUpdate(dt);
         PlayerObj.instance.SetInputDirection(playerMovementJoystick.getInputDirection());
+
         for(GameEntity go : m_goList)
             go.onUpdate(dt);
 
-        for(int iteration = 0; iteration < 10.0f; ++iteration)
-        {
-            Vector2 MTV = new Vector2(0, 0);
-            boolean isCollided = Collision.CollisionDetection(PlayerObj.instance.collider, coin.collider, MTV);
-            if(isCollided)
-            {
-                PhysicsManifold physicsManifold = new PhysicsManifold(PlayerObj.instance.collider, coin.collider, MTV.normalize(), MTV.getMagnitude());
-                Collision.ResolveCollision(physicsManifold);
+        int size = ColliderManager.GetInstance().m_colliders.size();
+
+        for(int iteration = 0; iteration < 5; ++iteration) {
+            for (int i = 0; i < size - 1; ++i) {
+                Collider2D colliderA = ColliderManager.GetInstance().m_colliders.get(i);
+                if (colliderA.gameEntity.canDestroy()) continue;
+
+                for (int j = i + 1; j < size; ++j) {
+                    Collider2D colliderB = ColliderManager.GetInstance().m_colliders.get(j);
+                    if (colliderB.gameEntity.canDestroy()) continue;
+
+                    Vector2 MTV = new Vector2(0, 0);
+                    boolean isCollided = Collision.CollisionDetection(colliderA, colliderB, MTV);
+                    if(isCollided)
+                    {
+                        PhysicsManifold physicsManifold = new PhysicsManifold(colliderA, colliderB, MTV.normalize(), MTV.getMagnitude());
+                        Collision.ResolveCollision(physicsManifold);
+                    }
+                }
             }
         }
     }
