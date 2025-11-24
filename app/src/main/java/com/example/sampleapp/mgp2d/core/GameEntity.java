@@ -28,7 +28,10 @@ public abstract class GameEntity {
     }
 
     public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
-        onCreate(pos,scale);
+        _isCreated = true;
+        _id = _totalEntitiesCreated++;
+        _position = new Vector2(pos.x,pos.y);
+        _scale = new Vector2(scale.x,scale.y);
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
         sprite = Bitmap.createScaledBitmap(bmp,100,100,true);

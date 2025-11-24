@@ -42,7 +42,7 @@ public class MainMenu extends Activity implements View.OnClickListener{
         else if(v == startButton)
         {
             startActivity(new Intent().setClass(this, GameActivity.class));
-            GameScene.enter(GameLevelScene.class);
+            GameScene.enter(MainGameScene.class);
         }
     }
 }

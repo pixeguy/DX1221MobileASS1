@@ -3,8 +3,10 @@ package com.example.sampleapp.Scenes;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
@@ -19,6 +21,7 @@ import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainGameScene extends GameScene {
     private Bitmap backgroundBitmap;
@@ -56,6 +59,9 @@ public class MainGameScene extends GameScene {
         //init temporary button
         lootBtn = new LootButtonObj();
         lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3),SpriteList.ExamplePause, LootType.Loot1);
+
+        BackgroundEntity GreyOverlay = new BackgroundEntity(R.drawable.greyoverlay);
+        m_goList.add(GreyOverlay);
 
         //init all the slots, vv long so i minimize it first
         {
@@ -95,128 +101,128 @@ public class MainGameScene extends GameScene {
         {
             obj.onUpdate(dt);
         }
-
-        MotionEvent e = GameActivity.instance.getMotionEvent();
-        if (e != null) {
-            Vector2 touchPos = new Vector2(e.getX(),e.getY());
-
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if(!isTouching){ // action down registers as hold on android studio emulator
-                        if(lootBtn.checkIfPressed(touchPos))
-                        {
-                            lootBtn.OnClick(touchPos);
-
-                            //creating my loot obj
-                            LootObj lootobj = new LootObj();
-                            //grab lootType ref from btn
-                            lootobj.onCreate(touchPos,lootBtn.loot);
-                            m_goList.add(lootobj);
-
-                            //assign obj to reference so scene can use it
-                            draggingObj = lootobj;
-                        }
-                        isTouching = true;
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if(draggingObj != null)
-                    {
-                        //drag obj with touching pos
-                        draggingObj.setPosition(touchPos);
-
-                        //make all slots normal colour
-                        for (int a = 0; a < slots.length; a++) {
-                            for (int b = 0; b < slots[0].length; b++) {
-                                slots[a][b].clearTint();
-                            }
-                        }
-
-                        if (draggingObj instanceof LootObj)
-                        {
-                            LootObj loot = (LootObj) draggingObj;
-                            int xSize = (int) loot.lootType.itemScale.x;
-                            int ySize = (int) loot.lootType.itemScale.y;
-
-                            boolean tinted = false;
-
-                            //loop through the grid. return grid slot index if user touch is on a slot
-                            Vector2 slot = findSlotIndexAtPosition(touchPos);
-                            if (slot != null) {
-                                int i = (int) slot.x;
-                                int j = (int) slot.y;
-
-                                boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
-                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
-
-                                //loop through the size of the object
-                                for (int x = 0; x < xSize; x++) {
-                                    for (int y = 0; y < ySize; y++) {
-
-                                        int slotX = i + x;
-                                        int slotY = j + y;
-
-                                        //if is out of bounds, dont try to tint it
-                                        if (inBounds(slotX, slotY)) {
-                                            slots[slotX][slotY].setTint(color);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    isTouching = false;
-
-                    if(draggingObj instanceof LootObj)
-                    {
-                        //get details of the loot obj
-                        LootObj loot = (LootObj) draggingObj;
-                        int xSize = (int)loot.lootType.itemScale.x;
-                        int ySize = (int)loot.lootType.itemScale.y;
-
-                        //loop through the grid. return grid slot index if user touch is on a slot
-                        Vector2 slot = findSlotIndexAtPosition(touchPos);
-                        if (slot != null) {
-                            int i = (int) slot.x;
-                            int j = (int) slot.y;
-
-                            //check if item slots are valid
-                            if(canPlaceItemInSlot(i,j,xSize,ySize)){
-                                draggingObj.setPosition(slots[i][j]._position);
-                                //change all slots that it occupies to occupied
-                                for (int x = 0; x < xSize; x++) {
-                                    for (int y = 0; y < ySize; y++) {
-                                        int slotX = i + x;   // remember: i = row (Y), j = column (X)
-                                        int slotY = j + y;
-                                        slots[slotX][slotY].occupied = true;
-                                    }
-                                }
-                            }
-                            else{
-                                // if user cannot find any valid slots
-                                m_goList.remove(draggingObj);
-                                draggingObj = null;
-                            }
-                        }
-                        else{
-                            //user touch is not on any slot
-                            m_goList.remove(draggingObj);
-                            draggingObj = null;
-                        }
-                    }
-                    //make all slots normal colour
-                    for (int a = 0; a < 5; a++) {
-                        for (int b = 0; b < 5; b++) {
-                            slots[a][b].clearTint();
-                        }
-                    }
-                    // remove obj reference when finger let go
-                    if(draggingObj != null) {draggingObj = null;}
-                    break;
-            }
-        }
+        HandleTouch();
+//        MotionEvent e = GameActivity.instance.getMotionEvent();
+//        if (e != null) {
+//            Vector2 touchPos = new Vector2(e.getX(),e.getY());
+//
+//            switch (e.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    if(!isTouching){ // action down registers as hold on android studio emulator
+//                        if(lootBtn.checkIfPressed(touchPos))
+//                        {
+//                            lootBtn.OnClick(touchPos);
+//
+//                            //creating my loot obj
+//                            LootObj lootobj = new LootObj();
+//                            //grab lootType ref from btn
+//                            lootobj.onCreate(touchPos,lootBtn.loot);
+//                            m_goList.add(lootobj);
+//
+//                            //assign obj to reference so scene can use it
+//                            draggingObj = lootobj;
+//                        }
+//                        isTouching = true;
+//                    }
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    if(draggingObj != null)
+//                    {
+//                        //drag obj with touching pos
+//                        draggingObj.setPosition(touchPos);
+//
+//                        //make all slots normal colour
+//                        for (int a = 0; a < slots.length; a++) {
+//                            for (int b = 0; b < slots[0].length; b++) {
+//                                slots[a][b].clearTint();
+//                            }
+//                        }
+//
+//                        if (draggingObj instanceof LootObj)
+//                        {
+//                            LootObj loot = (LootObj) draggingObj;
+//                            int xSize = (int) loot.lootType.itemScale.x;
+//                            int ySize = (int) loot.lootType.itemScale.y;
+//
+//                            boolean tinted = false;
+//
+//                            //loop through the grid. return grid slot index if user touch is on a slot
+//                            Vector2 slot = findSlotIndexAtPosition(touchPos);
+//                            if (slot != null) {
+//                                int i = (int) slot.x;
+//                                int j = (int) slot.y;
+//
+//                                boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
+//                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
+//
+//                                //loop through the size of the object
+//                                for (int x = 0; x < xSize; x++) {
+//                                    for (int y = 0; y < ySize; y++) {
+//
+//                                        int slotX = i + x;
+//                                        int slotY = j + y;
+//
+//                                        //if is out of bounds, dont try to tint it
+//                                        if (inBounds(slotX, slotY)) {
+//                                            slots[slotX][slotY].setTint(color);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    isTouching = false;
+//
+//                    if(draggingObj instanceof LootObj)
+//                    {
+//                        //get details of the loot obj
+//                        LootObj loot = (LootObj) draggingObj;
+//                        int xSize = (int)loot.lootType.itemScale.x;
+//                        int ySize = (int)loot.lootType.itemScale.y;
+//
+//                        //loop through the grid. return grid slot index if user touch is on a slot
+//                        Vector2 slot = findSlotIndexAtPosition(touchPos);
+//                        if (slot != null) {
+//                            int i = (int) slot.x;
+//                            int j = (int) slot.y;
+//
+//                            //check if item slots are valid
+//                            if(canPlaceItemInSlot(i,j,xSize,ySize)){
+//                                draggingObj.setPosition(slots[i][j]._position);
+//                                //change all slots that it occupies to occupied
+//                                for (int x = 0; x < xSize; x++) {
+//                                    for (int y = 0; y < ySize; y++) {
+//                                        int slotX = i + x;   // remember: i = row (Y), j = column (X)
+//                                        int slotY = j + y;
+//                                        slots[slotX][slotY].occupied = true;
+//                                    }
+//                                }
+//                            }
+//                            else{
+//                                // if user cannot find any valid slots
+//                                m_goList.remove(draggingObj);
+//                                draggingObj = null;
+//                            }
+//                        }
+//                        else{
+//                            //user touch is not on any slot
+//                            m_goList.remove(draggingObj);
+//                            draggingObj = null;
+//                        }
+//                    }
+//                    //make all slots normal colour
+//                    for (int a = 0; a < 5; a++) {
+//                        for (int b = 0; b < 5; b++) {
+//                            slots[a][b].clearTint();
+//                        }
+//                    }
+//                    // remove obj reference when finger let go
+//                    if(draggingObj != null) {draggingObj = null;}
+//                    break;
+//            }
+//        }
     }
 
     @Override
@@ -275,5 +281,43 @@ public class MainGameScene extends GameScene {
             }
         }
         return null; // no slot found
+    }
+
+    private HashMap<Integer, LootObj> activeLoot = new HashMap<>();
+    private void HandleTouch()
+    {
+        MotionEvent event = GameActivity.instance.getMotionEvent();
+        if (event == null)
+            return;
+
+        int action = event.getActionMasked();
+        int index = event.getActionIndex();
+        int pointerID = event.getPointerId(index);
+        Log.d("Test", index + " : " + String.valueOf(pointerID));
+        Vector2 touchPos = new Vector2(event.getX(), event.getY());
+
+        switch(action)
+        {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                Vector2 pos = new Vector2(event.getX(pointerID), event.getY(pointerID));
+
+                LootObj loot = new LootObj();
+                loot.onCreate(pos, lootBtn.loot);
+                m_goList.add(loot);
+
+                activeLoot.put(pointerID, loot);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (activeLoot.containsKey(pointerID)) {
+
+                    LootObj looty = activeLoot.get(pointerID);
+                    Log.d("Test", String.valueOf(pointerID));
+                    m_goList.remove(looty);
+
+                    activeLoot.remove(pointerID);
+                }
+                break;
+        }
     }
 }
