@@ -1,33 +1,31 @@
 package com.example.sampleapp.Enums;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.example.sampleapp.R;
+import com.example.sampleapp.mgp2d.core.GameActivity;
 
 public enum SpriteList {
-    //PlayerAnimations
-    PlayerIdle(R.drawable.player_heli_body,1,7,24),
+    PlayerSprite(R.drawable.playersprite),
+    PlayerMagicMissileSprite(R.drawable.player_fire_missle),
 
-    //other Animations
-    ExamplePause(R.drawable.pause,1,1,1),
-    ExampleItem(R.drawable.splash,1,1,1),
-    InventorySlot(R.drawable.inventoryslot,1,1,1);
+    SlimeIdleSprite(R.drawable.slime3_idle_full),
+    SlimeRunSprite(R.drawable.slime3_run_full),
+    SlimeDeathSprite(R.drawable.slime3_death_full),
+    SlimeAttackSprite(R.drawable.slime3_attack_full),
 
-    public final int spriteSheetID;
-    public final int rows;
-    public final int columns;
-    public final int fps;
-    public final int startFrame;
-    public final int endFrame;
+    ExamplePauseSprite(R.drawable.pause),
+    ExampleItemSprite(R.drawable.splash),
+    InventorySlotSprite(R.drawable.inventoryslot)
 
-    SpriteList(int spriteSheetID, int rows, int columns, int fps) {
-        this(spriteSheetID, rows, columns, fps, 0, rows * columns - 1); // Play full sheet by default
-    }
+    ;
 
-    SpriteList(int spriteSheetID, int rows, int columns, int fps, int startFrame, int endFrame) {
-        this.spriteSheetID = spriteSheetID;
-        this.rows = rows;
-        this.columns = columns;
-        this.fps = fps;
-        this.startFrame = startFrame;
-        this.endFrame = endFrame;
+    public final int spriteID;
+    public final Bitmap sprite;
+
+    SpriteList(int spriteID) {
+        this.spriteID = spriteID;
+        this.sprite = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteID);
     }
 }

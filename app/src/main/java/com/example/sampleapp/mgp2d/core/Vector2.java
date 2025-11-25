@@ -13,6 +13,10 @@ public class Vector2 {
     public Vector2 add(Vector2 b) { return new Vector2(x + b.x, y + b.y); }
 
     public Vector2 multiply(float scale) { return new Vector2(x * scale, y * scale); }
+    public void multiply(Vector2 b) {
+        this.x *= b.x;
+        this.y *= b.y;
+    }
 
     public Vector2 subtract(Vector2 b) { return this.add(b.multiply(-1)); }
 
@@ -26,10 +30,11 @@ public class Vector2 {
 
     public Vector2 set(float x, float y) { this.x = x; this.y = y; return this; }
 
-    public Vector2 set(Vector2 other) { return set(other.x, other.y); }
+    public Vector2 set(Vector2 other) { return this.set(other.x, other.y); }
 
     public float dot(Vector2 b) { return x * b.x + y * b.y; }
 
+    public boolean equals(float x, float y) { return this.x == x && this.y == y; }
     public boolean equals(Vector2 other) { return x == other.x && y == other.y; }
 
     public Vector2 limit(float maxMagnitude) {

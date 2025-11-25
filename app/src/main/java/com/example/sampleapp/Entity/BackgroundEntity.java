@@ -20,7 +20,7 @@ public class BackgroundEntity extends GameEntity {
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), imageID);
-        backgroundBitmap = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, true);
+        backgroundBitmap = Bitmap.createScaledBitmap(bmp, screenWidth + screenWidth / 15, screenHeight + screenHeight / 15, true);
     }
 
     @Override

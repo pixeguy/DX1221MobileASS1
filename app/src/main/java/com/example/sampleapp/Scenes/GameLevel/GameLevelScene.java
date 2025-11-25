@@ -1,24 +1,33 @@
 package com.example.sampleapp.Scenes.GameLevel;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.example.sampleapp.Collision.ColliderManager;
+import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
+import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.JoystickObj;
+import com.example.sampleapp.Entity.Enemies.Enemy;
+import com.example.sampleapp.Entity.Enemies.Slime.Slime;
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
 import com.example.sampleapp.Entity.SampleCoin;
-import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
+import com.example.sampleapp.PostOffice.MessageWRU;
+import com.example.sampleapp.PostOffice.ObjectBase;
+import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
-public class GameLevelScene extends GameScene {
+public class GameLevelScene extends GameScene implements ObjectBase {
 
     private int screenWidth;
     private int screenHeight;
@@ -30,21 +39,21 @@ public class GameLevelScene extends GameScene {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        PostOffice.getInstance().register("Scene", this);
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
 
-        playerMovementJoystick = new JoystickObj(new Vector2(screenWidth / 2.0f + 700.0f, screenHeight / 2.0f), 4);
+        playerMovementJoystick = new JoystickObj(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 4);
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
 
-        GameEntity player = new PlayerObj();
-        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f),new Vector2(2,2), SpriteList.PlayerIdle);
+        PlayerObj player = new PlayerObj();
+        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.1f,0.1f), SpriteAnimationList.PlayerIdle);
         m_goList.add(player);
 
-        coin = new SampleCoin();
-        coin.onCreate(new Vector2(screenWidth / 2.0f - 500,screenHeight / 2.0f), 10);
-        m_goList.add(coin);
+        Slime slime = new Slime();
+        slime.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 600.0f), new Vector2(2,2));
+        m_goList.add(slime);
     }
 
     @Override
@@ -52,11 +61,30 @@ public class GameLevelScene extends GameScene {
         playerMovementJoystick.onUpdate(dt);
         PlayerObj.instance.SetInputDirection(playerMovementJoystick.getInputDirection());
 
-        for(GameEntity go : m_goList)
+        onUpdateGameObjects(dt);
+        onPhysicsUpdate();
+        onHandleIfOutsideWorldBound();
+    }
+
+    @Override
+    public void onRender(Canvas canvas) {
+        for (GameEntity go : m_goList)
+            go.onRender(canvas);
+        playerMovementJoystick.onRender(canvas);
+    }
+
+    protected void onUpdateGameObjects(float dt) {
+        for(GameEntity go : m_goList) {
+            if(go.canDestroy()) {
+                m_goListToRemove.add(go);
+                continue;
+            }
             go.onUpdate(dt);
+        }
+    }
 
+    protected void onPhysicsUpdate() {
         int size = ColliderManager.GetInstance().m_colliders.size();
-
         for(int iteration = 0; iteration < 5; ++iteration) {
             for (int i = 0; i < size - 1; ++i) {
                 Collider2D colliderA = ColliderManager.GetInstance().m_colliders.get(i);
@@ -78,10 +106,95 @@ public class GameLevelScene extends GameScene {
         }
     }
 
+    protected void onHandleIfOutsideWorldBound() {
+        for(Collider2D collider2D : ColliderManager.GetInstance().m_colliders) {
+            GameEntity go = collider2D.gameEntity;
+            if(go.canDestroy()) continue;
+
+            float minX = 0;
+            float minY = 0;
+            float maxX = screenWidth;
+            float maxY = screenHeight;
+
+            if(collider2D.numVertices == 1) {
+                CircleCollider2D circleCollider2D = (CircleCollider2D) collider2D;
+                if (go.getPosition().x + circleCollider2D.radius > maxX) {
+                    go._position.x -= go.getPosition().x + circleCollider2D.radius - maxX;
+                }
+                else if(go.getPosition().x - circleCollider2D.radius < minX) {
+                    go._position.x += Math.abs(minX - (go.getPosition().x - circleCollider2D.radius));
+                }
+
+                if(go.getPosition().y + circleCollider2D.radius > maxY) {
+                    go._position.y -= go.getPosition().y + circleCollider2D.radius - maxY;
+                }
+                else if(go.getPosition().y - circleCollider2D.radius < minY) {
+                    go._position.y += Math.abs(minY - (go.getPosition().y - circleCollider2D.radius));
+                }
+            }
+            else{
+                BoxCollider2D boxCollider2D = (BoxCollider2D) collider2D;
+                if(boxCollider2D.getBound().left < minX) {
+                    go._position.x += minX - boxCollider2D.getBound().left;
+                }
+                else if(boxCollider2D.getBound().right > maxX) {
+                    go._position.x -= boxCollider2D.getBound().right - maxX;
+                }
+
+                if(boxCollider2D.getBound().top < minY) {
+                    go._position.y += minY - boxCollider2D.getBound().top;
+                }
+                else if(boxCollider2D.getBound().bottom > maxY) {
+                    go._position.y -= boxCollider2D.getBound().bottom - maxY;
+                }
+            }
+        }
+    }
+
     @Override
-    public void onRender(Canvas canvas) {
-        for (GameEntity go : m_goList)
-            go.onRender(canvas);
-        playerMovementJoystick.onRender(canvas);
+    public boolean handle(Message message) {
+
+        if(message instanceof MessageWRU) {
+            MessageWRU messageWRU = (MessageWRU) message;
+            GameEntity go1 = messageWRU.go;
+            go1.targetGO = null;
+            float nearestDistance = Float.MAX_VALUE;
+
+            for(GameEntity go2 : m_goList) {
+                if(go2.canDestroy()) continue;
+                if(go2 == go1) continue;
+                if(go2 instanceof Enemy) {
+                    Enemy enemy = (Enemy) go2;
+                    if(messageWRU.searchType == MessageWRU.SEARCH_TYPE.NEAREST_ENEMY) {
+                        float distance = go1.getPosition().Distance(go2.getPosition());
+                        if(distance < nearestDistance && distance <= messageWRU.threshold) {
+                            nearestDistance = distance;
+                            go1.targetGO = enemy;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        if(message instanceof MessageSpawnProjectile) {
+            MessageSpawnProjectile messageSpawnProjectile = (MessageSpawnProjectile) message;
+            GameEntity go = messageSpawnProjectile.go;
+            switch (messageSpawnProjectile.projectileType) {
+                case PLAYER_MAGIC_MISSLE:
+                    PlayerMagicMissile projectile = new PlayerMagicMissile();
+                    projectile.onCreate(go.targetGO,
+                            messageSpawnProjectile.movementSpeed,
+                            messageSpawnProjectile.pos,
+                            new Vector2(0.05f, 0.05f));
+                    m_goListToAdd.add(projectile);
+                    break;
+                case ENEMY_MAGIC_MISSLE:
+                    break;
+            }
+            return true;
+        }
+
+        return false;
     }
 }

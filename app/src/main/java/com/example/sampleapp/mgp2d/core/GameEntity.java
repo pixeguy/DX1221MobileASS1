@@ -1,47 +1,60 @@
 package com.example.sampleapp.mgp2d.core;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 
-import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
+import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Collision.Colliders.Collider2D;
+import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Statemchine.Statemachine;
+
+import java.util.ArrayList;
 
 public abstract class GameEntity {
+    public Collider2D collider = null;
     private static int _totalEntitiesCreated = 0;
     public int _id = 0;
-    public Vector2 _scale = new Vector2(1,1);
-    public Vector2 _position = new Vector2(0, 0);
+    public final Vector2 _position = new Vector2(0, 0);
+    public float _rotationZ = 0.0f;
+    public final Vector2 _scale = new Vector2(1,1);
     public Bitmap sprite;
     public AnimatedSprite animatedSprite;
-    private boolean _isCreated = false;
+    protected boolean _isCreated = false;
+    public Vector2 facingDirection = new Vector2(0, 0);
+    public Statemachine sm = null;
+
+    protected float currentHealth = 100.0f;
+    protected float maxHealth = 100.0f;
+
+    public GameEntity targetGO = null;
+
 
     public void onCreate(Vector2 pos, Vector2 scale) {
         _isCreated = true;
         _id = _totalEntitiesCreated++;
-        _position = new Vector2(pos.x,pos.y);
-        _scale = new Vector2(scale.x,scale.y);
+        _position.set(pos);
+        _scale.set(scale);
     }
 
-    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
+    public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
         onCreate(pos,scale);
-
-        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteAnim.spriteSheetID);
-        sprite = Bitmap.createScaledBitmap(bmp,100,100,true);
-        animatedSprite = new AnimatedSprite(sprite,spriteAnim.rows, spriteAnim.columns,spriteAnim.fps);
+        sprite = spriteAnim.sprite;
+        animatedSprite = new AnimatedSprite(sprite, spriteAnim.rows, spriteAnim.columns,spriteAnim.fps);
     }
 
-    public void SetAnimation(SpriteList nextAnim)
+    public void SetAnimation(SpriteAnimationList nextAnim)
     {
-        animatedSprite = new AnimatedSprite(sprite,nextAnim.rows,nextAnim.columns,nextAnim.fps,nextAnim.startFrame, nextAnim.endFrame);
+        sprite = nextAnim.sprite;
+        animatedSprite = new AnimatedSprite(sprite, nextAnim.rows, nextAnim.columns, nextAnim.fps, nextAnim.startFrame, nextAnim.endFrame);
     }
 
     public Vector2 getPosition() { return _position.copy(); }
-    public void setPosition(Vector2 position) { _position = position; }
+    public void setPosition(Vector2 position) { _position.set(position); }
 
     protected int _ordinal = 0;
     public int getOrdinal() { return _ordinal; }
@@ -51,16 +64,19 @@ public abstract class GameEntity {
     public boolean canDestroy() { return _isDone; }
 
     public void onUpdate(float dt) {
-        if(animatedSprite != null){
-        animatedSprite.update(dt);}
+        if(canDestroy()) return;
+        if(animatedSprite != null) {
+            animatedSprite.update(dt); }
     }
 
     public void onRender(Canvas canvas){
-        //float drawX = _position.x - (_scale.x / 2f);
-        //float drawY = _position.y - (_scale.y / 2f);
-        //canvas.drawBitmap(sprite, drawX, drawY, paint);
-
-        animatedSprite.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
+        if(canDestroy()) return;
+        if(animatedSprite != null) {
+            canvas.save();
+            canvas.rotate(_rotationZ, _position.x, _position.y);
+            animatedSprite.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
+            canvas.restore();
+        }
     }
 
     private Paint paint = new Paint();
@@ -78,5 +94,73 @@ public abstract class GameEntity {
     public void clearTint() {
         tinted = false;
         paint.setColorFilter(null);
+    }
+
+    public boolean CheckIfOutsideWorldBound(Vector2 direction, int offset) {
+        if(collider == null) return false;
+
+        int screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
+
+        if(collider.numVertices == 1) {
+            CircleCollider2D circleCollider2D = (CircleCollider2D) collider;
+            if(direction.equals(0, -1)) {
+                return _position.y - circleCollider2D.radius - offset < 0;
+            }
+            else if(direction.equals(0, 1)) {
+                return _position.y + circleCollider2D.radius + offset > screenHeight;
+
+            }
+            else if(direction.equals(-1, 0)) {
+                return _position.x - circleCollider2D.radius - offset < 0;
+            }
+            else if(direction.equals(1, 0)) {
+                return _position.x + circleCollider2D.radius + offset > screenWidth;
+            }
+        }
+        else {
+            BoxCollider2D boxCollider2D = (BoxCollider2D) collider;
+            if(direction.equals(0, -1)) {
+                return _position.y - boxCollider2D.height / 2.0f - offset < 0;
+            }
+            else if(direction.equals(0, 1)) {
+                return _position.y + boxCollider2D.height / 2.0f + offset > screenHeight;
+            }
+            else if(direction.equals(-1, 0)) {
+                return _position.x - boxCollider2D.width / 2.0f - offset < 0;
+            }
+            else if(direction.equals(1, 0)) {
+                return _position.x + boxCollider2D.width / 2.0f + offset > screenWidth;
+            }
+        }
+
+        return false;
+    }
+
+    public int[] CheckForUnvailableDirection() {
+        int[] directions = new int[] {-1, -1, -1, -1};
+        for(int i = 0; i < directions.length; i++) {
+            Vector2 direction = new Vector2(0, 0);
+            switch (i) {
+                case 0:
+                    direction = new Vector2(0, -1);
+                    break;
+                case 1:
+                    direction = new Vector2(0, 1);
+                    break;
+                case 2:
+                    direction = new Vector2(-1, 0);
+                    break;
+                case 3:
+                    direction = new Vector2(1, 0);
+                    break;
+            }
+
+            if(CheckIfOutsideWorldBound(direction, 50)) {
+                directions[i] = i;
+            }
+        }
+
+        return directions;
     }
 }

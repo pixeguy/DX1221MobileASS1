@@ -147,7 +147,7 @@ public class Collision {
     }
 
     public static void ResolveCollision(PhysicsManifold contact) {
-        if(contact.colliderA.isTrigger && contact.colliderB.isTrigger) return;
+        if(contact.colliderA.isTrigger || contact.colliderB.isTrigger) return;
 
         float amountToMoveX = contact.normal.x * contact.depth;
         float amountToMoveY = contact.normal.y * contact.depth;

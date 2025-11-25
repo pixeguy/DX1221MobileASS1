@@ -144,10 +144,6 @@ public class GameActivity extends FragmentActivity {
         SurfaceView surfaceView = new SurfaceView(this);
         setContentView(surfaceView);
         _updateThread = new UpdateThread(surfaceView);
-
-
-        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override

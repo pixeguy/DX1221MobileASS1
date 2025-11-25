@@ -4,12 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Debug;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.example.sampleapp.Enums.LootType;
-import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;

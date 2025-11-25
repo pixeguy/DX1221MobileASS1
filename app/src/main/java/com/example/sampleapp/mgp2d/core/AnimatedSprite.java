@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class AnimatedSprite {
     private final int _col;
@@ -35,6 +36,7 @@ public class AnimatedSprite {
     public AnimatedSprite(Bitmap bitmap, int row, int col, int fps, int startFrame, int endFrame) {
         this(bitmap, row, col, fps);
         _startFrame = startFrame;
+        _currentFrame = startFrame;
         _endFrame = endFrame;
     }
 
@@ -62,7 +64,7 @@ public class AnimatedSprite {
         int frameX = _currentFrame % _col;
         int frameY = _currentFrame / _col;
         int srcX = frameX * _width;
-        int srcY = frameY & _height;
+        int srcY = frameY * _height;
 
         int scaledWidth = (int) (_width * scale.x);
         int scaledHeight = (int) (_height * scale.y);
@@ -77,30 +79,23 @@ public class AnimatedSprite {
         canvas.drawBitmap(_bmp, _src, _dst, paint);
     }
 
-    public void render(Canvas canvas, int x, int y, Paint paint) {
-        int frameX = _currentFrame % _col;
-        int frameY = _currentFrame / _col;
-        int srcX = frameX * _width;
-        int srcY = frameY & _height;
-
-        x -= (int) (0.5f * _width);
-        y -= (int) (0.5f * _height);
-
-        _src.left = srcX;
-        _src.top = srcY;
-        _src.right = srcX + _width;
-        _src.bottom = srcY + _height;
-
-        _dst.left = x;
-        _dst.top = y;
-        _dst.right = x + _width;
-        _dst.bottom = y + _height;
-
-        canvas.drawBitmap(_bmp, _src, _dst, paint);
-    }
-
     public Rect GetRect()
     {
         return _dst;
     }
+
+    public Rect GetRect(Vector2 position, Vector2 scale) {
+        int scaledWidth = (int) (_width * scale.x);
+        int scaledHeight = (int) (_height * scale.y);
+
+        // Center relative to x and y
+        int left = (int) (position.x - (float) scaledWidth / 2);
+        int top = (int) (position.y - (float) scaledHeight / 2);
+
+        _dst.set(left, top, left + scaledWidth, top + scaledHeight);
+
+        return _dst;
+    }
+
+    public int GetCurrentFrame() { return _currentFrame; }
 }

@@ -26,7 +26,7 @@ public class SampleCoin extends GameEntity {
     private long lastTouchTime = -1L;
 
     public void onCreate(Vector2 position, int value){
-        this._position = position;
+        this._position.set(position.x, position.y);
         this.value = value;
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), R.drawable.flystar);
