@@ -105,7 +105,7 @@ public class MainGameScene extends GameScene {
             }
         }
 
-        //HandleTouch();
+       // HandleTouch();
         MotionEvent e = GameActivity.instance.getMotionEvent();
         if (e != null) {
             Vector2 touchPos = new Vector2(e.getX(),e.getY());
@@ -119,35 +119,34 @@ public class MainGameScene extends GameScene {
                             else
                                 EndLootPhase();
                         }
-                        for(LootButtonObj lootBtn : lootBtns){
-                            if(lootBtn.checkIfPressed(touchPos))
-                            {
-                                if(!lootBtn.isActive) {continue;}
-                                if(!lootBtn.used){ //if the loot obj is already in the grid
-                                    lootBtn.OnClick(touchPos);
+                        if(lootBtns != null) { //whether the list exists
+                            for (LootButtonObj lootBtn : lootBtns) {
+                                if (lootBtn.checkIfPressed(touchPos)) {
+                                    if (!lootBtn.isActive) {
+                                        continue;
+                                    }
+                                    if (!lootBtn.used) { //if the loot obj is already in the grid
+                                        lootBtn.OnClick(touchPos);
 
-                                    //creating my loot obj
-                                    LootObj lootobj = new LootObj();
-                                    //grab lootType ref from btn
-                                    lootobj.onCreate(touchPos,lootBtn.loot);
-                                    m_goList.add(lootobj);
+                                        //creating my loot obj
+                                        LootObj lootobj = new LootObj();
+                                        //grab lootType ref from btn
+                                        lootobj.onCreate(touchPos, lootBtn.loot);
+                                        m_goList.add(lootobj);
 
-                                    //assign obj to reference so scene can use it
-                                    draggingObj = lootobj;
-                                    lootBtn.isActive = false;
-                                    //RelayoutLootButtons();
-                                    lootobj.sourceButton = lootBtn;
-                                }
-                                else { //find the correct loot obj corresponding to the button
-                                    for(GameEntity entity : m_goList)
-                                    {
-                                        if (entity instanceof LootObj)
-                                        {
-                                            LootObj loot = (LootObj) entity;
-                                            if(loot.sourceButton == lootBtn)
-                                            {
-                                                draggingObj = loot;
-                                                lootBtn.isActive = false;
+                                        //assign obj to reference so scene can use it
+                                        draggingObj = lootobj;
+                                        lootBtn.isActive = false;
+                                        //RelayoutLootButtons();
+                                        lootobj.sourceButton = lootBtn;
+                                    } else { //find the correct loot obj corresponding to the button
+                                        for (GameEntity entity : m_goList) {
+                                            if (entity instanceof LootObj) {
+                                                LootObj loot = (LootObj) entity;
+                                                if (loot.sourceButton == lootBtn) {
+                                                    draggingObj = loot;
+                                                    lootBtn.isActive = false;
+                                                }
                                             }
                                         }
                                     }
@@ -394,6 +393,7 @@ public class MainGameScene extends GameScene {
             }
         }
         System.out.println(player.value);
+        lootBtns = null;
         spawnPhase = false;
     }
 
