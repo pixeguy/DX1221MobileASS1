@@ -8,7 +8,12 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 
 public enum SpriteList {
     PlayerSprite(R.drawable.playersprite),
+
+    // Projectiles
     PlayerMagicMissileSprite(R.drawable.player_fire_missle),
+    EnemyFireMissleSprite(R.drawable.enemy_fire_missle),
+
+    // Enemies
 
     SlimeIdleSprite(R.drawable.slime3_idle_full),
     SlimeRunSprite(R.drawable.slime3_run_full),

@@ -1,5 +1,6 @@
 package com.example.sampleapp.Entity.Enemies;
 
+import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.PostOffice.Message;
@@ -28,5 +29,10 @@ public class Enemy extends GameEntity implements ObjectBase, Damageable {
         }
 
         currentHealth -= amount;
+    }
+
+    public boolean CheckIfPlayerNear(float threshold) {
+        if(PlayerObj.instance == null) return false;
+        return getPosition().Distance(PlayerObj.instance.getPosition()) <= threshold;
     }
 }

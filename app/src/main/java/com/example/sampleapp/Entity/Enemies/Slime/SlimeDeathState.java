@@ -20,7 +20,6 @@ public class SlimeDeathState extends State {
             m_go.SetAnimation(SpriteAnimationList.SlimeDeathLeft);
         else
             m_go.SetAnimation(SpriteAnimationList.SlimeDeathRight);
-        m_go.animatedSprite.setLooping(false);
     }
 
     @Override

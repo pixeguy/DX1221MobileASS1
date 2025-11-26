@@ -13,6 +13,7 @@ import com.example.sampleapp.Entity.Buttons.JoystickObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Enemies.Slime.Slime;
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Entity.Projectile.EnemyFireMissile;
 import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
 import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.SpriteAnimationList;
@@ -47,13 +48,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
 
-        PlayerObj player = new PlayerObj();
-        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.1f,0.1f), SpriteAnimationList.PlayerIdle);
-        m_goList.add(player);
-
         Slime slime = new Slime();
         slime.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 600.0f), new Vector2(2,2));
         m_goList.add(slime);
+
+        PlayerObj player = new PlayerObj();
+        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.1f,0.1f), SpriteAnimationList.PlayerIdle);
+        m_goList.add(player);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     protected void onPhysicsUpdate() {
         int size = ColliderManager.GetInstance().m_colliders.size();
-        for(int iteration = 0; iteration < 5; ++iteration) {
+        for(int iteration = 0; iteration < 10; ++iteration) {
             for (int i = 0; i < size - 1; ++i) {
                 Collider2D colliderA = ColliderManager.GetInstance().m_colliders.get(i);
                 if (colliderA.gameEntity.canDestroy()) continue;
@@ -181,15 +182,22 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             MessageSpawnProjectile messageSpawnProjectile = (MessageSpawnProjectile) message;
             GameEntity go = messageSpawnProjectile.go;
             switch (messageSpawnProjectile.projectileType) {
-                case PLAYER_MAGIC_MISSLE:
-                    PlayerMagicMissile projectile = new PlayerMagicMissile();
-                    projectile.onCreate(go.targetGO,
+                case PLAYER_FIRE_MISSILE:
+                    PlayerMagicMissile playerProjectile = new PlayerMagicMissile();
+                    playerProjectile.onCreate(go.targetGO,
                             messageSpawnProjectile.movementSpeed,
                             messageSpawnProjectile.pos,
                             new Vector2(0.05f, 0.05f));
-                    m_goListToAdd.add(projectile);
+                    m_goListToAdd.add(playerProjectile);
                     break;
-                case ENEMY_MAGIC_MISSLE:
+                case ENEMY_FIRE_MISSILE:
+                    EnemyFireMissile enemyFireProjectile = new EnemyFireMissile();
+                    enemyFireProjectile.onCreate(go.targetGO,
+                            messageSpawnProjectile.movementSpeed,
+                            messageSpawnProjectile.pos,
+                            new Vector2(0.05f, 0.05f));
+                    enemyFireProjectile.facingDirection = messageSpawnProjectile.facingDirection;
+                    m_goListToAdd.add(enemyFireProjectile);
                     break;
             }
             return true;

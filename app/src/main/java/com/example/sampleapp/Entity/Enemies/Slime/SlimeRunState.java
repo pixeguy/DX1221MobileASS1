@@ -2,7 +2,10 @@ package com.example.sampleapp.Entity.Enemies.Slime;
 
 import android.util.Log;
 
+import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
+import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 
@@ -45,6 +48,13 @@ public class SlimeRunState extends State {
         }
 
         m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(runSpeed * dt)));
+        int currentFrame = m_go.animatedSprite.GetCurrentFrame() % m_go.animatedSprite.GetNumCol();
+        if(currentFrame == 5) {
+            MessageSpawnProjectile message = new MessageSpawnProjectile(
+                    m_go, MessageSpawnProjectile.PROJECTILE_TYPE.ENEMY_FIRE_MISSILE,
+                    1000.0f, m_go.getPosition(), m_go.facingDirection);
+            PostOffice.getInstance().send("Scene", message);
+        }
     }
 
     @Override

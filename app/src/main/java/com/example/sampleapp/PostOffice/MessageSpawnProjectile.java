@@ -6,19 +6,33 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 public class MessageSpawnProjectile extends Message{
 
     public enum PROJECTILE_TYPE {
-        PLAYER_MAGIC_MISSLE,
-        ENEMY_MAGIC_MISSLE
+        PLAYER_FIRE_MISSILE,
+        ENEMY_FIRE_MISSILE
     }
 
     public PROJECTILE_TYPE projectileType;
     public GameEntity go;
     public float movementSpeed;
     public Vector2 pos;
+    public Vector2 facingDirection = new Vector2(0, 0);
 
-    public MessageSpawnProjectile(GameEntity go, PROJECTILE_TYPE projectileType, float movementSpeed, Vector2 pos) {
+    public MessageSpawnProjectile(GameEntity go,
+                                  PROJECTILE_TYPE projectileType,
+                                  float movementSpeed, Vector2 pos) {
         this.projectileType = projectileType;
         this.go = go;
         this.movementSpeed = movementSpeed;
         this.pos = pos;
+    }
+
+    public MessageSpawnProjectile(GameEntity go,
+                                  PROJECTILE_TYPE projectileType,
+                                  float movementSpeed, Vector2 pos,
+                                  Vector2 facingDirection) {
+        this.projectileType = projectileType;
+        this.go = go;
+        this.movementSpeed = movementSpeed;
+        this.pos = pos;
+        this.facingDirection = facingDirection;
     }
 }

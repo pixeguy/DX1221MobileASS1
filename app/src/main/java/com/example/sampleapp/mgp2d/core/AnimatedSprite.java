@@ -98,4 +98,8 @@ public class AnimatedSprite {
     }
 
     public int GetCurrentFrame() { return _currentFrame; }
+
+    public int GetNumCol() { return _col; }
+
+    public int GetNumRow() { return _col; }
 }

@@ -4,31 +4,38 @@ import android.graphics.Bitmap;
 
 public enum SpriteAnimationList {
     //PlayerAnimations
-    PlayerIdle(SpriteList.PlayerSprite.sprite, 1, 1, 1, 0, 0),
+    PlayerIdle(SpriteList.PlayerSprite.sprite, 1, 1, 1, 0, 0, false),
 
-    PlayerShootMissile(SpriteList.PlayerMagicMissileSprite.sprite, 1, 5, 12, 0, 4),
+    //Projectile Animations
+    PlayerShootMissile(SpriteList.PlayerMagicMissileSprite.sprite, 1, 5, 12, 0, 4, true),
+    EnemyShootMissile(SpriteList.EnemyFireMissleSprite.sprite, 1, 5, 12, 0, 4, true),
 
     //Slime Animations
-    SlimeIdleFront(SpriteList.SlimeIdleSprite.sprite,4,6,12, 0, 5),
-    SlimeIdleBack(SpriteList.SlimeIdleSprite.sprite,4,6,12, 6, 11),
-    SlimeIdleLeft(SpriteList.SlimeIdleSprite.sprite,4,6,12, 12, 17),
-    SlimeIdleRight(SpriteList.SlimeIdleSprite.sprite,4,6,12, 18, 23),
+    SlimeIdleFront(SpriteList.SlimeIdleSprite.sprite,4,6,12, 0, 5, true),
+    SlimeIdleBack(SpriteList.SlimeIdleSprite.sprite,4,6,12, 6, 11, true),
+    SlimeIdleLeft(SpriteList.SlimeIdleSprite.sprite,4,6,12, 12, 17, true),
+    SlimeIdleRight(SpriteList.SlimeIdleSprite.sprite,4,6,12, 18, 23, true),
 
-    SlimeRunFront(SpriteList.SlimeRunSprite.sprite,4,8,20, 0, 7),
-    SlimeRunBack(SpriteList.SlimeRunSprite.sprite,4,8,20, 8, 15),
-    SlimeRunLeft(SpriteList.SlimeRunSprite.sprite,4,8,20, 16, 23),
-    SlimeRunRight(SpriteList.SlimeRunSprite.sprite,4,8,20, 24, 31),
+    SlimeRunFront(SpriteList.SlimeRunSprite.sprite,4,8,20, 0, 7, true),
+    SlimeRunBack(SpriteList.SlimeRunSprite.sprite,4,8,20, 8, 15, true),
+    SlimeRunLeft(SpriteList.SlimeRunSprite.sprite,4,8,20, 16, 23, true),
+    SlimeRunRight(SpriteList.SlimeRunSprite.sprite,4,8,20, 24, 31, true),
 
-    SlimeDeathFront(SpriteList.SlimeDeathSprite.sprite,4,10,12, 0, 9),
-    SlimeDeathBack(SpriteList.SlimeDeathSprite.sprite,4,10,12, 10, 19),
-    SlimeDeathLeft(SpriteList.SlimeDeathSprite.sprite,4,10,12, 20, 29),
-    SlimeDeathRight(SpriteList.SlimeDeathSprite.sprite,4,10,12, 30, 39),
+    SlimeDeathFront(SpriteList.SlimeDeathSprite.sprite,4,10,12, 0, 9, false),
+    SlimeDeathBack(SpriteList.SlimeDeathSprite.sprite,4,10,12, 10, 19, false),
+    SlimeDeathLeft(SpriteList.SlimeDeathSprite.sprite,4,10,12, 20, 29, false),
+    SlimeDeathRight(SpriteList.SlimeDeathSprite.sprite,4,10,12, 30, 39, false),
+
+    SlimeAttackFront(SpriteList.SlimeAttackSprite.sprite,4,9,10, 0, 8, false),
+    SlimeAttackBack(SpriteList.SlimeAttackSprite.sprite,4,9,10, 9, 17, false),
+    SlimeAttackLeft(SpriteList.SlimeAttackSprite.sprite,4,9,10, 18, 26, false),
+    SlimeAttackRight(SpriteList.SlimeAttackSprite.sprite,4,9,10, 27, 35, false),
 
 
     //other Animations
-    ExamplePause(SpriteList.ExamplePauseSprite.sprite,1,1,1),
-    ExampleItem(SpriteList.ExampleItemSprite.sprite,1,1,1),
-    InventorySlot(SpriteList.InventorySlotSprite.sprite,1,1,1);
+    ExamplePause(SpriteList.ExamplePauseSprite.sprite,1,1,1, false),
+    ExampleItem(SpriteList.ExampleItemSprite.sprite,1,1,1, false),
+    InventorySlot(SpriteList.InventorySlotSprite.sprite,1,1,1, false);
 
     public final int rows;
     public final int columns;
@@ -36,17 +43,19 @@ public enum SpriteAnimationList {
     public final int startFrame;
     public final int endFrame;
     public final Bitmap sprite;
+    public final boolean isLooping;
 
-    SpriteAnimationList(Bitmap bmp, int rows, int columns, int fps) {
-        this(bmp, rows, columns, fps, 0, rows * columns - 1); // Play full sheet by default
+    SpriteAnimationList(Bitmap bmp, int rows, int columns, int fps, boolean isLooping) {
+        this(bmp, rows, columns, fps, 0, rows * columns - 1, isLooping); // Play full sheet by default
     }
 
-    SpriteAnimationList(Bitmap bmp, int rows, int columns, int fps, int startFrame, int endFrame) {
+    SpriteAnimationList(Bitmap bmp, int rows, int columns, int fps, int startFrame, int endFrame, boolean isLooping) {
         this.sprite = bmp;
         this.rows = rows;
         this.columns = columns;
         this.fps = fps;
         this.startFrame = startFrame;
         this.endFrame = endFrame;
+        this.isLooping = isLooping;
     }
 }

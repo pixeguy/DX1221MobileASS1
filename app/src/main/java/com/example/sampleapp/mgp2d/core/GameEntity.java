@@ -51,6 +51,7 @@ public abstract class GameEntity {
     {
         sprite = nextAnim.sprite;
         animatedSprite = new AnimatedSprite(sprite, nextAnim.rows, nextAnim.columns, nextAnim.fps, nextAnim.startFrame, nextAnim.endFrame);
+        animatedSprite.setLooping(nextAnim.isLooping);
     }
 
     public Vector2 getPosition() { return _position.copy(); }
