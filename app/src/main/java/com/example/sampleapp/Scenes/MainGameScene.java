@@ -63,35 +63,33 @@ public class MainGameScene extends GameScene {
 
         //init player
         player = new PlayerObj();
-        player.onCreate(new Vector2(0,0),new Vector2(1,1), SpriteList.PlayerIdle);
+        player.onCreate(new Vector2(screenWidth / 2, screenHeight/2),new Vector2(1,1), SpriteList.PlayerIdle);
         //hardcoding in the obj list for now
         m_goList.add(player);
-
-
 
         //init all the slots, vv long so i minimize it first
         {
             slots = new LootSlot[5][5];
 
-            Vector2 slotStartPos = new Vector2(700, 500);
-            Vector2 scale = new Vector2(1, 1);
+            Vector2 slotStartPos = new Vector2(screenWidth / 4, screenHeight/6);
+            Vector2 scale = new Vector2(0.06f, 0.06f);
 
             for (int x = 0; x < 5; x++) {          // column
                 for (int y = 0; y < 5; y++) {      // row
 
                     slots[x][y] = new LootSlot();
 
-                    float worldX = slotStartPos.x + x * (scale.x * lootGridSize);
-                    float worldY = slotStartPos.y + y * (scale.y * lootGridSize);
+                    float worldX = slotStartPos.x + x * (scale.x * lootGridSize * 26f);
+                    float worldY = slotStartPos.y + y * (scale.y * lootGridSize * 26f);
 
                     slots[x][y].onCreate(new Vector2(worldX, worldY), scale);
-                    slots[x][y].isActive = false;
+                    slots[x][y].isActive = true;
                     m_goList.add(slots[x][y]);
                 }
             }
         }
 
-        testing.onCreate(new Vector2(1600,800),new Vector2(1,1),SpriteList.ExamplePause);
+        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1,1),SpriteList.ExamplePause);
         m_goList.add(testing);
     }
 
@@ -112,6 +110,8 @@ public class MainGameScene extends GameScene {
 
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    //x525.95996y1253.9062
+                    //x1080y2400
                     if(!isTouching){ // action down registers as hold on android studio emulator
                         if (testing.checkIfPressed(touchPos)){
                             if(!spawnPhase)
@@ -341,18 +341,18 @@ public class MainGameScene extends GameScene {
 
         lootBtns = new ArrayList<>();
 
-        Vector2 startPos = new Vector2(400, 200);
+        Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-75);
         Vector2 scale = new Vector2(0.1f, 0.1f);
 
         // create loot buttons AFTER the loop
         for (int i = 0; i < noOfLoot; i++)
         {
             LootType randomType = LootType.values()[rand.nextInt(LootType.values().length)];
-            int offsetX = 500 * i;
+            int offsetY = 200 * i;
 
             LootButtonObj lootBtnn = new LootButtonObj();
             lootBtnn.onCreate(
-                    new Vector2(startPos.x + offsetX, startPos.y),
+                    new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
                     SpriteList.ExampleItem,
                     randomType

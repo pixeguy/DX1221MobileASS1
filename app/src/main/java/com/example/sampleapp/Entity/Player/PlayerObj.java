@@ -17,7 +17,7 @@ import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class PlayerObj extends GameEntity {
-    public static PlayerObj instance;
+    public static PlayerObj instance = null;
     private Vector2 inputDirection = new Vector2(0, 0);
     public void SetInputDirection(Vector2 inputDirection) {
         this.inputDirection = inputDirection;
@@ -33,9 +33,18 @@ public class PlayerObj extends GameEntity {
 
     public int value = 0;
 
+    public int strength = 0;
+
     public PlayerObj() {
         super();
-        instance = this;
+    }
+
+    public static PlayerObj getInstance()
+    {
+        if (instance == null){
+            instance = new PlayerObj();
+        }
+        return instance;
     }
 
     @Override
