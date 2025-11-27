@@ -12,6 +12,19 @@ public class Utilies {
         return a + (b - a) * t;
     }
 
+    public static float cal_angle(float x, float y) {
+        float degrees = (float) Math.toDegrees(Math.atan(y / x));
+        if(x >= 0 && y >= 0)
+            return degrees;
+        else if(x < 0 && y >= 0)
+            return degrees + 180;
+        else if(x < 0 && y < 0)
+            return degrees + 180;
+        else if(x >= 0 && y < 0)
+            return degrees + 360;
+        return 0;
+    }
+
     public static float rotateTowardsAngle(float currentAngle, float targetAngle,
                                            float turnRate, float deltaTime) {
         // Compute shortest signed angle difference (-π, π)

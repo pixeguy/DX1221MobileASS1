@@ -22,6 +22,7 @@ public class Slime extends Enemy {
 
     private float attackCooldown = 0.0f;
     private final float maxAttackCooldown = 2.0f;
+    private final float maxHealth = 150.0f;
 
     public void SetAttackCooldown() {
         this.attackCooldown = maxAttackCooldown;
@@ -30,27 +31,8 @@ public class Slime extends Enemy {
     @Override
     public void onCreate(Vector2 pos, Vector2 scale) {
         super.onCreate(pos, scale);
+        currentHealth = maxHealth;
 
-        Random random = new Random();
-        int randomDirection = random.nextInt(4);
-        switch (randomDirection) {
-            case 0:
-                facingDirection = new Vector2(0, -1);
-                break;
-            case 1:
-                facingDirection = new Vector2(0, 1);
-                break;
-            case 2:
-                facingDirection = new Vector2(-1, 0);
-                break;
-            case 3:
-                facingDirection = new Vector2(1, 0);
-                break;
-        }
-
-        currentHealth = 2000.0f;
-
-        sm = new Statemachine();
         sm.AddState(new SlimeRunState(this, "SlimeRun"));
         sm.AddState(new SlimeIdleState(this, "SlimeIdle"));
         sm.AddState(new SlimeDeathState(this, "Death"));
@@ -69,10 +51,5 @@ public class Slime extends Enemy {
         else attackCooldown -= dt;
 
         sm.Update(dt);
-    }
-
-    @Override
-    public void onRender(Canvas canvas) {
-        super.onRender(canvas);
     }
 }

@@ -11,7 +11,8 @@ public enum SpriteList {
 
     // Projectiles
     PlayerMagicMissileSprite(R.drawable.player_fire_missle),
-    EnemyFireMissleSprite(R.drawable.enemy_fire_missle),
+    EnemyFireMissileSprite(R.drawable.enemy_fire_missle),
+    EnemyToxicMissileSprite(R.drawable.enemy_toxic_missle),
 
     // Enemies
 
@@ -20,6 +21,12 @@ public enum SpriteList {
     SlimeDeathSprite(R.drawable.slime3_death_full),
     SlimeAttackSprite(R.drawable.slime3_attack_full),
 
+    ToxitoIdleSprite(R.drawable.slime2_idle_full),
+    ToxitoWalkSprite(R.drawable.slime2_walk_full),
+    ToxitoDeathSprite(R.drawable.slime2_death_full),
+    ToxitoAttackSprite(R.drawable.slime2_attack_full),
+
+    // UI
     ExamplePauseSprite(R.drawable.pause),
     ExampleItemSprite(R.drawable.splash),
     InventorySlotSprite(R.drawable.inventoryslot)

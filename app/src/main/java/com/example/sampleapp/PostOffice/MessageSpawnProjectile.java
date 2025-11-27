@@ -7,7 +7,8 @@ public class MessageSpawnProjectile extends Message{
 
     public enum PROJECTILE_TYPE {
         PLAYER_FIRE_MISSILE,
-        ENEMY_FIRE_MISSILE
+        ENEMY_FIRE_MISSILE,
+        ENEMY_TOXIC_MISSILE
     }
 
     public PROJECTILE_TYPE projectileType;

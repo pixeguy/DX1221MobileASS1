@@ -22,7 +22,7 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 
 /** @noinspection FieldCanBeLocal*/
 public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
-    public static PlayerObj instance;
+    private static PlayerObj instance;
     private Vector2 inputDirection = new Vector2(0, 0);
     public void SetInputDirection(Vector2 inputDirection) {
         this.inputDirection = inputDirection;
@@ -33,11 +33,15 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private final float fireRate = 1.0f;
     private float shootTimer = 0.0f;
 
+    private final float maxHealth = 1000.0f;
+
     private Vibrator _vibrator;
 
-    public PlayerObj() {
-        super();
-        instance = this;
+    public static PlayerObj getInstance() {
+        if(instance == null) {
+            instance = new PlayerObj();
+        }
+        return instance;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _vibrator = (Vibrator) GameActivity.instance.getApplicationContext().
                 getSystemService(Context.VIBRATOR_SERVICE);
 
-        currentHealth = 1000.0f;
+        currentHealth = maxHealth;
     }
 
     @Override
@@ -103,19 +107,17 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void TakeDamage(float amount) {
         if(currentHealth <= 0) {
+            isAlive = false;
             currentHealth = 0;
             return;
         }
 
-        if (_vibrator.hasVibrator()) {
-            long[] timings = {0, 100, 0, 200}; // Delay, Vibrate, Delay, Vibrate
-            int[] amplitudes = {0, 255, 0, 128}; // Amplitudes (0-255)
-            int repeatIndex = -1; // -1 for no repeat, or index of pattern to repeat from
-
-            _vibrator.vibrate(VibrationEffect.createOneShot(100, 255));
+        float healthPer = currentHealth / maxHealth;
+        if ((amount > 40.0f || healthPer < 0.5f) &&
+                _vibrator.hasVibrator() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (amount + 50)));
         }
-
-        Log.d("PlayerObj", "PlayerObj Current Health" + currentHealth);
 
         currentHealth -= amount;
     }

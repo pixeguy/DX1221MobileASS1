@@ -15,7 +15,9 @@ public class SlimeRunState extends State {
 
     private float runDuration = 0.0f;
     /** @noinspection FieldCanBeLocal*/
-    private final float runSpeed = 250.0f;
+    private final float runSpeed = 100.0f;
+
+    private boolean isShoot = false;
 
     public SlimeRunState(GameEntity go, String mStateID) {
         super(go, mStateID);
@@ -49,12 +51,14 @@ public class SlimeRunState extends State {
 
         m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(runSpeed * dt)));
         int currentFrame = m_go.animatedSprite.GetCurrentFrame() % m_go.animatedSprite.GetNumCol();
-        if(currentFrame == 5) {
+        if(currentFrame == 5 && !isShoot) {
             MessageSpawnProjectile message = new MessageSpawnProjectile(
                     m_go, MessageSpawnProjectile.PROJECTILE_TYPE.ENEMY_FIRE_MISSILE,
                     1000.0f, m_go.getPosition(), m_go.facingDirection);
             PostOffice.getInstance().send("Scene", message);
+            isShoot = true;
         }
+        else if(currentFrame != 5) isShoot = false;
     }
 
     @Override

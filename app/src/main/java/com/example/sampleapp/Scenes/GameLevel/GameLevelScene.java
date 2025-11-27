@@ -12,8 +12,10 @@ import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.JoystickObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Enemies.Slime.Slime;
+import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Entity.Projectile.EnemyFireMissile;
+import com.example.sampleapp.Entity.Projectile.EnemyToxicMissile;
 import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
 import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.SpriteAnimationList;
@@ -52,7 +54,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         slime.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 600.0f), new Vector2(2,2));
         m_goList.add(slime);
 
-        PlayerObj player = new PlayerObj();
+        Toxito toxito = new Toxito();
+        toxito.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 400.0f), new Vector2(2,2));
+        m_goList.add(toxito);
+
+        PlayerObj player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.1f,0.1f), SpriteAnimationList.PlayerIdle);
         m_goList.add(player);
     }
@@ -60,7 +66,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     @Override
     public void onUpdate(float dt) {
         playerMovementJoystick.onUpdate(dt);
-        PlayerObj.instance.SetInputDirection(playerMovementJoystick.getInputDirection());
+        PlayerObj.getInstance().SetInputDirection(playerMovementJoystick.getInputDirection());
 
         onUpdateGameObjects(dt);
         onPhysicsUpdate();
@@ -89,11 +95,15 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         for(int iteration = 0; iteration < 10; ++iteration) {
             for (int i = 0; i < size - 1; ++i) {
                 Collider2D colliderA = ColliderManager.GetInstance().m_colliders.get(i);
-                if (colliderA.gameEntity.canDestroy()) continue;
+                if (colliderA.gameEntity.canDestroy() || !colliderA.gameEntity.isAlive) continue;
 
                 for (int j = i + 1; j < size; ++j) {
                     Collider2D colliderB = ColliderManager.GetInstance().m_colliders.get(j);
-                    if (colliderB.gameEntity.canDestroy()) continue;
+                    if (colliderB.gameEntity.canDestroy() ||
+                            !colliderB.gameEntity.isAlive) continue;
+
+                    if(colliderA.gameEntity instanceof Enemy &&
+                            colliderB.gameEntity instanceof Enemy) continue;
 
                     Vector2 MTV = new Vector2(0, 0);
                     boolean isCollided = Collision.CollisionDetection(colliderA, colliderB, MTV);
@@ -110,7 +120,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     protected void onHandleIfOutsideWorldBound() {
         for(Collider2D collider2D : ColliderManager.GetInstance().m_colliders) {
             GameEntity go = collider2D.gameEntity;
-            if(go.canDestroy()) continue;
+            if(go.canDestroy() || !go.isAlive) continue;
 
             float minX = 0;
             float minY = 0;
@@ -162,7 +172,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             float nearestDistance = Float.MAX_VALUE;
 
             for(GameEntity go2 : m_goList) {
-                if(go2.canDestroy()) continue;
+                if(go2.canDestroy() || !go2.isAlive) continue;
                 if(go2 == go1) continue;
                 if(go2 instanceof Enemy) {
                     Enemy enemy = (Enemy) go2;
@@ -192,12 +202,20 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     break;
                 case ENEMY_FIRE_MISSILE:
                     EnemyFireMissile enemyFireProjectile = new EnemyFireMissile();
-                    enemyFireProjectile.onCreate(go.targetGO,
+                    enemyFireProjectile.onCreate(
                             messageSpawnProjectile.movementSpeed,
                             messageSpawnProjectile.pos,
                             new Vector2(0.05f, 0.05f));
                     enemyFireProjectile.facingDirection = messageSpawnProjectile.facingDirection;
                     m_goListToAdd.add(enemyFireProjectile);
+                    break;
+                case ENEMY_TOXIC_MISSILE:
+                    EnemyToxicMissile enemyToxicProjectile = new EnemyToxicMissile();
+                    enemyToxicProjectile.onCreate(
+                            messageSpawnProjectile.movementSpeed,
+                            messageSpawnProjectile.pos,
+                            new Vector2(0.05f, 0.05f));
+                    m_goListToAdd.add(enemyToxicProjectile);
                     break;
             }
             return true;

@@ -25,6 +25,8 @@ public abstract class GameEntity {
     public Bitmap sprite;
     public AnimatedSprite animatedSprite;
     protected boolean _isCreated = false;
+    public boolean isAlive = true;
+
     public Vector2 facingDirection = new Vector2(0, 0);
     public Statemachine sm = null;
 
@@ -144,16 +146,16 @@ public abstract class GameEntity {
             Vector2 direction = new Vector2(0, 0);
             switch (i) {
                 case 0:
-                    direction = new Vector2(0, -1);
+                    direction.set(0, -1);
                     break;
                 case 1:
-                    direction = new Vector2(0, 1);
+                    direction.set(0, 1);
                     break;
                 case 2:
-                    direction = new Vector2(-1, 0);
+                    direction.set(-1, 0);
                     break;
                 case 3:
-                    direction = new Vector2(1, 0);
+                    direction.set(1, 0);
                     break;
             }
 

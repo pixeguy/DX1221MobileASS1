@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
+import com.example.sampleapp.Ultilies.Utilies;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -23,8 +24,8 @@ public class SlimeAttackState extends State {
         super.OnEnter();
 
         isDamageDone = false;
-        Vector2 diff = m_go.getPosition().subtract(PlayerObj.instance.getPosition());
-        float angle = (float) cal_angle(diff.x, diff.y);
+        Vector2 diff = m_go.getPosition().subtract(PlayerObj.getInstance().getPosition());
+        float angle = Utilies.cal_angle(diff.x, diff.y);
         m_go.facingDirection = get4Direction(angle);
 
         if(m_go.facingDirection.equals(0, -1))
@@ -43,9 +44,9 @@ public class SlimeAttackState extends State {
         if(!isDamageDone && ((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).attackRange)) {
             Random rand = new Random();
             float minDamage = 20.0f;
-            float maxDamage = 40.0f;
+            float maxDamage = 45.0f;
             float randDamage = rand.nextFloat() * (maxDamage - minDamage) + minDamage;
-            PlayerObj.instance.TakeDamage(randDamage);
+            PlayerObj.getInstance().TakeDamage(randDamage);
             isDamageDone = true;
         }
 
@@ -57,19 +58,6 @@ public class SlimeAttackState extends State {
     @Override
     public void OnExit() {
         ((Slime) m_go).SetAttackCooldown();
-    }
-
-    private double cal_angle(float x, float y) {
-        double degrees = Math.toDegrees(Math.atan(y / x));
-        if(x >= 0 && y >= 0)
-            return degrees;
-        else if(x < 0 && y >= 0)
-            return degrees + 180;
-        else if(x < 0 && y < 0)
-            return degrees + 180;
-        else if(x >= 0 && y < 0)
-            return degrees + 360;
-        return 0;
     }
 
     public Vector2 get4Direction(float angle) {

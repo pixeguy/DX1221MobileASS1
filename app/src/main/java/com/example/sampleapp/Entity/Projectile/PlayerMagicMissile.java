@@ -13,15 +13,12 @@ import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 /** @noinspection FieldCanBeLocal*/
-public class PlayerMagicMissile extends GameEntity implements ObjectBase {
-    private float m_speed;
-    private float currentLifetime = 0.0f;
-    private final float maxLifetime = 5.0f;
+public class PlayerMagicMissile extends Projectile {
 
     public void onCreate(GameEntity target, float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
-        targetGO = target;
         m_speed = movementSpeed;
+        targetGO = target;
         animatedSprite = new AnimatedSprite(
                 SpriteAnimationList.PlayerShootMissile.sprite,
                 SpriteAnimationList.PlayerShootMissile.rows,
@@ -35,20 +32,11 @@ public class PlayerMagicMissile extends GameEntity implements ObjectBase {
 
     @Override
     public void onUpdate(float dt) {
-        super.onUpdate(dt);
-        if(targetGO == null) return;
-
         Vector2 direction = targetGO.getPosition().subtract(_position);
         direction.normalize();
-        _position.set(getPosition().add(direction.multiply(m_speed * dt)));
+        facingDirection.set(direction);
 
-        if(!direction.equals(new Vector2(0, 0))) {
-            direction.x *= -1;
-            _rotationZ = (float) Math.toDegrees(Vector2.Angle(direction, new Vector2(-1, 0)));
-        }
-
-        currentLifetime += dt;
-        if(currentLifetime >= maxLifetime) destroy();
+        super.onUpdate(dt);
 
         boolean isCollided = Collision.CollisionDetection(collider, targetGO.collider, new Vector2(0, 0));
         if(isCollided) {
@@ -57,15 +45,5 @@ public class PlayerMagicMissile extends GameEntity implements ObjectBase {
             }
             destroy();
         }
-    }
-
-    @Override
-    public void onRender(Canvas canvas) {
-        super.onRender(canvas);
-    }
-
-    @Override
-    public boolean handle(Message message) {
-        return false;
     }
 }
