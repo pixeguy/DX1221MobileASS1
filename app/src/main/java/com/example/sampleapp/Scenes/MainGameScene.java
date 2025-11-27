@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -67,23 +68,39 @@ public class MainGameScene extends GameScene {
         //hardcoding in the obj list for now
         m_goList.add(player);
 
+        BackgroundEntity bg = new BackgroundEntity(R.drawable.greyoverlay);
+        bg.isActive = false;
+        m_goList.add(bg);
+
+
         //init all the slots, vv long so i minimize it first
         {
             slots = new LootSlot[5][5];
 
-            Vector2 slotStartPos = new Vector2(screenWidth / 4, screenHeight/6);
             Vector2 scale = new Vector2(0.06f, 0.06f);
 
-            for (int x = 0; x < 5; x++) {          // column
-                for (int y = 0; y < 5; y++) {      // row
+            // Calculate cell spacing
+            float cellWidth  = scale.x * lootGridSize * 26f;
+            float cellHeight = scale.y * lootGridSize * 26f;
+
+            // Grid total size
+            float gridSize  = cellWidth  * 5;
+
+            // Center X
+            float startX = (screenWidth / 2f) - (gridSize / 2.5f);
+
+            // Higher Y (25% from top)
+            float startY = screenHeight * 0.10f;
+
+            for (int x = 0; x < 5; x++) {
+                for (int y = 0; y < 5; y++) {
+
+                    float worldX = startX + x * cellWidth;
+                    float worldY = startY + y * cellHeight;
 
                     slots[x][y] = new LootSlot();
-
-                    float worldX = slotStartPos.x + x * (scale.x * lootGridSize * 26f);
-                    float worldY = slotStartPos.y + y * (scale.y * lootGridSize * 26f);
-
                     slots[x][y].onCreate(new Vector2(worldX, worldY), scale);
-                    slots[x][y].isActive = true;
+                    slots[x][y].isActive = false;
                     m_goList.add(slots[x][y]);
                 }
             }
@@ -102,8 +119,7 @@ public class MainGameScene extends GameScene {
                 obj.onUpdate(dt);
             }
         }
-
-       // HandleTouch();
+        HandleTouch();
         MotionEvent e = GameActivity.instance.getMotionEvent();
         if (e != null) {
             Vector2 touchPos = new Vector2(e.getX(),e.getY());
@@ -337,6 +353,10 @@ public class MainGameScene extends GameScene {
             if (entity instanceof LootSlot) {
                 entity.isActive = true;
             }
+            if(entity instanceof BackgroundEntity)
+            {
+                entity.isActive = true;
+            }
         }
 
         lootBtns = new ArrayList<>();
@@ -390,6 +410,9 @@ public class MainGameScene extends GameScene {
                 slot.occupied = false;
                 entity.isActive = false;
                 // do NOT remove this one
+            }
+            else if (entity instanceof BackgroundEntity){
+                entity.isActive = false;
             }
         }
         System.out.println(player.value);
@@ -486,47 +509,39 @@ public class MainGameScene extends GameScene {
         return null; // no slot found
     }
 
-    private HashMap<Integer, LootObj> activeLoot = new HashMap<>();
+    private SparseArray<LootObj> activeLoot = new SparseArray<LootObj>();
     private void HandleTouch()
     {
         MotionEvent event = GameActivity.instance.getMotionEvent();
-        if (event == null)
-            return;
+        if (event == null) {return;}
 
         int action = event.getActionMasked();
-        int index = event.getActionIndex();      // THIS is pointerIndex
-        int pointerID = event.getPointerId(index); // THIS is pointerID
-
-        switch(action)
+        int index = event.getActionIndex();
+        int pointerID = event.getPointerId(index);
+        Vector2 touchPos = new Vector2(event.getX(),event.getY());
+        switch (action)
         {
             case MotionEvent.ACTION_DOWN:
+                break;
             case MotionEvent.ACTION_POINTER_DOWN:
-            {
-                // THIS MUST USE INDEX, NOT pointerID
-                float x = event.getX(index);
-                float y = event.getY(index);
-
-                Vector2 pos = new Vector2(x, y);
-
                 LootObj loot = new LootObj();
-                //loot.onCreate(pos, loot.loot);
+                loot.onCreate(touchPos,LootType.Loot1);
+                activeLoot.put(pointerID,loot);
                 m_goList.add(loot);
-
-                activeLoot.put(pointerID, loot);
+                System.out.println("asdded");
                 break;
-            }
-
+            case MotionEvent.ACTION_MOVE:
+                break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-            {
-                if (activeLoot.containsKey(pointerID))
-                {
-                    LootObj looty = activeLoot.get(pointerID);
-                    m_goList.remove(looty);
-                    activeLoot.remove(pointerID);
-                }
                 break;
-            }
+            case MotionEvent.ACTION_POINTER_UP:
+                LootObj lootToClean = activeLoot.get(pointerID);
+                m_goList.remove(lootToClean);
+                activeLoot.remove(pointerID);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+
+                break;
         }
     }
 }
