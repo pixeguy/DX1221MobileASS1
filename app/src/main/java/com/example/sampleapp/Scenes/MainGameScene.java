@@ -3,20 +3,20 @@ package com.example.sampleapp.Scenes;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.util.SparseArray;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.BackgroundEntity;
+import com.example.sampleapp.Entity.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Buttons.TestingBtn;
+import com.example.sampleapp.Entity.Abilities.TestAbility;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.R;
-import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -26,7 +26,6 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -40,7 +39,7 @@ public class MainGameScene extends GameScene {
     private PlayerObj player;
     private ArrayList<LootButtonObj> lootBtns;
 
-    TestingBtn testing = new TestingBtn(); boolean spawnPhase = false;
+    TestingBtn testing = new TestingBtn(); boolean spawnPhase = false; boolean abilityPhase = false;
     private LootSlot[][] slots; //  [col][row].....[x][y]
     public final float lootGridSize = 100;
 
@@ -108,6 +107,8 @@ public class MainGameScene extends GameScene {
 
         testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1,1),SpriteList.ExamplePause);
         m_goList.add(testing);
+
+        StartAbilityPhase();
     }
 
     @Override
@@ -119,7 +120,7 @@ public class MainGameScene extends GameScene {
                 obj.onUpdate(dt);
             }
         }
-        HandleTouch();
+        //HandleTouch();
         MotionEvent e = GameActivity.instance.getMotionEvent();
         if (e != null) {
             Vector2 touchPos = new Vector2(e.getX(),e.getY());
@@ -129,6 +130,17 @@ public class MainGameScene extends GameScene {
                     //x525.95996y1253.9062
                     //x1080y2400
                     if(!isTouching){ // action down registers as hold on android studio emulator
+                        for(GameEntity entity : m_goList)
+                        {
+                            if (entity instanceof GenericBtn)
+                            {
+                                GenericBtn btn = (GenericBtn) entity;
+                                if(btn.checkIfPressed(touchPos))
+                                {
+                                    btn.OnClick();
+                                }
+                            }
+                        }
                         if (testing.checkIfPressed(touchPos)){
                             if(!spawnPhase)
                                 StartLootPhase();
@@ -420,6 +432,25 @@ public class MainGameScene extends GameScene {
         spawnPhase = false;
     }
 
+    public void StartAbilityPhase()
+    {
+        for (GameEntity entity : m_goList)
+        {
+            if (entity instanceof LootSlot) {
+                entity.isActive = true;
+            }
+            if(entity instanceof BackgroundEntity)
+            {
+                entity.isActive = true;
+            }
+        }
+        Ability ability = new TestAbility();
+        ability.onCreate(new Vector2(screenWidth/2, screenHeight/2), new Vector2(1,1));
+        GenericBtn btn = ability.selfBtn;
+        m_goList.add(btn);
+        m_goList.add(ability);
+    }
+
     private void RelayoutLootButtons() {
         // Starting point and spacing between buttons
         Vector2 startPos = new Vector2(400, 400);
@@ -508,6 +539,8 @@ public class MainGameScene extends GameScene {
         }
         return null; // no slot found
     }
+
+
 
     private SparseArray<LootObj> activeLoot = new SparseArray<LootObj>();
     private void HandleTouch()

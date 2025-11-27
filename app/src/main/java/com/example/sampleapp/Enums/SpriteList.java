@@ -9,7 +9,9 @@ public enum SpriteList {
     //other Animations
     ExamplePause(R.drawable.pause,1,1,1),
     ExampleItem(R.drawable.splash,1,1,1),
-    InventorySlot(R.drawable.inventoryslot,1,1,1);
+    InventorySlot(R.drawable.inventoryslot,1,1,1),
+    TestAbility(R.drawable.testbanner,1,1,1),
+    TestIcon(R.drawable.testicon,1,1,1);
 
     public final int spriteSheetID;
     public final int rows;
