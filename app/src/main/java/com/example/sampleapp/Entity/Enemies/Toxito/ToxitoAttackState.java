@@ -31,9 +31,12 @@ public class ToxitoAttackState extends State {
         super.OnUpdate(dt);
 
         if(!isAttackDone && m_go.animatedSprite.GetCurrentFrame() == 6) {
+            Vector2 diff = PlayerObj.getInstance().getPosition().subtract(m_go.getPosition());
+            diff.set(diff.normalize());
+            Vector2 projectilePosition = m_go._position.add(diff.multiply(100.0f));
             MessageSpawnProjectile message = new MessageSpawnProjectile(m_go,
                     MessageSpawnProjectile.PROJECTILE_TYPE.ENEMY_TOXIC_MISSILE, 2000.0f,
-                    m_go._position, m_go.facingDirection);
+                    projectilePosition, m_go.facingDirection);
             PostOffice.getInstance().send("Scene", message);
             isAttackDone = true;
         }
