@@ -3,6 +3,7 @@ package com.example.sampleapp.Entity.Buttons;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -17,7 +18,7 @@ public class ButtonObj extends GameEntity {
         super.onCreate(pos,scale,spriteAnim);
     }
 
-    private void UpdateBounds()
+    protected void UpdateBounds()
     {
         Rect rect = animatedSprite.GetRect();
         bounds.set(rect);

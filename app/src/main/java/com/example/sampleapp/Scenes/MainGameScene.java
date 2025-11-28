@@ -3,6 +3,7 @@ package com.example.sampleapp.Scenes;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 
@@ -10,12 +11,14 @@ import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.Entity.Buttons.RotateButton;
 import com.example.sampleapp.Entity.Buttons.TestingBtn;
 import com.example.sampleapp.Entity.Abilities.TestAbility;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Interface.CloseLooting;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Enums.SpriteList;
@@ -41,12 +44,15 @@ public class MainGameScene extends GameScene {
     private ArrayList<LootButtonObj> lootBtns;
 
     TestingBtn testing = new TestingBtn(); boolean spawnPhase = false; boolean abilityPhase = false;
+    RotateButton rotate = new RotateButton();
     private LootSlot[][] slots; //  [col][row].....[x][y]
     public final float lootGridSize = 100;
 
     //to store reference to current dragging obj
     private GameEntity draggingObj;
+    private float initialRot;
     boolean isTouching = false;
+    boolean isTouching2 = false;
     Random rand = new Random();
 
 
@@ -71,44 +77,60 @@ public class MainGameScene extends GameScene {
         bg.isActive = false;
         m_goList.add(bg);
 
+        rotate.onCreate(new Vector2(50,50),new Vector2(1,1),SpriteAnimationList.RotateBtn);
+        rotate.isActive = true;
+        m_goList.add(rotate);
+
 
         //init all the slots, vv long so i minimize it first
         {
-            slots = new LootSlot[5][5];
+            slots = new LootSlot[5][4];
 
             Vector2 scale = new Vector2(0.06f, 0.06f);
+            float GAP = 0 * GameActivity.instance.getResources().getDisplayMetrics().density;
 
-            // Calculate cell spacing
-            float cellWidth  = scale.x * lootGridSize * 26f;
-            float cellHeight = scale.y * lootGridSize * 26f;
+            for (int x = 0; x < slots.length; x++) {
+                for (int y = 0; y < slots[0].length; y++) {
 
-            // Grid total size
-            float gridSize  = cellWidth  * 5;
+                    slots[x][y] = new LootSlot();
+                    slots[x][y].onCreate(new Vector2(0, 0), scale);
+                    slots[x][y].isActive = false;
+                    m_goList.add(slots[x][y]);
 
-            // Center X
-            float startX = (screenWidth / 2f) - (gridSize / 2.5f);
+                    //calculating grid position
+                    {
+                    // Calculate cell spacing
+                    float cellWidth  = (slots[x][y].animatedSprite._width  * scale.x) + GAP;
+                    float cellHeight = (slots[x][y].animatedSprite._height * scale.y) + GAP;
 
-            // Higher Y (25% from top)
-            float startY = screenHeight * 0.10f;
+                    // Grid total size
+                    float gridSize  = cellWidth  * 5;
 
-            for (int x = 0; x < 5; x++) {
-                for (int y = 0; y < 5; y++) {
+                    // Center X
+                    float startX = (screenWidth / 2f) - (gridSize / 2.5f);
+                    // Higher Y (25% from top)
+                    float startY = (screenHeight * 0.235f) - (gridSize/2.5f);
 
                     float worldX = startX + x * cellWidth;
                     float worldY = startY + y * cellHeight;
-
-                    slots[x][y] = new LootSlot();
-                    slots[x][y].onCreate(new Vector2(worldX, worldY), scale);
-                    slots[x][y].isActive = false;
-                    m_goList.add(slots[x][y]);
+                    slots[x][y].setPosition(new Vector2(worldX,worldY));}
                 }
             }
         }
 
-        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1,1),SpriteList.ExamplePause);
+        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1, 1),SpriteAnimationList.ExamplePause);
+        testing.isActive = true;
         m_goList.add(testing);
 
-        StartAbilityPhase();
+        GenericBtn endLootBtn = new GenericBtn(new CloseLooting(this));
+        endLootBtn.onCreate(new Vector2(screenWidth/2, screenHeight/2 + 500), new Vector2(3,1),SpriteAnimationList.RotateBtn);
+        endLootBtn.isActive = true;
+        m_goList.add(endLootBtn);
+
+
+
+        //StartLootPhase();
+        //StartAbilityPhase();
     }
 
     @Override
@@ -120,211 +142,211 @@ public class MainGameScene extends GameScene {
                 obj.onUpdate(dt);
             }
         }
-        //HandleTouch();
-        MotionEvent e = GameActivity.instance.getMotionEvent();
-        if (e != null) {
-            Vector2 touchPos = new Vector2(e.getX(),e.getY());
-
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    //x525.95996y1253.9062
-                    //x1080y2400
-                    if(!isTouching){ // action down registers as hold on android studio emulator
-                        for(GameEntity entity : m_goList)
-                        {
-                            if (entity instanceof GenericBtn)
-                            {
-                                GenericBtn btn = (GenericBtn) entity;
-                                if(btn.checkIfPressed(touchPos))
-                                {
-                                    btn.OnClick();
-                                }
-                            }
-                        }
-                        if (testing.checkIfPressed(touchPos)){
-                            if(!spawnPhase)
-                                StartLootPhase();
-                            else
-                                EndLootPhase();
-                        }
-                        if(lootBtns != null) { //whether the list exists
-                            for (LootButtonObj lootBtn : lootBtns) {
-                                if (lootBtn.checkIfPressed(touchPos)) {
-                                    if (!lootBtn.isActive) {
-                                        continue;
-                                    }
-                                    if (!lootBtn.used) { //if the loot obj is already in the grid
-                                        lootBtn.OnClick(touchPos);
-
-                                        //creating my loot obj
-                                        LootObj lootobj = new LootObj();
-                                        //grab lootType ref from btn
-                                        lootobj.onCreate(touchPos, lootBtn.loot);
-                                        m_goList.add(lootobj);
-
-                                        //assign obj to reference so scene can use it
-                                        draggingObj = lootobj;
-                                        lootBtn.isActive = false;
-                                        //RelayoutLootButtons();
-                                        lootobj.sourceButton = lootBtn;
-                                    } else { //find the correct loot obj corresponding to the button
-                                        for (GameEntity entity : m_goList) {
-                                            if (entity instanceof LootObj) {
-                                                LootObj loot = (LootObj) entity;
-                                                if (loot.sourceButton == lootBtn) {
-                                                    draggingObj = loot;
-                                                    lootBtn.isActive = false;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        isTouching = true;
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if(draggingObj != null)
-                    {
-                        //drag obj with touching pos
-                        draggingObj.setPosition(touchPos);
-
-                        //make all slots normal colour
-                        for (int a = 0; a < slots.length; a++) {
-                            for (int b = 0; b < slots[0].length; b++) {
-                                slots[a][b].clearTint();
-                            }
-                        }
-
-//                        if (draggingObj instanceof LootObj)
+        HandleTouch();
+//        MotionEvent e = GameActivity.instance.getMotionEvent();
+//        if (e != null) {
+//            Vector2 touchPos = new Vector2(e.getX(),e.getY());
+//
+//            switch (e.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    //x525.95996y1253.9062
+//                    //x1080y2400
+//                    if(!isTouching){ // action down registers as hold on android studio emulator
+//                        for(GameEntity entity : m_goList)
 //                        {
-//                            LootObj loot = (LootObj) draggingObj;
-//                            int xSize = (int) loot.lootType.itemScale.x;
-//                            int ySize = (int) loot.lootType.itemScale.y;
+//                            if (entity instanceof GenericBtn)
+//                            {
+//                                GenericBtn btn = (GenericBtn) entity;
+//                                if(btn.checkIfPressed(touchPos))
+//                                {
+//                                    btn.OnClick();
+//                                }
+//                            }
+//                        }
+//                        if (testing.checkIfPressed(touchPos)){
+//                            if(!spawnPhase)
+//                                StartLootPhase();
+//                            else
+//                                EndLootPhase();
+//                        }
+//                        if(lootBtns != null) { //whether the list exists
+//                            for (LootButtonObj lootBtn : lootBtns) {
+//                                if (lootBtn.checkIfPressed(touchPos)) {
+//                                    if (!lootBtn.isActive) {
+//                                        continue;
+//                                    }
+//                                    if (!lootBtn.used) { //if the loot obj is already in the grid
+//                                        lootBtn.OnClick(touchPos);
 //
-//                            boolean tinted = false;
+//                                        //creating my loot obj
+//                                        LootObj lootobj = new LootObj();
+//                                        //grab lootType ref from btn
+//                                        lootobj.onCreate(touchPos, lootBtn.loot);
+//                                        m_goList.add(lootobj);
 //
-//                            //loop through the grid. return grid slot index if user touch is on a slot
-//                            Vector2 slot = findSlotIndexAtPosition(touchPos);
-//                            if (slot != null) {
-//                                int i = (int) slot.x;
-//                                int j = (int) slot.y;
-//
-//                                boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
-//                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
-//
-//                                //loop through the size of the object
-//                                for (int x = 0; x < xSize; x++) {
-//                                    for (int y = 0; y < ySize; y++) {
-//
-//                                        int slotX = i + x;
-//                                        int slotY = j + y;
-//
-//                                        //if is out of bounds, dont try to tint it
-//                                        if (inBounds(slotX, slotY)) {
-//                                            slots[slotX][slotY].setTint(color);
+//                                        //assign obj to reference so scene can use it
+//                                        draggingObj = lootobj;
+//                                        lootBtn.isActive = false;
+//                                        //RelayoutLootButtons();
+//                                        lootobj.sourceButton = lootBtn;
+//                                    } else { //find the correct loot obj corresponding to the button
+//                                        for (GameEntity entity : m_goList) {
+//                                            if (entity instanceof LootObj) {
+//                                                LootObj loot = (LootObj) entity;
+//                                                if (loot.sourceButton == lootBtn) {
+//                                                    draggingObj = loot;
+//                                                    lootBtn.isActive = false;
+//                                                }
+//                                            }
 //                                        }
 //                                    }
 //                                }
 //                            }
 //                        }
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    isTouching = false;
-
-                    if(draggingObj instanceof LootObj)
-                    {
-                        //get details of the loot obj
-                        LootObj loot = (LootObj) draggingObj;
-                        int xSize = (int)loot.lootType.itemScale.x;
-                        int ySize = (int)loot.lootType.itemScale.y;
-
-                        //loop through the grid. return grid slot index if user touch is on a slot
-                        Vector2 slot = findSlotIndexAtPosition(touchPos);
-                        if (slot != null) {
-                            int i = (int) slot.x;
-                            int j = (int) slot.y;
-
-                            //check if item slots are valid
-                            if(canPlaceItemInSlot(i,j,xSize,ySize)){
-                                draggingObj.setPosition(slots[i][j]._position);
-
-                                if(loot.placed){
-                                    for(LootSlot slots : loot.slotsOccupied)
-                                    {
-                                        slots.occupied = false;
-                                    }
-                                }
-
-                                //change all slots that it occupies to occupied
-                                for (int x = 0; x < xSize; x++) {
-                                    for (int y = 0; y < ySize; y++) {
-                                        int slotX = i + x;   // remember: i = row (Y), j = column (X)
-                                        int slotY = j + y;
-                                        slots[slotX][slotY].occupied = true;
-                                        loot.slotsOccupied.add(slots[slotX][slotY]);
-                                    }
-                                }
-
-                                //setting button to loot pos, to press again
-                                {
-                                    loot.sourceButton.setPosition(draggingObj._position.add(loot.pivotOffset));
-
-                                    float targetWidth = draggingObj.animatedSprite._width * draggingObj._scale.x;
-                                    float targetHeight = draggingObj.animatedSprite._height * draggingObj._scale.y;
-                                    int originalBw = loot.sourceButton.animatedSprite._width;
-                                    int originalBh = loot.sourceButton.animatedSprite._height;
-                                    float scaleX = (float) targetWidth / originalBw;
-                                    float scaleY = (float) targetHeight / originalBh;
-
-                                    loot.sourceButton._scale = new Vector2(scaleX, scaleY);
-                                    loot.sourceButton.isActive = true;
-                                    loot.sourceButton.used = true;
-                                    loot.placed = true;
-                                    loot.placedPos = loot._position;
-                                }
-                            }
-                            else{
-                                // if user cannot find any valid slots
-                                if(loot.placed)
-                                {
-                                    loot._position = loot.placedPos;
-                                    loot.sourceButton.isActive = true;
-                                }
-                                else{
-                                    loot.sourceButton.isActive = true;
-                                    m_goList.remove(draggingObj);
-                                    draggingObj = null;
-                                }
-                            }
-                        }
-                        else{
-                            //user touch is not on any slot
-                            if(loot.placed)
-                            {
-                                loot._position = loot.placedPos;
-                                loot.sourceButton.isActive = true;
-                            }
-                            else{
-                                loot.sourceButton.isActive = true;
-                                m_goList.remove(draggingObj);
-                                draggingObj = null;
-                            }
-                        }
-                    }
-                    //make all slots normal colour
-                    for (int a = 0; a < 5; a++) {
-                        for (int b = 0; b < 5; b++) {
-                            slots[a][b].clearTint();
-                        }
-                    }
-                    // remove obj reference when finger let go
-                    if(draggingObj != null) {draggingObj = null;}
-                    break;
-            }
-        }
+//                        isTouching = true;
+//                    }
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    if(draggingObj != null)
+//                    {
+//                        //drag obj with touching pos
+//                        draggingObj.setPosition(touchPos);
+//
+//                        //make all slots normal colour
+//                        for (int a = 0; a < slots.length; a++) {
+//                            for (int b = 0; b < slots[0].length; b++) {
+//                                slots[a][b].clearTint();
+//                            }
+//                        }
+//
+////                        if (draggingObj instanceof LootObj)
+////                        {
+////                            LootObj loot = (LootObj) draggingObj;
+////                            int xSize = (int) loot.lootType.itemScale.x;
+////                            int ySize = (int) loot.lootType.itemScale.y;
+////
+////                            boolean tinted = false;
+////
+////                            //loop through the grid. return grid slot index if user touch is on a slot
+////                            Vector2 slot = findSlotIndexAtPosition(touchPos);
+////                            if (slot != null) {
+////                                int i = (int) slot.x;
+////                                int j = (int) slot.y;
+////
+////                                boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
+////                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
+////
+////                                //loop through the size of the object
+////                                for (int x = 0; x < xSize; x++) {
+////                                    for (int y = 0; y < ySize; y++) {
+////
+////                                        int slotX = i + x;
+////                                        int slotY = j + y;
+////
+////                                        //if is out of bounds, dont try to tint it
+////                                        if (inBounds(slotX, slotY)) {
+////                                            slots[slotX][slotY].setTint(color);
+////                                        }
+////                                    }
+////                                }
+////                            }
+////                        }
+//                    }
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    isTouching = false;
+//
+//                    if(draggingObj instanceof LootObj)
+//                    {
+//                        //get details of the loot obj
+//                        LootObj loot = (LootObj) draggingObj;
+//                        int xSize = (int)loot.lootType.itemScale.x;
+//                        int ySize = (int)loot.lootType.itemScale.y;
+//
+//                        //loop through the grid. return grid slot index if user touch is on a slot
+//                        Vector2 slot = findSlotIndexAtPosition(touchPos);
+//                        if (slot != null) {
+//                            int i = (int) slot.x;
+//                            int j = (int) slot.y;
+//
+//                            //check if item slots are valid
+//                            if(canPlaceItemInSlot(i,j,xSize,ySize)){
+//                                draggingObj.setPosition(slots[i][j]._position);
+//
+//                                if(loot.placed){
+//                                    for(LootSlot slots : loot.slotsOccupied)
+//                                    {
+//                                        slots.occupied = false;
+//                                    }
+//                                }
+//
+//                                //change all slots that it occupies to occupied
+//                                for (int x = 0; x < xSize; x++) {
+//                                    for (int y = 0; y < ySize; y++) {
+//                                        int slotX = i + x;   // remember: i = row (Y), j = column (X)
+//                                        int slotY = j + y;
+//                                        slots[slotX][slotY].occupied = true;
+//                                        loot.slotsOccupied.add(slots[slotX][slotY]);
+//                                    }
+//                                }
+//
+//                                //setting button to loot pos, to press again
+//                                {
+//                                    loot.sourceButton.setPosition(draggingObj._position.add(loot.pivotOffset));
+//
+//                                    float targetWidth = draggingObj.animatedSprite._width * draggingObj._scale.x;
+//                                    float targetHeight = draggingObj.animatedSprite._height * draggingObj._scale.y;
+//                                    int originalBw = loot.sourceButton.animatedSprite._width;
+//                                    int originalBh = loot.sourceButton.animatedSprite._height;
+//                                    float scaleX = (float) targetWidth / originalBw;
+//                                    float scaleY = (float) targetHeight / originalBh;
+//
+//                                    loot.sourceButton._scale = new Vector2(scaleX, scaleY);
+//                                    loot.sourceButton.isActive = true;
+//                                    loot.sourceButton.used = true;
+//                                    loot.placed = true;
+//                                    loot.placedPos = loot._position;
+//                                }
+//                            }
+//                            else{
+//                                // if user cannot find any valid slots
+//                                if(loot.placed)
+//                                {
+//                                    loot._position = loot.placedPos;
+//                                    loot.sourceButton.isActive = true;
+//                                }
+//                                else{
+//                                    loot.sourceButton.isActive = true;
+//                                    m_goList.remove(draggingObj);
+//                                    draggingObj = null;
+//                                }
+//                            }
+//                        }
+//                        else{
+//                            //user touch is not on any slot
+//                            if(loot.placed)
+//                            {
+//                                loot._position = loot.placedPos;
+//                                loot.sourceButton.isActive = true;
+//                            }
+//                            else{
+//                                loot.sourceButton.isActive = true;
+//                                m_goList.remove(draggingObj);
+//                                draggingObj = null;
+//                            }
+//                        }
+//                    }
+//                    //make all slots normal colour
+//                    for (int a = 0; a < 5; a++) {
+//                        for (int b = 0; b < 5; b++) {
+//                            slots[a][b].clearTint();
+//                        }
+//                    }
+//                    // remove obj reference when finger let go
+//                    if(draggingObj != null) {draggingObj = null;}
+//                    break;
+//            }
+//        }
 
         for (int a = 0; a < slots.length; a++) {
             for (int b = 0; b < slots[0].length; b++) {
@@ -339,6 +361,7 @@ public class MainGameScene extends GameScene {
                 }
             }
         }
+
     }
 
     @Override
@@ -353,8 +376,7 @@ public class MainGameScene extends GameScene {
         }
     }
 
-    public void StartLootPhase()
-    {
+    public void StartLootPhase() {
         int noOfLoot = rand.nextInt(5 - 1 + 1) + 1;
 
         // temporary list to hold new items
@@ -373,23 +395,23 @@ public class MainGameScene extends GameScene {
 
         lootBtns = new ArrayList<>();
 
-        Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-75);
+        Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-135);
         Vector2 scale = new Vector2(0.1f, 0.1f);
-
+        float spacing = 72 * GameActivity.instance.getResources().getDisplayMetrics().density;
         // create loot buttons AFTER the loop
-        for (int i = 0; i < noOfLoot; i++)
+        for (int i = 0; i < 5; i++)
         {
             LootType randomType = LootType.values()[rand.nextInt(LootType.values().length)];
-            int offsetY = 200 * i;
+            int offsetY = (int)spacing * i;
 
             LootButtonObj lootBtnn = new LootButtonObj();
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    SpriteList.ExampleItem,
+                    SpriteAnimationList.ExampleItem,
                     randomType
             );
-
+            lootBtnn.isActive = true;
             lootBtns.add(lootBtnn);
             toAdd.add(lootBtnn); // store for later adding
 
@@ -400,8 +422,27 @@ public class MainGameScene extends GameScene {
         spawnPhase = true;
     }
 
-    public void EndLootPhase()
-    {
+    public void RebuildLootBtns() {
+        ArrayList<LootButtonObj> unusedButtons = new ArrayList<>();
+        // Loop through your actual button list
+        for (LootButtonObj btn : lootBtns) {
+            if (!btn.used) {
+                unusedButtons.add(btn);
+            }
+        }
+
+        Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-135);
+        float spacing = 72 * GameActivity.instance.getResources().getDisplayMetrics().density;
+
+        for(int i = 0; i < unusedButtons.size(); i++)
+        {
+            int offsetY = (int)spacing * i;
+            LootButtonObj btn = unusedButtons.get(i);
+            btn.targetPos = new Vector2(startPos.x, startPos.y + offsetY);
+        }
+    }
+
+    public void EndLootPhase() {
         Iterator<GameEntity> iter = m_goList.iterator();
 
         while (iter.hasNext()) {
@@ -432,8 +473,7 @@ public class MainGameScene extends GameScene {
         spawnPhase = false;
     }
 
-    public void StartAbilityPhase()
-    {
+    public void StartAbilityPhase() {
         for (GameEntity entity : m_goList)
         {
             if (entity instanceof LootSlot) {
@@ -445,7 +485,7 @@ public class MainGameScene extends GameScene {
             }
         }
         Ability ability = new TestAbility();
-        ability.onCreate(new Vector2(screenWidth/2, screenHeight/2), new Vector2(1,1));
+        ability.onCreate(new Vector2(screenWidth/2, screenHeight/2 + 400), new Vector2(1,1));
         GenericBtn btn = ability.selfBtn;
         m_goList.add(btn);
         m_goList.add(ability);
@@ -493,8 +533,7 @@ public class MainGameScene extends GameScene {
     }
 
     //check if item was dropped within an item slot
-    boolean isInsideSlot(Vector2 touchPos, LootSlot slot)
-    {
+    boolean isInsideSlot(Vector2 touchPos, LootSlot slot) {
         return slot.bounds.contains(touchPos.x,touchPos.y);
     }
 
@@ -540,9 +579,6 @@ public class MainGameScene extends GameScene {
         return null; // no slot found
     }
 
-
-
-    private SparseArray<LootObj> activeLoot = new SparseArray<LootObj>();
     private void HandleTouch()
     {
         MotionEvent event = GameActivity.instance.getMotionEvent();
@@ -551,26 +587,252 @@ public class MainGameScene extends GameScene {
         int action = event.getActionMasked();
         int index = event.getActionIndex();
         int pointerID = event.getPointerId(index);
-        Vector2 touchPos = new Vector2(event.getX(),event.getY());
+        Vector2 touchPos = new Vector2(event.getX(index),event.getY(index));
         switch (action)
         {
             case MotionEvent.ACTION_DOWN:
+                if(!isTouching){ // action down registers as hold on android studio emulator
+                    for(GameEntity entity : m_goList)
+                    {
+                        if (entity instanceof GenericBtn)
+                        {
+                            GenericBtn btn = (GenericBtn) entity;
+                            if(btn.checkIfPressed(touchPos))
+                            {
+                                btn.OnClick();
+                                break;
+                            }
+                        }
+                    }
+                    if (testing.checkIfPressed(touchPos)){
+                        if(!spawnPhase)
+                            StartLootPhase();
+                        else
+                            EndLootPhase();
+                    }
+                    if(lootBtns != null) { //whether the list exists
+                        for (LootButtonObj lootBtn : lootBtns) {
+                            if (lootBtn.checkIfPressed(touchPos)) {
+                                if (!lootBtn.isActive) {
+                                    continue;
+                                }
+                                if (!lootBtn.used) { //if the loot obj is not in the grid
+                                    lootBtn.OnClick(touchPos);
+
+                                    //creating my loot obj
+                                    LootObj lootobj = new LootObj();
+                                    //grab lootType ref from btn
+                                    lootobj.onCreate(touchPos, lootBtn.loot);
+                                    lootobj.isActive = true;
+                                    m_goList.add(lootobj);
+
+                                    //assign obj to reference so scene can use it
+                                    draggingObj = lootobj;
+                                    lootBtn.isActive = false;
+                                    //RelayoutLootButtons();
+                                    lootobj.sourceButton = lootBtn;
+                                    lootobj.sourceButton.used = true;
+                                    initialRot = 0;
+                                    RebuildLootBtns();
+                                }
+                                else { //find the correct loot obj corresponding to the button
+                                    for (GameEntity entity : m_goList) {
+                                        if (entity instanceof LootObj) {
+                                            LootObj loot = (LootObj) entity;
+                                            if (loot.sourceButton == lootBtn) {
+                                                draggingObj = loot;
+                                                lootBtn.isActive = false;
+                                                initialRot = loot.rotationAngle;
+
+                                                if(loot.placed){
+                                                    for(LootSlot slots : loot.slotsOccupied)
+                                                    {
+                                                        slots.occupied = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    isTouching = true;
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                LootObj loot = new LootObj();
-                loot.onCreate(touchPos,LootType.Loot1);
-                activeLoot.put(pointerID,loot);
-                m_goList.add(loot);
-                System.out.println("asdded");
+                if(!isTouching2){
+                    if (rotate.checkIfPressed(touchPos))
+                    {
+                        if(draggingObj instanceof LootObj)
+                        {
+                            LootObj loot = (LootObj) draggingObj;
+                            loot.rotate90();
+                            loot.sourceButton.rotate90();
+                        }
+                    }
+                    isTouching = true;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
+                if(draggingObj != null) {
+                    //drag obj with touching pos
+                    draggingObj.setPosition(touchPos);
+
+                    //make all slots normal colour
+                    for (int a = 0; a < slots.length; a++) {
+                        for (int b = 0; b < slots[0].length; b++) {
+                            slots[a][b].clearTint();
+                        }
+                    }
+
+                    if (draggingObj instanceof LootObj)
+                    {
+                        LootObj loot = (LootObj) draggingObj;
+                        int xSize = (int) loot.instanceScale.x;
+                        int ySize = (int) loot.instanceScale.y;
+
+                        boolean tinted = false;
+
+                        //loop through the grid. return grid slot index if user touch is on a slot
+                        Vector2 slot = findSlotIndexAtPosition(touchPos);
+                        if (slot != null) {
+                            int i = (int) slot.x;
+                            int j = (int) slot.y;
+
+                            boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
+                            int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
+
+                            //loop through the size of the object
+                            for (int x = 0; x < xSize; x++) {
+                                for (int y = 0; y < ySize; y++) {
+
+                                    int slotX = i + x;
+                                    int slotY = j + y;
+
+                                    //if is out of bounds, dont try to tint it
+                                    if (inBounds(slotX, slotY)) {
+                                        slots[slotX][slotY].setTint(color);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             case MotionEvent.ACTION_UP:
+                isTouching = false;
+
+                if(draggingObj instanceof LootObj)
+                {
+                    //get details of the loot obj
+                    LootObj loot = (LootObj) draggingObj;
+                    int xSize = (int)loot.instanceScale.x;
+                    int ySize = (int)loot.instanceScale.y;
+
+                    //loop through the grid. return grid slot index if user touch is on a slot
+                    Vector2 slot = findSlotIndexAtPosition(touchPos);
+                    if (slot != null) {
+                        int i = (int) slot.x;
+                        int j = (int) slot.y;
+
+                        //check if item slots are valid
+                        if(canPlaceItemInSlot(i,j,xSize,ySize)){
+                            draggingObj.setPosition(slots[i][j]._position);
+                            loot.slotsOccupied.clear(); //clear all previous ones
+                            //change all slots that it occupies to occupied
+                            for (int x = 0; x < xSize; x++) {
+                                for (int y = 0; y < ySize; y++) {
+                                    int slotX = i + x;   // remember: i = row (Y), j = column (X)
+                                    int slotY = j + y;
+                                    slots[slotX][slotY].occupied = true;
+                                    loot.slotsOccupied.add(slots[slotX][slotY]);
+                                }
+                            }
+
+                            //setting button to loot pos, to press again
+                            {
+                                if(loot.rotationAngle == 90)
+                                {
+                                    Vector2 newPiv = new Vector2(0,0);
+                                    newPiv.x = loot.pivotOffset.y;
+                                    newPiv.y = loot.pivotOffset.x;
+                                    loot.sourceButton.setPosition(draggingObj._position.add(newPiv));
+                                }
+                                else {
+                                    loot.sourceButton.setPosition(draggingObj._position.add(loot.pivotOffset));
+                                }
+                                float targetWidth = draggingObj.animatedSprite._width * draggingObj._scale.x;
+                                float targetHeight = draggingObj.animatedSprite._height * draggingObj._scale.y;
+                                int originalBw = loot.sourceButton.animatedSprite._width;
+                                int originalBh = loot.sourceButton.animatedSprite._height;
+                                float scaleX = (float) targetWidth / originalBw;
+                                float scaleY = (float) targetHeight / originalBh;
+
+                                loot.sourceButton._scale = new Vector2(scaleX, scaleY);
+                                loot.sourceButton.isActive = true;
+                                loot.placed = true;
+                                loot.placedPos = loot._position;
+                            }
+                        }
+                        else{
+                            // if user cannot find any valid slots
+                            if(loot.placed)
+                            {
+                                loot.rotationAngle = initialRot;
+                                if(loot.rotationAngle == 90)
+                                {
+                                    Log.d("Pointer","A");
+                                    Vector2 newPiv = new Vector2(0,0);
+                                    newPiv.x = loot.pivotOffset.y;
+                                    newPiv.y = loot.pivotOffset.x;
+                                    loot._position = loot.sourceButton._position.subtract(newPiv);
+                                }
+                                else{
+                                    Log.d("Pointer","B");
+                                    loot._position = loot.sourceButton._position.subtract(loot.pivotOffset);
+                                }
+                                for(LootSlot slots : loot.slotsOccupied)
+                                {
+                                    slots.occupied = true;
+                                }
+                                loot.sourceButton.rotationAngle = initialRot;
+                                loot.sourceButton.isActive = true;
+
+                            }
+                            else{
+                                Log.d("Pointer","C");
+                                loot.sourceButton.rotationAngle = 0;
+                                loot.sourceButton._scale = new Vector2(0.1f,0.1f);
+                                loot.sourceButton.used = false;
+                                loot.sourceButton.isActive = true;
+                                m_goList.remove(draggingObj);
+                                draggingObj = null;
+                                RebuildLootBtns();
+                            }
+                        }
+                    }
+                    else{
+                        loot.sourceButton.rotationAngle = 0;
+                        loot.sourceButton._scale = new Vector2(0.1f,0.1f);
+                        loot.sourceButton.used = false;
+                        loot.sourceButton.isActive = true;
+                        m_goList.remove(draggingObj);
+                        draggingObj = null;
+                        RebuildLootBtns();
+                    }
+                }
+                //make all slots normal colour
+                for (int a = 0; a < slots.length; a++) {
+                    for (int b = 0; b < slots[0].length; b++) {
+                        slots[a][b].clearTint();
+                    }
+                }
+                // remove obj reference when finger let go
+                if(draggingObj != null) {draggingObj = null;}
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                LootObj lootToClean = activeLoot.get(pointerID);
-                m_goList.remove(lootToClean);
-                activeLoot.remove(pointerID);
+                isTouching2 = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
 

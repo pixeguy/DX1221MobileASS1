@@ -2,6 +2,7 @@ package com.example.sampleapp.Enums;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -9,16 +10,17 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 public enum SpriteList {
     PlayerSprite(R.drawable.playersprite),
 
+
     // Projectiles
     PlayerMagicMissileSprite(R.drawable.player_fire_missle),
     EnemyFireMissileSprite(R.drawable.enemy_fire_missle),
     EnemyToxicMissileSprite(R.drawable.enemy_toxic_missle),
     //other Animations
-    ExamplePause(R.drawable.pause,1,1,1),
-    ExampleItem(R.drawable.splash,1,1,1),
-    InventorySlot(R.drawable.inventoryslot,1,1,1),
-    TestAbility(R.drawable.testbanner,1,1,1),
-    TestIcon(R.drawable.testicon,1,1,1);
+    ExamplePause(R.drawable.pause),
+    ExampleItem(R.drawable.splash),
+    InventorySlot(R.drawable.inventoryslot),
+    TestAbility(R.drawable.testbanner),
+    TestIcon(R.drawable.testicon),
 
     // Enemies
 
@@ -33,17 +35,26 @@ public enum SpriteList {
     ToxitoAttackSprite(R.drawable.slime2_attack_full),
 
     // UI
-    ExamplePauseSprite(R.drawable.pause),
-    ExampleItemSprite(R.drawable.splash),
-    InventorySlotSprite(R.drawable.inventoryslot)
+    ExamplePauseSprite(R.drawable.pause, 0, 0),
+    ExampleItemSprite(R.drawable.splash,0,0),
+    ExampleItem2Sprite(R.drawable.blank_bg,0,0),
+    InventorySlotSprite(R.drawable.inventoryslot),
+
+    RotateButtonSprite(R.drawable.plusbtn)
 
     ;
 
     public final int spriteID;
-    public final Bitmap sprite;
+    public Bitmap sprite;
 
     SpriteList(int spriteID) {
         this.spriteID = spriteID;
         this.sprite = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteID);
+    }
+
+    SpriteList(int spriteID, int width, int height) {
+        this.spriteID = spriteID;
+        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), spriteID);
+        this.sprite = Bitmap.createScaledBitmap(bmp, bmp.getWidth(), bmp.getHeight(), false);
     }
 }

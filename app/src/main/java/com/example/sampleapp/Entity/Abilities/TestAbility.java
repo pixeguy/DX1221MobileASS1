@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 
 import com.example.sampleapp.Entity.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -16,8 +17,8 @@ public class TestAbility extends Ability{
 
     public TestAbility()
     {
-        banner = SpriteList.TestAbility;
-        icon = SpriteList.TestIcon;
+        banner = SpriteAnimationList.TestAbility;
+        icon = SpriteAnimationList.TestIcon;
         name = "TestAbility";
     }
 
@@ -41,12 +42,8 @@ public class TestAbility extends Ability{
     public void onCreate(Vector2 pos, Vector2 scale) {
         super.onCreate(pos, scale);
 
-        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), banner.spriteSheetID);
-        bannerSprite = Bitmap.createScaledBitmap(bmp,bmp.getWidth(),bmp.getHeight(),true);
-        bannerAnim = new AnimatedSprite(bannerSprite,banner.rows, banner.columns,banner.fps);
-        Bitmap bmp2 = BitmapFactory.decodeResource(GameActivity.instance.getResources(), icon.spriteSheetID);
-        iconSprite = Bitmap.createScaledBitmap(bmp2,bmp2.getWidth(),bmp2.getHeight(),true);
-        iconAnim = new AnimatedSprite(iconSprite,icon.rows, icon.columns,icon.fps);
+        bannerAnim = new AnimatedSprite(banner.sprite,banner.rows, banner.columns,banner.fps);
+        iconAnim = new AnimatedSprite(icon.sprite,icon.rows, icon.columns,icon.fps);
 
         selfBtn = new GenericBtn(this);
         selfBtn.onCreate(_position,_scale,banner);

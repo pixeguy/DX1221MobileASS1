@@ -79,6 +79,68 @@ public class AnimatedSprite {
         canvas.drawBitmap(_bmp, _src, _dst, paint);
     }
 
+    private Vector2 rotatePoint(float px, float py, float cx, float cy, float angleDeg)
+    {
+        double rad = Math.toRadians(angleDeg);
+
+        float dx = px - cx;
+        float dy = py - cy;
+
+        float rx = (float)(dx * Math.cos(rad) - dy * Math.sin(rad)) + cx;
+        float ry = (float)(dx * Math.sin(rad) + dy * Math.cos(rad)) + cy;
+
+        return new Vector2(rx, ry);
+    }
+
+    public void render(Canvas canvas, int x, int y, Vector2 scale, float angleDeg, Paint paint)
+    {
+        // frame math
+        int frameX = _currentFrame % _col;
+        int frameY = _currentFrame / _col;
+        int srcX = frameX * _width;
+        int srcY = frameY * _height;
+
+        int scaledWidth = (int)(_width * scale.x);
+        int scaledHeight = (int)(_height * scale.y);
+
+        // unrotated rect
+        int left = x - scaledWidth / 2;
+        int top = y - scaledHeight / 2;
+
+        _src.set(srcX, srcY, srcX + _width, srcY + _height);
+
+        // -----------------------------------------
+        // ROTATE THE DST RECTANGLE COORDINATES HERE
+        // -----------------------------------------
+
+        // original rect corners
+        float l = left;
+        float r = left + scaledWidth;
+        float t = top;
+        float b = top + scaledHeight;
+
+        // rotate all 4 corners around sprite center
+        Vector2 p1 = rotatePoint(l, t, x, y, angleDeg);
+        Vector2 p2 = rotatePoint(r, t, x, y, angleDeg);
+        Vector2 p3 = rotatePoint(r, b, x, y, angleDeg);
+        Vector2 p4 = rotatePoint(l, b, x, y, angleDeg);
+
+        // compute rotated bounding box
+        float minX = Math.min(Math.min(p1.x, p2.x), Math.min(p3.x, p4.x));
+        float maxX = Math.max(Math.max(p1.x, p2.x), Math.max(p3.x, p4.x));
+        float minY = Math.min(Math.min(p1.y, p2.y), Math.min(p3.y, p4.y));
+        float maxY = Math.max(Math.max(p1.y, p2.y), Math.max(p3.y, p4.y));
+
+        // update _dst to rotated bounding box
+        _dst.set((int)minX, (int)minY, (int)maxX, (int)maxY);
+
+        // draw using canvas rotation (matches shape)
+        canvas.save();
+        canvas.rotate(angleDeg, x, y);
+        canvas.drawBitmap(_bmp, _src, _dst, paint);
+        canvas.restore();
+    }
+
     public Rect GetRect()
     {
         return _dst;

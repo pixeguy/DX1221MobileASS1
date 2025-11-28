@@ -6,6 +6,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
@@ -19,9 +20,9 @@ public abstract class GameEntity {
     public Collider2D collider = null;
     private static int _totalEntitiesCreated = 0;
     public int _id = 0;
-    public final Vector2 _position = new Vector2(0, 0);
+    public Vector2 _position = new Vector2(0, 0);
     public float _rotationZ = 0.0f;
-    public final Vector2 _scale = new Vector2(1,1);
+    public Vector2 _scale = new Vector2(1,1);
     public Bitmap sprite;
     public AnimatedSprite animatedSprite;
     protected boolean _isCreated = false;
@@ -45,12 +46,14 @@ public abstract class GameEntity {
 
     public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
         onCreate(pos,scale);
-        sprite = spriteAnim.sprite;
-        animatedSprite = new AnimatedSprite(sprite, spriteAnim.rows, spriteAnim.columns,spriteAnim.fps);
+        SetAnimation(spriteAnim);
     }
 
     public void SetAnimation(SpriteAnimationList nextAnim)
     {
+        if(nextAnim == SpriteAnimationList.ExamplePause){
+            Log.d("Button", "Btn created");
+        }
         sprite = nextAnim.sprite;
         animatedSprite = new AnimatedSprite(sprite, nextAnim.rows, nextAnim.columns, nextAnim.fps, nextAnim.startFrame, nextAnim.endFrame);
         animatedSprite.setLooping(nextAnim.isLooping);
