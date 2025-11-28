@@ -34,7 +34,7 @@ public abstract class GameEntity {
     protected float maxHealth = 100.0f;
 
     public GameEntity targetGO = null;
-
+    public boolean isActive = false;
 
     public void onCreate(Vector2 pos, Vector2 scale) {
         _isCreated = true;
@@ -82,7 +82,7 @@ public abstract class GameEntity {
         }
     }
 
-    private Paint paint = new Paint();
+    public Paint paint = new Paint();
     private boolean tinted = false;
     private int tintColor = 0x77FF0000; // default: semi-transparent red
 

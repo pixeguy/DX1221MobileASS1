@@ -10,7 +10,7 @@ public enum LootType {
 
     //itemScale != render scale. just item slot size
     public final Vector2 itemScale;
-    final int value;
+    public final int value;
 
     LootType(SpriteAnimationList spriteID, Vector2 itemScale, int value)
     {
