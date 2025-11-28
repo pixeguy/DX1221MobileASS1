@@ -1,77 +1,124 @@
 package com.example.sampleapp.Entity.Player;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
-import com.example.sampleapp.Collision.Colliders.Collider2D;
-import com.example.sampleapp.R;
-import com.example.sampleapp.Enums.SpriteList;
-import com.example.sampleapp.Ultilies.Utilies;
+import com.example.sampleapp.Interface.Damageable;
+import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
+import com.example.sampleapp.PostOffice.MessageWRU;
+import com.example.sampleapp.PostOffice.ObjectBase;
+import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
-public class PlayerObj extends GameEntity {
-    public static PlayerObj instance;
+/** @noinspection FieldCanBeLocal*/
+public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
+    private static PlayerObj instance;
     private Vector2 inputDirection = new Vector2(0, 0);
     public void SetInputDirection(Vector2 inputDirection) {
         this.inputDirection = inputDirection;
     }
 
-    private float movementSpeed = 500.0f;
-    private float newRotationZ = 0.0f;
-    private float currentRotationZ = 0.0f;
+    private final float movementSpeed = 500.0f;
+    private final float shootSpeed = 1000.0f;
+    private final float fireRate = 1.0f;
+    private float shootTimer = 0.0f;
 
-    public Collider2D collider;
+    private final float maxHealth = 1000.0f;
 
-    private Vector2 facingDirection = new Vector2(0, 0);
+    private Vibrator _vibrator;
 
-    public PlayerObj() {
-        super();
-        instance = this;
+    public static PlayerObj getInstance() {
+        if(instance == null) {
+            instance = new PlayerObj();
+        }
+        return instance;
     }
 
     @Override
-    public void onCreate(Vector2 pos, Vector2 scale, SpriteList spriteAnim) {
+    public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
         onCreate(pos, scale);
-        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), R.drawable.playersprite);
-        sprite = Bitmap.createScaledBitmap(bmp, 100, 100, false);
-        collider = new CircleCollider2D(this, scale.x * sprite.getWidth() - sprite.getWidth() / 2.0f);
+        sprite = spriteAnim.sprite;
+        animatedSprite = new AnimatedSprite(sprite, spriteAnim.rows, spriteAnim.columns, spriteAnim.fps, spriteAnim.startFrame, spriteAnim.endFrame);
+        animatedSprite.setLooping(false);
+        collider = new CircleCollider2D(this, animatedSprite.GetRect(_position, _scale).width() / 2.0f);
+        PostOffice.getInstance().register(String.valueOf(_id), this);
+        _vibrator = (Vibrator) GameActivity.instance.getApplicationContext().
+                getSystemService(Context.VIBRATOR_SERVICE);
+
+        currentHealth = maxHealth;
     }
 
     @Override
     public void onUpdate(float dt) {
         super.onUpdate(dt);
+        HandMovement(dt);
+        FindNearestEnemy();
+        shootTimer -= dt;
+        if(targetGO != null && shootTimer <= 0.0f) {
+
+            Vector2 projectilePosition = _position.add(facingDirection.multiply(100.0f));
+            // Send Message To Spawn Projectile
+
+            MessageSpawnProjectile message = new MessageSpawnProjectile(this,
+                    MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
+                    1000.0f, projectilePosition);
+            PostOffice.getInstance().send("Scene", message);
+            shootTimer = fireRate;
+        }
+    }
+
+    private void FindNearestEnemy() {
+        MessageWRU message = new MessageWRU(this, MessageWRU.SEARCH_TYPE.NEAREST_ENEMY, shootSpeed);
+        PostOffice.getInstance().send("Scene", message);
+    }
+
+    private void HandMovement(float dt) {
         _position.x += inputDirection.x * movementSpeed * dt;
         _position.y += inputDirection.y * movementSpeed * dt;
 
         Vector2 movementDirection = new Vector2(inputDirection.x, -inputDirection.y);
 
-
-        if(!movementDirection.equals(new Vector2(0, 0)))
-        {
-            currentRotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
+        if(!movementDirection.equals(new Vector2(0, 0))) {
+            facingDirection.set(movementDirection.x, -movementDirection.y);
+            _rotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
         }
     }
 
     @Override
     public void onRender(Canvas canvas) {
-        int scaleWidth = (int) (_scale.x * sprite.getWidth());
-        int scaleHeight = (int) (_scale.y * sprite.getHeight());
+        super.onRender(canvas);
+    }
 
-        int left = (int) (_position.x - (float) scaleWidth / 2);
-        int top = (int) (_position.y - (float) scaleHeight / 2);
+    @Override
+    public boolean handle(Message message) {
+        return false;
+    }
 
-        Rect _dst = new Rect(left, top, left + scaleWidth, top + scaleHeight);
+    @Override
+    public void TakeDamage(float amount) {
+        if(currentHealth <= 0) {
+            isAlive = false;
+            currentHealth = 0;
+            return;
+        }
 
-        canvas.save();
-        canvas.rotate(currentRotationZ, _dst.centerX(), _dst.centerY());
-        canvas.drawBitmap(sprite, null, _dst, null);
-        canvas.restore();
+        float healthPer = currentHealth / maxHealth;
+        if ((amount > 40.0f || healthPer < 0.5f) &&
+                _vibrator.hasVibrator() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (amount + 50)));
+        }
+
+        currentHealth -= amount;
     }
 }

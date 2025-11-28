@@ -2,6 +2,8 @@ package com.example.sampleapp.mgp2d.core;
 
 import static java.lang.Math.sqrt;
 
+import androidx.annotation.NonNull;
+
 public class Vector2 {
     public float x, y;
 
@@ -11,10 +13,16 @@ public class Vector2 {
     public Vector2 add(Vector2 b) { return new Vector2(x + b.x, y + b.y); }
 
     public Vector2 multiply(float scale) { return new Vector2(x * scale, y * scale); }
+    public void multiply(Vector2 b) {
+        this.x *= b.x;
+        this.y *= b.y;
+    }
 
     public Vector2 subtract(Vector2 b) { return this.add(b.multiply(-1)); }
 
     public float getMagnitude() { return (float)sqrt(x * x + y * y); }
+
+    public float getMagnitudeSquared() { return x * x + y * y; }
 
     public Vector2 normalize() { return new Vector2(x /= getMagnitude(), y /= getMagnitude()); }
 
@@ -22,8 +30,11 @@ public class Vector2 {
 
     public Vector2 set(float x, float y) { this.x = x; this.y = y; return this; }
 
-    public Vector2 set(Vector2 other) { return set(other.x, other.y); }
+    public Vector2 set(Vector2 other) { return this.set(other.x, other.y); }
 
+    public float dot(Vector2 b) { return x * b.x + y * b.y; }
+
+    public boolean equals(float x, float y) { return this.x == x && this.y == y; }
     public boolean equals(Vector2 other) { return x == other.x && y == other.y; }
 
     public Vector2 limit(float maxMagnitude) {
@@ -53,5 +64,10 @@ public class Vector2 {
 
     public float Distance(Vector2 rhs) {
         return (this.subtract(rhs)).getMagnitude();
+    }
+
+    @NonNull
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

@@ -12,13 +12,11 @@ import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Entity.SampleCoin;
-import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
-
-import java.util.ArrayList;
 
 public class MainGameScene extends GameScene {
     private Bitmap backgroundBitmap;
@@ -51,11 +49,11 @@ public class MainGameScene extends GameScene {
 
         //init player
         player = new PlayerObj();
-        player.onCreate(new Vector2(0,0),new Vector2(1,1), SpriteList.PlayerIdle);
+        player.onCreate(new Vector2(0,0),new Vector2(1,1), SpriteAnimationList.PlayerIdle);
 
         //init temporary button
         lootBtn = new LootButtonObj();
-        lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3),SpriteList.ExamplePause, LootType.Loot1);
+        lootBtn.onCreate(new Vector2(400,400),new Vector2(1,3), SpriteAnimationList.ExamplePause, LootType.Loot1);
 
         //init all the slots, vv long so i minimize it first
         {

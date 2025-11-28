@@ -4,13 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Debug;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.example.sampleapp.Enums.LootType;
-import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.R;
+import com.example.sampleapp.Ultilies.Utilies;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -109,8 +106,7 @@ public class JoystickObj extends GameEntity {
             float dx = joystickPosition.x - _position.x;
             float dy = joystickPosition.y - _position.y;
 
-            float angle = (float) cal_angle(dx, dy);
-            //Log.d("Joystick", "Angle: " + angle);
+            float angle = Utilies.cal_angle(dx, dy);
 
             inputDirection = get8Direction(angle);
             if(inputDirection.x != 0 && inputDirection.y != 0)
@@ -146,19 +142,6 @@ public class JoystickObj extends GameEntity {
         _dst.set(left, top, left + scaledWidthInner, top + scaledHeightInner);
 
         canvas.drawBitmap(sprite, null, _dst, null);
-    }
-
-    private double cal_angle(float x, float y) {
-        double degrees = Math.toDegrees(Math.atan(y / x));
-        if(x >= 0 && y >= 0)
-            return degrees;
-        else if(x < 0 && y >= 0)
-            return degrees + 180;
-        else if(x < 0 && y < 0)
-            return degrees + 180;
-        else if(x >= 0 && y < 0)
-            return degrees + 360;
-        return 0;
     }
 
     public Vector2 get8Direction(float angle) {
