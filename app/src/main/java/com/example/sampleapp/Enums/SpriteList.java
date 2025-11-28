@@ -9,16 +9,17 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 public enum SpriteList {
     PlayerSprite(R.drawable.playersprite),
 
+
     // Projectiles
     PlayerMagicMissileSprite(R.drawable.player_fire_missle),
     EnemyFireMissileSprite(R.drawable.enemy_fire_missle),
     EnemyToxicMissileSprite(R.drawable.enemy_toxic_missle),
     //other Animations
-    ExamplePause(R.drawable.pause,1,1,1),
-    ExampleItem(R.drawable.splash,1,1,1),
-    InventorySlot(R.drawable.inventoryslot,1,1,1),
-    TestAbility(R.drawable.testbanner,1,1,1),
-    TestIcon(R.drawable.testicon,1,1,1);
+    ExamplePause(R.drawable.pause),
+    ExampleItem(R.drawable.splash),
+    InventorySlot(R.drawable.inventoryslot),
+    TestAbility(R.drawable.testbanner),
+    TestIcon(R.drawable.testicon),
 
     // Enemies
 

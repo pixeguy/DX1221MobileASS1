@@ -19,9 +19,9 @@ public abstract class GameEntity {
     public Collider2D collider = null;
     private static int _totalEntitiesCreated = 0;
     public int _id = 0;
-    public final Vector2 _position = new Vector2(0, 0);
+    public Vector2 _position = new Vector2(0, 0);
     public float _rotationZ = 0.0f;
-    public final Vector2 _scale = new Vector2(1,1);
+    public Vector2 _scale = new Vector2(1,1);
     public Bitmap sprite;
     public AnimatedSprite animatedSprite;
     protected boolean _isCreated = false;

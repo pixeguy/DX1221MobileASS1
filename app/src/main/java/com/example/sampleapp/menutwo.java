@@ -28,7 +28,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         //setting total player value count text
         TextView valueCountText = rootView.findViewById(R.id.totalValueCount);
         if( PlayerObj.getInstance() != null){
-            String valueCount = Integer.toString(PlayerObj.instance.value);
+            String valueCount = Integer.toString(PlayerObj.getInstance().value);
             if(valueCount != null) {
                 valueCountText.setText("Current XP : " + valueCount);
             }

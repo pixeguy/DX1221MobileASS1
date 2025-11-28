@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
@@ -34,6 +35,10 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private float shootTimer = 0.0f;
 
     private final float maxHealth = 1000.0f;
+
+    public int value = 0;
+    public Ability currAbility;
+    public int strength = 0;
 
     private Vibrator _vibrator;
 

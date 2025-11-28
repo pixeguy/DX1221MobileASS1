@@ -105,7 +105,7 @@ public class MainGameScene extends GameScene {
             }
         }
 
-        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1,1),SpriteList.ExamplePause);
+        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1,1),SpriteAnimationList.ExamplePause);
         m_goList.add(testing);
 
         StartAbilityPhase();
@@ -386,7 +386,7 @@ public class MainGameScene extends GameScene {
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    SpriteList.ExampleItem,
+                    SpriteAnimationList.ExampleItem,
                     randomType
             );
 
