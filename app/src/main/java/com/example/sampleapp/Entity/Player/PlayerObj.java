@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
+import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Ultilies.Utilies;
@@ -33,6 +34,7 @@ public class PlayerObj extends GameEntity {
 
     public int value = 0;
 
+    public Ability currAbility;
     public int strength = 0;
 
     public PlayerObj() {

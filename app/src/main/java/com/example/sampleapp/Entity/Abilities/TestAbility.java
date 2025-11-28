@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.sampleapp.Entity.Buttons.GenericBtn;
+import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -28,6 +29,7 @@ public class TestAbility extends Ability{
     @Override
     public void onGetAbility() {
         System.out.println("Got Ability");
+        PlayerObj.getInstance().currAbility = this;
     }
 
     @Override
