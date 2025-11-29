@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.GenericBtn;
+import com.example.sampleapp.Entity.Buttons.IActivatable;
 import com.example.sampleapp.Entity.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Buttons.RotateButton;
 import com.example.sampleapp.Entity.Buttons.TestingBtn;
@@ -19,6 +20,7 @@ import com.example.sampleapp.Entity.Inventory.LootSlot;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Interface.CloseLooting;
+import com.example.sampleapp.Interface.RotateLoot;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Enums.SpriteList;
@@ -44,12 +46,11 @@ public class MainGameScene extends GameScene {
     private ArrayList<LootButtonObj> lootBtns;
 
     TestingBtn testing = new TestingBtn(); boolean spawnPhase = false; boolean abilityPhase = false;
-    RotateButton rotate = new RotateButton();
+    private ArrayList<GenericBtn> lootGenerics;
     private LootSlot[][] slots; //  [col][row].....[x][y]
-    public final float lootGridSize = 100;
 
     //to store reference to current dragging obj
-    private GameEntity draggingObj;
+    public GameEntity draggingObj;
     private float initialRot;
     boolean isTouching = false;
     boolean isTouching2 = false;
@@ -71,16 +72,22 @@ public class MainGameScene extends GameScene {
         player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2, screenHeight/2),new Vector2(1,1), SpriteAnimationList.PlayerIdle);
         //hardcoding in the obj list for now
+        player.isActive = true;
         m_goList.add(player);
 
         BackgroundEntity bg = new BackgroundEntity(R.drawable.greyoverlay);
         bg.isActive = false;
         m_goList.add(bg);
 
-        rotate.onCreate(new Vector2(50,50),new Vector2(1,1),SpriteAnimationList.RotateBtn);
-        rotate.isActive = true;
+        lootGenerics = new ArrayList<GenericBtn>();
+        GenericBtn rotate = new GenericBtn(new RotateLoot(this));
+        rotate.onCreate(new Vector2(screenWidth* 0.1f, screenHeight * 0.95f),new Vector2(3,3),SpriteAnimationList.RotateBtn);
+        lootGenerics.add(rotate);
         m_goList.add(rotate);
-
+        GenericBtn endLootBtn = new GenericBtn(new CloseLooting(this));
+        endLootBtn.onCreate(new Vector2(screenWidth/2, screenHeight * 0.95f), new Vector2(3,3),SpriteAnimationList.CompleteBtn);
+        lootGenerics.add(endLootBtn);
+        m_goList.add(endLootBtn);
 
         //init all the slots, vv long so i minimize it first
         {
@@ -120,17 +127,7 @@ public class MainGameScene extends GameScene {
 
         testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1, 1),SpriteAnimationList.ExamplePause);
         testing.isActive = true;
-        m_goList.add(testing);
-
-        GenericBtn endLootBtn = new GenericBtn(new CloseLooting(this));
-        endLootBtn.onCreate(new Vector2(screenWidth/2, screenHeight/2 + 500), new Vector2(3,1),SpriteAnimationList.RotateBtn);
-        endLootBtn.isActive = true;
-        m_goList.add(endLootBtn);
-
-
-
-        //StartLootPhase();
-        //StartAbilityPhase();
+        m_goList.add(testing);;
     }
 
     @Override
@@ -142,211 +139,8 @@ public class MainGameScene extends GameScene {
                 obj.onUpdate(dt);
             }
         }
+
         HandleTouch();
-//        MotionEvent e = GameActivity.instance.getMotionEvent();
-//        if (e != null) {
-//            Vector2 touchPos = new Vector2(e.getX(),e.getY());
-//
-//            switch (e.getAction()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    //x525.95996y1253.9062
-//                    //x1080y2400
-//                    if(!isTouching){ // action down registers as hold on android studio emulator
-//                        for(GameEntity entity : m_goList)
-//                        {
-//                            if (entity instanceof GenericBtn)
-//                            {
-//                                GenericBtn btn = (GenericBtn) entity;
-//                                if(btn.checkIfPressed(touchPos))
-//                                {
-//                                    btn.OnClick();
-//                                }
-//                            }
-//                        }
-//                        if (testing.checkIfPressed(touchPos)){
-//                            if(!spawnPhase)
-//                                StartLootPhase();
-//                            else
-//                                EndLootPhase();
-//                        }
-//                        if(lootBtns != null) { //whether the list exists
-//                            for (LootButtonObj lootBtn : lootBtns) {
-//                                if (lootBtn.checkIfPressed(touchPos)) {
-//                                    if (!lootBtn.isActive) {
-//                                        continue;
-//                                    }
-//                                    if (!lootBtn.used) { //if the loot obj is already in the grid
-//                                        lootBtn.OnClick(touchPos);
-//
-//                                        //creating my loot obj
-//                                        LootObj lootobj = new LootObj();
-//                                        //grab lootType ref from btn
-//                                        lootobj.onCreate(touchPos, lootBtn.loot);
-//                                        m_goList.add(lootobj);
-//
-//                                        //assign obj to reference so scene can use it
-//                                        draggingObj = lootobj;
-//                                        lootBtn.isActive = false;
-//                                        //RelayoutLootButtons();
-//                                        lootobj.sourceButton = lootBtn;
-//                                    } else { //find the correct loot obj corresponding to the button
-//                                        for (GameEntity entity : m_goList) {
-//                                            if (entity instanceof LootObj) {
-//                                                LootObj loot = (LootObj) entity;
-//                                                if (loot.sourceButton == lootBtn) {
-//                                                    draggingObj = loot;
-//                                                    lootBtn.isActive = false;
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        isTouching = true;
-//                    }
-//                    break;
-//                case MotionEvent.ACTION_MOVE:
-//                    if(draggingObj != null)
-//                    {
-//                        //drag obj with touching pos
-//                        draggingObj.setPosition(touchPos);
-//
-//                        //make all slots normal colour
-//                        for (int a = 0; a < slots.length; a++) {
-//                            for (int b = 0; b < slots[0].length; b++) {
-//                                slots[a][b].clearTint();
-//                            }
-//                        }
-//
-////                        if (draggingObj instanceof LootObj)
-////                        {
-////                            LootObj loot = (LootObj) draggingObj;
-////                            int xSize = (int) loot.lootType.itemScale.x;
-////                            int ySize = (int) loot.lootType.itemScale.y;
-////
-////                            boolean tinted = false;
-////
-////                            //loop through the grid. return grid slot index if user touch is on a slot
-////                            Vector2 slot = findSlotIndexAtPosition(touchPos);
-////                            if (slot != null) {
-////                                int i = (int) slot.x;
-////                                int j = (int) slot.y;
-////
-////                                boolean canPlace = canPlaceItemInSlot(i, j, xSize, ySize);
-////                                int color = canPlace ? 0x5500FF00 : 0x77FF0000; //green or red
-////
-////                                //loop through the size of the object
-////                                for (int x = 0; x < xSize; x++) {
-////                                    for (int y = 0; y < ySize; y++) {
-////
-////                                        int slotX = i + x;
-////                                        int slotY = j + y;
-////
-////                                        //if is out of bounds, dont try to tint it
-////                                        if (inBounds(slotX, slotY)) {
-////                                            slots[slotX][slotY].setTint(color);
-////                                        }
-////                                    }
-////                                }
-////                            }
-////                        }
-//                    }
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                    isTouching = false;
-//
-//                    if(draggingObj instanceof LootObj)
-//                    {
-//                        //get details of the loot obj
-//                        LootObj loot = (LootObj) draggingObj;
-//                        int xSize = (int)loot.lootType.itemScale.x;
-//                        int ySize = (int)loot.lootType.itemScale.y;
-//
-//                        //loop through the grid. return grid slot index if user touch is on a slot
-//                        Vector2 slot = findSlotIndexAtPosition(touchPos);
-//                        if (slot != null) {
-//                            int i = (int) slot.x;
-//                            int j = (int) slot.y;
-//
-//                            //check if item slots are valid
-//                            if(canPlaceItemInSlot(i,j,xSize,ySize)){
-//                                draggingObj.setPosition(slots[i][j]._position);
-//
-//                                if(loot.placed){
-//                                    for(LootSlot slots : loot.slotsOccupied)
-//                                    {
-//                                        slots.occupied = false;
-//                                    }
-//                                }
-//
-//                                //change all slots that it occupies to occupied
-//                                for (int x = 0; x < xSize; x++) {
-//                                    for (int y = 0; y < ySize; y++) {
-//                                        int slotX = i + x;   // remember: i = row (Y), j = column (X)
-//                                        int slotY = j + y;
-//                                        slots[slotX][slotY].occupied = true;
-//                                        loot.slotsOccupied.add(slots[slotX][slotY]);
-//                                    }
-//                                }
-//
-//                                //setting button to loot pos, to press again
-//                                {
-//                                    loot.sourceButton.setPosition(draggingObj._position.add(loot.pivotOffset));
-//
-//                                    float targetWidth = draggingObj.animatedSprite._width * draggingObj._scale.x;
-//                                    float targetHeight = draggingObj.animatedSprite._height * draggingObj._scale.y;
-//                                    int originalBw = loot.sourceButton.animatedSprite._width;
-//                                    int originalBh = loot.sourceButton.animatedSprite._height;
-//                                    float scaleX = (float) targetWidth / originalBw;
-//                                    float scaleY = (float) targetHeight / originalBh;
-//
-//                                    loot.sourceButton._scale = new Vector2(scaleX, scaleY);
-//                                    loot.sourceButton.isActive = true;
-//                                    loot.sourceButton.used = true;
-//                                    loot.placed = true;
-//                                    loot.placedPos = loot._position;
-//                                }
-//                            }
-//                            else{
-//                                // if user cannot find any valid slots
-//                                if(loot.placed)
-//                                {
-//                                    loot._position = loot.placedPos;
-//                                    loot.sourceButton.isActive = true;
-//                                }
-//                                else{
-//                                    loot.sourceButton.isActive = true;
-//                                    m_goList.remove(draggingObj);
-//                                    draggingObj = null;
-//                                }
-//                            }
-//                        }
-//                        else{
-//                            //user touch is not on any slot
-//                            if(loot.placed)
-//                            {
-//                                loot._position = loot.placedPos;
-//                                loot.sourceButton.isActive = true;
-//                            }
-//                            else{
-//                                loot.sourceButton.isActive = true;
-//                                m_goList.remove(draggingObj);
-//                                draggingObj = null;
-//                            }
-//                        }
-//                    }
-//                    //make all slots normal colour
-//                    for (int a = 0; a < 5; a++) {
-//                        for (int b = 0; b < 5; b++) {
-//                            slots[a][b].clearTint();
-//                        }
-//                    }
-//                    // remove obj reference when finger let go
-//                    if(draggingObj != null) {draggingObj = null;}
-//                    break;
-//            }
-//        }
 
         for (int a = 0; a < slots.length; a++) {
             for (int b = 0; b < slots[0].length; b++) {
@@ -386,11 +180,15 @@ public class MainGameScene extends GameScene {
             if (entity instanceof LootSlot) {
                 entity.isActive = true;
             }
-            if(entity instanceof BackgroundEntity)
-            {
+            if(entity instanceof BackgroundEntity) {
                 entity.isActive = true;
             }
         }
+        for(GenericBtn btn : lootGenerics)
+        {
+            btn.isActive = true;
+        }
+
 
         lootBtns = new ArrayList<>();
 
@@ -467,6 +265,11 @@ public class MainGameScene extends GameScene {
                 entity.isActive = false;
             }
         }
+        for(GenericBtn btn : lootGenerics)
+        {
+            btn.isActive = false;
+        }
+
         System.out.println(player.value);
         lootBtns = null;
         spawnPhase = false;
@@ -475,9 +278,6 @@ public class MainGameScene extends GameScene {
     public void StartAbilityPhase() {
         for (GameEntity entity : m_goList)
         {
-            if (entity instanceof LootSlot) {
-                entity.isActive = true;
-            }
             if(entity instanceof BackgroundEntity)
             {
                 entity.isActive = true;
@@ -488,6 +288,26 @@ public class MainGameScene extends GameScene {
         GenericBtn btn = ability.selfBtn;
         m_goList.add(btn);
         m_goList.add(ability);
+        ability.isActive = true;
+        btn.isActive = true;
+        abilityPhase = true;
+    }
+
+    public void EndAbilityPhase()
+    {
+        for(GameEntity entity : m_goList)
+        {
+            if (entity instanceof BackgroundEntity){
+                entity.isActive = false;
+            }
+            if (entity instanceof Ability){
+                Ability abi = (Ability) entity;
+                abi.selfBtn.isActive = false;
+                abi.isActive = false; // ability update will be called through player;
+                abi._position = new Vector2(abi.iconAnim._width - 50,screenHeight/2);
+                abi.paint.setAlpha(128);
+            }
+        }
     }
 
     private void RelayoutLootButtons() {
@@ -598,6 +418,9 @@ public class MainGameScene extends GameScene {
                             GenericBtn btn = (GenericBtn) entity;
                             if(btn.checkIfPressed(touchPos))
                             {
+                                if (btn.getCallback() instanceof Ability) {
+                                    EndAbilityPhase();
+                                }
                                 btn.OnClick();
                                 break;
                             }
@@ -605,7 +428,7 @@ public class MainGameScene extends GameScene {
                     }
                     if (testing.checkIfPressed(touchPos)){
                         if(!spawnPhase)
-                            StartLootPhase();
+                            StartAbilityPhase();
                         else
                             EndLootPhase();
                     }
@@ -661,13 +484,19 @@ public class MainGameScene extends GameScene {
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 if(!isTouching2){
-                    if (rotate.checkIfPressed(touchPos))
+                    for(GameEntity entity : m_goList)
                     {
-                        if(draggingObj instanceof LootObj)
+                        if(entity instanceof GenericBtn)
                         {
-                            LootObj loot = (LootObj) draggingObj;
-                            loot.rotate90();
-                            loot.sourceButton.rotate90();
+                            if(((GenericBtn) entity).checkIfPressed(touchPos))
+                            {
+                                GenericBtn btn = (GenericBtn) entity;
+                                IActivatable target = new RotateLoot(this);
+                                if(btn.getCallback().getClass() == target.getClass())
+                                {
+                                    btn.OnClick();
+                                }
+                            }
                         }
                     }
                     isTouching = true;

@@ -59,7 +59,8 @@ public enum SpriteAnimationList {
     TestAbility(SpriteList.TestAbility.sprite,1,1,1,false),
 
     TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, false),
-    RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false);
+    RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false),
+    CompleteBtn(SpriteList.CompleteButtonSprite.sprite, 1,1,1,0,0,false)
     ;
 
     public final int rows;

@@ -13,13 +13,11 @@ public abstract class Ability extends GameEntity implements IActivatable {
     public String name;
     public SpriteAnimationList banner;
     public SpriteAnimationList icon;
-    protected Bitmap bannerSprite;
-    protected Bitmap iconSprite;
-    protected AnimatedSprite bannerAnim;
-    protected AnimatedSprite iconAnim;
+    public AnimatedSprite bannerAnim;
+    public AnimatedSprite iconAnim;
+    public boolean gotten = false;
 
     public GenericBtn selfBtn;
 
     public abstract void onGetAbility();
-    public abstract void onUpdate();
 }

@@ -40,8 +40,8 @@ public enum SpriteList {
     ExampleItem2Sprite(R.drawable.blank_bg,0,0),
     InventorySlotSprite(R.drawable.inventoryslot),
 
-    RotateButtonSprite(R.drawable.plusbtn)
-
+    RotateButtonSprite(R.drawable.rotate),
+    CompleteButtonSprite(R.drawable.completebtn)
     ;
 
     public final int spriteID;

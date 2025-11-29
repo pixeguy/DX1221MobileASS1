@@ -80,6 +80,11 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             PostOffice.getInstance().send("Scene", message);
             shootTimer = fireRate;
         }
+
+        if(currAbility != null)
+        {
+            currAbility.onUpdate(dt);
+        }
     }
 
     private void FindNearestEnemy() {
@@ -102,6 +107,10 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void onRender(Canvas canvas) {
         super.onRender(canvas);
+        if (currAbility != null)
+        {
+            currAbility.onRender(canvas);
+        }
     }
 
     @Override

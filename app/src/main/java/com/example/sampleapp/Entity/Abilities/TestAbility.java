@@ -31,11 +31,14 @@ public class TestAbility extends Ability{
     public void onGetAbility() {
         System.out.println("Got Ability");
         PlayerObj.getInstance().currAbility = this;
+        gotten = true;
     }
 
     @Override
-    public void onUpdate() {
-        System.out.println("Updating Ability");
+    public void onUpdate(float dt) {
+        if(gotten){
+            System.out.println("Updating Ability");
+        }
     }
 
     @Override
@@ -48,12 +51,16 @@ public class TestAbility extends Ability{
         selfBtn = new GenericBtn(this);
         selfBtn.onCreate(_position,_scale,banner);
 
-        isActive = true;
     }
 
     @Override
     public void onRender(Canvas canvas) {
-        bannerAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
+        if (!gotten){
+            bannerAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
+        }
+        else {
+            iconAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
+        }
     }
 
 }
