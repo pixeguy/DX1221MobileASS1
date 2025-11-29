@@ -51,14 +51,14 @@ public enum SpriteAnimationList {
     ToxitoAttackFront(SpriteList.ToxitoAttackSprite.sprite, 4, 11, 10, 0, 10, false),
 
     //other Animations
-    ExamplePause(SpriteList.ExamplePauseSprite.sprite, 1, 1, 1, 0, 0, false),
+    ExamplePause(SpriteList.ExamplePauseSprite.sprite, 1, 1, 1, false),
     ExampleItem(SpriteList.ExampleItemSprite.sprite, 1, 1, 1, 0, 0, false),
     Example2Item(SpriteList.ExampleItem2Sprite.sprite, 1, 1, 1, 0, 0, false),
-    InventorySlot(SpriteList.InventorySlotSprite.sprite, 1, 1, 1, 0, 0, false),
+    InventorySlot(SpriteList.InventorySlotSprite.sprite, 1, 1, 1, false),
 
-    TestAbility(SpriteList.TestAbility.sprite,1,1,1, 0, 0, false),
+    TestAbility(SpriteList.TestAbility.sprite,1,1,1,false),
 
-    TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, 0, 0, false),
+    TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, false),
     RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false);
     ;
 

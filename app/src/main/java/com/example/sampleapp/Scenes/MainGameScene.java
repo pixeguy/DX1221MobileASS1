@@ -361,7 +361,6 @@ public class MainGameScene extends GameScene {
                 }
             }
         }
-
     }
 
     @Override
