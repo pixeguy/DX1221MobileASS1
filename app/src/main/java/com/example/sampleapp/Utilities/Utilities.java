@@ -1,6 +1,8 @@
-package com.example.sampleapp.Ultilies;
+package com.example.sampleapp.Utilities;
 
-public class Utilies {
+import com.example.sampleapp.mgp2d.core.Vector2;
+
+public class Utilities {
     public static float lerp(float a, float b, float t, float duration) {
         t = Math.max(0, Math.min(1, t / duration));
         return a + (b - a) * t;
@@ -38,5 +40,19 @@ public class Utilies {
 
         // Return new angle
         return currentAngle + step;
+    }
+
+    public static Vector2 get4Direction(float angle) {
+        // Up, down left right
+        if(angle >= 225 && angle < 315 ) {
+            return new Vector2(0, 1);
+        } else if(angle >= 315 || angle < 45 ) {
+            return new Vector2(-1, 0);
+        } else if(angle >= 45 && angle < 135 ) {
+            return new Vector2(0, -1);
+        } else if(angle >= 135 && angle < 225 ) {
+            return new Vector2(1, 0);
+        }
+        return new Vector2(0, 0);
     }
 }

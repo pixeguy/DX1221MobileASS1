@@ -5,7 +5,7 @@ import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.Statemchine.State;
-import com.example.sampleapp.Ultilies.Utilies;
+import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -23,7 +23,7 @@ public class ToxitoAttackState extends State {
         m_go.SetAnimation(SpriteAnimationList.ToxitoAttackFront);
 
         Vector2 diff = PlayerObj.getInstance().getPosition().subtract(m_go.getPosition());
-        m_go._rotationZ = Utilies.cal_angle(diff.x, diff.y) - 90.0f;
+        m_go._rotationZ = Utilities.cal_angle(diff.x, diff.y) - 90.0f;
     }
 
     @Override

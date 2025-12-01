@@ -24,7 +24,10 @@ public class Vector2 {
 
     public float getMagnitudeSquared() { return x * x + y * y; }
 
-    public Vector2 normalize() { return new Vector2(x /= getMagnitude(), y /= getMagnitude()); }
+    public Vector2 normalize() {
+        if (getMagnitude() == 0) return new Vector2(0, 0);
+        return new Vector2(x /= getMagnitude(), y /= getMagnitude());
+    }
 
     public Vector2 copy() { return new Vector2(x, y); }
 

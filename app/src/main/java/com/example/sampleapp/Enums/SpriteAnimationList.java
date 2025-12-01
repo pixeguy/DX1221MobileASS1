@@ -50,6 +50,33 @@ public enum SpriteAnimationList {
 
     ToxitoAttackFront(SpriteList.ToxitoAttackSprite.sprite, 4, 11, 10, 0, 10, false),
 
+    GolemIdleFront(SpriteList.GolemIdleSprite.sprite, 4, 4, 12, 0, 3, true),
+    GolemIdleBack(SpriteList.GolemIdleSprite.sprite, 4, 4, 12, 4, 7, true),
+    GolemIdleLeft(SpriteList.GolemIdleSprite.sprite, 4, 4, 12, 8, 11, true),
+    GolemIdleRight(SpriteList.GolemIdleSprite.sprite, 4, 4, 12, 12, 15, true),
+
+    GolemWalkFront(SpriteList.GolemWalkSprite.sprite, 4, 8, 12, 0, 7, true),
+    GolemWalkBack(SpriteList.GolemWalkSprite.sprite, 4, 8, 12, 8, 15, true),
+    GolemWalkLeft(SpriteList.GolemWalkSprite.sprite, 4, 8, 12, 16, 23, true),
+    GolemWalkRight(SpriteList.GolemWalkSprite.sprite, 4, 8, 12, 24, 31, true),
+
+    GolemRunFront(SpriteList.GolemRunSprite.sprite, 4, 8, 12, 0, 7, true),
+    GolemRunBack(SpriteList.GolemRunSprite.sprite, 4, 8, 12, 8, 15, true),
+    GolemRunLeft(SpriteList.GolemRunSprite.sprite, 4, 8, 12, 16, 23, true),
+    GolemRunRight(SpriteList.GolemRunSprite.sprite, 4, 8, 12, 24, 31, true),
+
+    GolemDeathFront(SpriteList.GolemDeathSprite.sprite, 4, 8, 12, 0, 7, false),
+    GolemDeathBack(SpriteList.GolemDeathSprite.sprite, 4, 8, 12, 8, 15, false),
+    GolemDeathLeft(SpriteList.GolemDeathSprite.sprite, 4, 8, 12, 16, 23, false),
+    GolemDeathRight(SpriteList.GolemDeathSprite.sprite, 4, 8, 12, 24, 31, false),
+
+    GolemSlamAttackFront(SpriteList.GolemAttackSprite.sprite, 4, 9, 12, 0, 8, false),
+    GolemSlamAttackBack(SpriteList.GolemAttackSprite.sprite, 4, 9, 12, 9, 17, false),
+    GolemSlamAttackLeft(SpriteList.GolemAttackSprite.sprite, 4, 9, 12, 18, 26, false),
+    GolemSlamAttackRight(SpriteList.GolemAttackSprite.sprite, 4, 9, 12, 27, 35, false),
+
+    GolemSpinAttackFront(SpriteList.GolemAttackSprite.sprite, 4, 9, 6, 0, 1, false),
+
     //other Animations
     ExamplePause(SpriteList.ExamplePauseSprite.sprite, 1, 1, 1, false),
     ExampleItem(SpriteList.ExampleItemSprite.sprite, 1, 1, 1, 0, 0, false),
@@ -61,6 +88,7 @@ public enum SpriteAnimationList {
     TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, false),
     RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false),
     CompleteBtn(SpriteList.CompleteButtonSprite.sprite, 1,1,1,0,0,false)
+    EnemySpawnMarker(SpriteList.EnemySpawnMarkerSprite.sprite, 1, 1, 1, false),
     ;
 
     public final int rows;

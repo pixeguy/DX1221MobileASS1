@@ -34,6 +34,14 @@ public enum SpriteList {
     ToxitoDeathSprite(R.drawable.slime2_death_full),
     ToxitoAttackSprite(R.drawable.slime2_attack_full),
 
+    GolemIdleSprite(R.drawable.golem3_idle_full),
+    GolemWalkSprite(R.drawable.golem3_walk_full),
+    GolemRunSprite(R.drawable.golem3_run_full),
+    GolemDeathSprite(R.drawable.golem3_death_full),
+    GolemAttackSprite(R.drawable.golem3_attack_full),
+
+    // Background
+
     // UI
     ExamplePauseSprite(R.drawable.pause, 0, 0),
     ExampleItemSprite(R.drawable.splash,0,0),
@@ -42,6 +50,7 @@ public enum SpriteList {
 
     RotateButtonSprite(R.drawable.rotate),
     CompleteButtonSprite(R.drawable.completebtn)
+    EnemySpawnMarkerSprite(R.drawable.enemy_spawn_indicator),
     ;
 
     public final int spriteID;

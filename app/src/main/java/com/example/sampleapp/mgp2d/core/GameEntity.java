@@ -14,8 +14,6 @@ import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.Statemachine;
 
-import java.util.ArrayList;
-
 public abstract class GameEntity {
     public Collider2D collider = null;
     private static int _totalEntitiesCreated = 0;
@@ -32,7 +30,7 @@ public abstract class GameEntity {
     public Statemachine sm = null;
 
     protected float currentHealth = 100.0f;
-    protected float maxHealth = 100.0f;
+    public float mass = 1.0f;
 
     public GameEntity targetGO = null;
     public boolean isActive = false;

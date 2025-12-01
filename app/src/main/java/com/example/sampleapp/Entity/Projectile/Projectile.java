@@ -18,6 +18,7 @@ public class Projectile extends GameEntity implements ObjectBase {
     public void onCreate(float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
         m_speed = movementSpeed;
+        isActive = true;
     }
 
     @Override

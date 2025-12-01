@@ -163,5 +163,5 @@ public class AnimatedSprite {
 
     public int GetNumCol() { return _col; }
 
-    public int GetNumRow() { return _col; }
+    public void Reset() { _currentFrame = _startFrame; }
 }

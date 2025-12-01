@@ -29,9 +29,9 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         this.inputDirection = inputDirection;
     }
 
-    private final float movementSpeed = 500.0f;
+    private final float movementSpeed = 650.0f;
     private final float shootSpeed = 1000.0f;
-    private final float fireRate = 1.0f;
+    private final float fireRate = 0.5f;
     private float shootTimer = 0.0f;
 
     private final float maxHealth = 1000.0f;
@@ -61,6 +61,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
                 getSystemService(Context.VIBRATOR_SERVICE);
 
         currentHealth = maxHealth;
+        _ordinal = 1;
+        isActive = true;
     }
 
     @Override
@@ -69,11 +71,9 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         HandMovement(dt);
         FindNearestEnemy();
         shootTimer -= dt;
-        if(targetGO != null && shootTimer <= 0.0f) {
-
+        if(targetGO != null && shootTimer <= 0.0f && inputDirection.equals(0, 0)) {
             Vector2 projectilePosition = _position.add(facingDirection.multiply(100.0f));
             // Send Message To Spawn Projectile
-
             MessageSpawnProjectile message = new MessageSpawnProjectile(this,
                     MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
                     1000.0f, projectilePosition);

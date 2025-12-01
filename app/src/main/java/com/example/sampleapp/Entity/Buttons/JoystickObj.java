@@ -7,7 +7,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.example.sampleapp.R;
-import com.example.sampleapp.Ultilies.Utilies;
+import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -106,7 +106,7 @@ public class JoystickObj extends GameEntity {
             float dx = joystickPosition.x - _position.x;
             float dy = joystickPosition.y - _position.y;
 
-            float angle = Utilies.cal_angle(dx, dy);
+            float angle = Utilities.cal_angle(dx, dy);
 
             inputDirection = get8Direction(angle);
             if(inputDirection.x != 0 && inputDirection.y != 0)
