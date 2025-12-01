@@ -87,7 +87,7 @@ public enum SpriteAnimationList {
 
     TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, false),
     RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false),
-    CompleteBtn(SpriteList.CompleteButtonSprite.sprite, 1,1,1,0,0,false)
+    CompleteBtn(SpriteList.CompleteButtonSprite.sprite, 1,1,1,0,0,false),
     EnemySpawnMarker(SpriteList.EnemySpawnMarkerSprite.sprite, 1, 1, 1, false),
     ;
 

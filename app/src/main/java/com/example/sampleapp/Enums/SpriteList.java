@@ -49,7 +49,7 @@ public enum SpriteList {
     InventorySlotSprite(R.drawable.inventoryslot),
 
     RotateButtonSprite(R.drawable.rotate),
-    CompleteButtonSprite(R.drawable.completebtn)
+    CompleteButtonSprite(R.drawable.completebtn),
     EnemySpawnMarkerSprite(R.drawable.enemy_spawn_indicator),
     ;
 
