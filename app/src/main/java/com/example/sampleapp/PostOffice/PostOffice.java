@@ -2,17 +2,15 @@ package com.example.sampleapp.PostOffice;
 
 import android.util.Log;
 
+import com.example.sampleapp.mgp2d.core.Singleton;
+
 import java.util.HashMap;
 
-public class PostOffice {
-    private static PostOffice instance;
+public class PostOffice extends Singleton<PostOffice> {
     private final HashMap<String, ObjectBase> m_addressBook = new HashMap<>();
 
     public static PostOffice getInstance() {
-        if (instance == null) {
-            instance = new PostOffice();
-        }
-        return instance;
+        return Singleton.getInstance(PostOffice.class);
     }
 
     public void register(String address, ObjectBase object) {

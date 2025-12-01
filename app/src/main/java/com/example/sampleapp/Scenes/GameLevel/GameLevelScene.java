@@ -11,6 +11,7 @@ import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.JoystickObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
+import com.example.sampleapp.Entity.Enemies.Golem.Golem;
 import com.example.sampleapp.Entity.Enemies.Slime.Slime;
 import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
 import com.example.sampleapp.Entity.Player.PlayerObj;
@@ -19,7 +20,9 @@ import com.example.sampleapp.Entity.Projectile.EnemyToxicMissile;
 import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
 import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Managers.EnemyManager;
 import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageAddGO;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
 import com.example.sampleapp.PostOffice.MessageWRU;
 import com.example.sampleapp.PostOffice.ObjectBase;
@@ -29,6 +32,7 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
+import com.example.sampleapp.Managers.GameManager;
 
 public class GameLevelScene extends GameScene implements ObjectBase {
 
@@ -50,21 +54,21 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
 
-        Slime slime = new Slime();
-        slime.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 600.0f), new Vector2(2,2));
-        m_goList.add(slime);
-
-        Toxito toxito = new Toxito();
-        toxito.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f - 400.0f), new Vector2(2,2));
-        m_goList.add(toxito);
-
         PlayerObj player = PlayerObj.getInstance();
-        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.1f,0.1f), SpriteAnimationList.PlayerIdle);
+        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
         m_goList.add(player);
+
+        GameManager.getInstance().startGame();
     }
 
     @Override
     public void onUpdate(float dt) {
+
+        if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) {
+            return;
+        }
+        GameManager.getInstance().updateGame(dt);
+
         playerMovementJoystick.onUpdate(dt);
         PlayerObj.getInstance().SetInputDirection(playerMovementJoystick.getInputDirection());
 
@@ -75,8 +79,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     @Override
     public void onRender(Canvas canvas) {
-        for (GameEntity go : m_goList)
+        m_goList.sort((go1, go2) -> go1.getOrdinal() - go2.getOrdinal()); // sort by ordinal
+        for (GameEntity go : m_goList) {
+            if(go.canDestroy() || !go.isActive) continue;
             go.onRender(canvas);
+        }
         playerMovementJoystick.onRender(canvas);
     }
 
@@ -84,10 +91,21 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         for(GameEntity go : m_goList) {
             if(go.canDestroy()) {
                 m_goListToRemove.add(go);
+                if(go instanceof Enemy) {
+                    EnemyManager.getInstance().RemoveEnemy((Enemy) go);
+                }
                 continue;
             }
+            else if(!go.isActive) continue;
             go.onUpdate(dt);
         }
+    }
+
+    @Override
+    public void onExit() {
+        super.onExit();
+        PostOffice.getInstance().clear();
+        GameManager.getInstance().endGame();
     }
 
     protected void onPhysicsUpdate() {
@@ -172,7 +190,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             float nearestDistance = Float.MAX_VALUE;
 
             for(GameEntity go2 : m_goList) {
-                if(go2.canDestroy() || !go2.isAlive) continue;
+                if(go2.canDestroy() || !go2.isAlive || !go2.isActive) continue;
                 if(go2 == go1) continue;
                 if(go2 instanceof Enemy) {
                     Enemy enemy = (Enemy) go2;
@@ -218,6 +236,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     m_goListToAdd.add(enemyToxicProjectile);
                     break;
             }
+            return true;
+        }
+
+        if(message instanceof MessageAddGO)
+        {
+            MessageAddGO messageAddGO = (MessageAddGO) message;
+            m_goListToAdd.add(messageAddGO.go);
             return true;
         }
 

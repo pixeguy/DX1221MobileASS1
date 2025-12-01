@@ -21,6 +21,7 @@ public class BackgroundEntity extends GameEntity {
 
         Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), imageID);
         backgroundBitmap = Bitmap.createScaledBitmap(bmp, screenWidth + screenWidth / 15, screenHeight + screenHeight / 15, true);
+        isActive = true;
     }
 
     @Override

@@ -152,11 +152,14 @@ public class Collision {
         float amountToMoveX = contact.normal.x * contact.depth;
         float amountToMoveY = contact.normal.y * contact.depth;
 
-        contact.colliderA.gameEntity._position.x += amountToMoveX / 2.0f;
-        contact.colliderA.gameEntity._position.y += amountToMoveY / 2.0f;
+        if(contact.colliderA.gameEntity.mass > 0) {
+            contact.colliderA.gameEntity._position.x += amountToMoveX / 2.0f;
+            contact.colliderA.gameEntity._position.y += amountToMoveY / 2.0f;
+        }
 
-        contact.colliderB.gameEntity._position.x -= amountToMoveX / 2.0f;
-        contact.colliderB.gameEntity._position.y -= amountToMoveY / 2.0f;
-
+        if(contact.colliderB.gameEntity.mass > 0) {
+            contact.colliderB.gameEntity._position.x -= amountToMoveX / 2.0f;
+            contact.colliderB.gameEntity._position.y -= amountToMoveY / 2.0f;
+        }
     }
 }

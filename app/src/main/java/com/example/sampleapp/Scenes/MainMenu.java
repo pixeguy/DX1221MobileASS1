@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;  // CORRECT
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.R;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.ViewPageAdapter;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -68,7 +69,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         else if(v == startButton)
         {
             startActivity(new Intent().setClass(this, GameActivity.class));
-            GameScene.enter(MainGameScene.class);
+            GameScene.enter(GameLevelScene.class);
         }
     }
 }

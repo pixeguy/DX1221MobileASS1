@@ -1,11 +1,9 @@
 package com.example.sampleapp.Entity.Enemies.Slime;
 
-import android.util.Log;
-
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
-import com.example.sampleapp.Ultilies.Utilies;
+import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -25,8 +23,8 @@ public class SlimeAttackState extends State {
 
         isDamageDone = false;
         Vector2 diff = m_go.getPosition().subtract(PlayerObj.getInstance().getPosition());
-        float angle = Utilies.cal_angle(diff.x, diff.y);
-        m_go.facingDirection = get4Direction(angle);
+        float angle = Utilities.cal_angle(diff.x, diff.y);
+        m_go.facingDirection = Utilities.get4Direction(angle);
 
         if(m_go.facingDirection.equals(0, -1))
             m_go.SetAnimation(SpriteAnimationList.SlimeAttackBack);
@@ -58,19 +56,5 @@ public class SlimeAttackState extends State {
     @Override
     public void OnExit() {
         ((Slime) m_go).SetAttackCooldown();
-    }
-
-    public Vector2 get4Direction(float angle) {
-        // Up, down left right
-        if(angle >= 225 && angle < 315 ) {
-            return new Vector2(0, 1);
-        } else if(angle >= 315 || angle < 45 ) {
-            return new Vector2(-1, 0);
-        } else if(angle >= 45 && angle < 135 ) {
-            return new Vector2(0, -1);
-        } else if(angle >= 135 && angle < 225 ) {
-            return new Vector2(1, 0);
-        }
-        return new Vector2(0, 0);
     }
 }

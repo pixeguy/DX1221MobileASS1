@@ -28,6 +28,7 @@ public class PlayerMagicMissile extends Projectile {
                 SpriteAnimationList.PlayerShootMissile.endFrame);
         collider = new CircleCollider2D(this, animatedSprite.GetRect(_position, _scale).width() / 10.0f);
         collider.isTrigger = true;
+        isActive = true;
     }
 
     @Override
@@ -41,7 +42,10 @@ public class PlayerMagicMissile extends Projectile {
         boolean isCollided = Collision.CollisionDetection(collider, targetGO.collider, new Vector2(0, 0));
         if(isCollided) {
             if(targetGO instanceof Damageable) {
-                ((Damageable) targetGO).TakeDamage(10.0f);
+                float minDamage = 50.0f;
+                float maxDamage = 60.0f;
+                float damage = (float) (Math.random() * (maxDamage - minDamage) + minDamage);
+                ((Damageable) targetGO).TakeDamage(damage);
             }
             destroy();
         }

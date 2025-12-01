@@ -2,6 +2,8 @@ package com.example.sampleapp.Entity.Enemies;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Interface.Damageable;
+import com.example.sampleapp.Managers.EnemyManager;
+import com.example.sampleapp.PostOffice.MessageCount;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.ObjectBase;
@@ -12,6 +14,7 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 import java.util.Random;
 
 public class Enemy extends GameEntity implements ObjectBase, Damageable {
+
     @Override
     public void onCreate(Vector2 pos, Vector2 scale){
         super.onCreate(pos, scale);
@@ -33,10 +36,16 @@ public class Enemy extends GameEntity implements ObjectBase, Damageable {
                 break;
         }
         sm = new Statemachine();
+        isActive = true;
     }
 
     @Override
     public boolean handle(Message message) {
+
+        if(message instanceof MessageCount) {
+            return !canDestroy() && isAlive;
+        }
+
         return false;
     }
 

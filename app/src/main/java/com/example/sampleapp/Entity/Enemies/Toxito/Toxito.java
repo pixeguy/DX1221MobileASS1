@@ -20,7 +20,7 @@ import java.util.Random;
 /** @noinspection FieldCanBeLocal*/
 public class Toxito extends Enemy {
     public static float detectionRange = 900.0f;
-    public static float baseSpeed = 300.0f;
+    public static float baseSpeed = 500.0f;
 
     private float attackCooldown = 2.0f;
     private final float maxAttackCooldown = 2.0f;
@@ -49,7 +49,7 @@ public class Toxito extends Enemy {
         super.onUpdate(dt);
 
         if(!Objects.equals(sm.GetCurrentStateID(), "Attack") && attackCooldown < 0.0f) {
-            if(!Objects.equals(sm.GetCurrentStateID(), "Death")) {
+            if(!Objects.equals(sm.GetCurrentStateID(), "Death") && !CheckIfPlayerNear(detectionRange)) {
                 sm.ChangeState("Attack");
             }
         }

@@ -1,17 +1,12 @@
 package com.example.sampleapp.Entity.Enemies.Toxito;
 
-import android.util.Log;
-
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
-import com.example.sampleapp.Ultilies.Utilies;
-import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class ToxitoMoveState extends State {
