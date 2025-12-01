@@ -51,6 +51,7 @@ public enum SpriteList {
     RotateButtonSprite(R.drawable.rotate),
     CompleteButtonSprite(R.drawable.completebtn),
     EnemySpawnMarkerSprite(R.drawable.enemy_spawn_indicator),
+    GrassBgSprite(R.drawable.grassbg),
     ;
 
     public final int spriteID;

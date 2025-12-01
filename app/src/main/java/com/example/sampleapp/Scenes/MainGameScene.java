@@ -45,7 +45,7 @@ public class MainGameScene extends GameScene {
     private PlayerObj player;
     private ArrayList<LootButtonObj> lootBtns;
 
-    TestingBtn testing = new TestingBtn(); boolean spawnPhase = false; boolean abilityPhase = false;
+    boolean spawnPhase = false; boolean abilityPhase = false;
     private ArrayList<GenericBtn> lootGenerics;
     private LootSlot[][] slots; //  [col][row].....[x][y]
 
@@ -56,7 +56,7 @@ public class MainGameScene extends GameScene {
     boolean isTouching2 = false;
     Random rand = new Random();
 
-
+    TestingBtn testing = new TestingBtn();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -75,16 +75,25 @@ public class MainGameScene extends GameScene {
         player.isActive = true;
         m_goList.add(player);
 
+        InitAbilityPhase();
+        StartAbilityPhase();
+
+        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1, 1),SpriteAnimationList.ExamplePause);
+        testing.isActive = true;
+        m_goList.add(testing);;
+    }
+
+    public void InitAbilityPhase(){
         BackgroundEntity bg = new BackgroundEntity(R.drawable.greyoverlay);
         bg.isActive = false;
         m_goList.add(bg);
 
         lootGenerics = new ArrayList<GenericBtn>();
-        GenericBtn rotate = new GenericBtn(new RotateLoot(this));
+        GenericBtn rotate = new GenericBtn(new RotateLoot(null));
         rotate.onCreate(new Vector2(screenWidth* 0.1f, screenHeight * 0.95f),new Vector2(3,3),SpriteAnimationList.RotateBtn);
         lootGenerics.add(rotate);
         m_goList.add(rotate);
-        GenericBtn endLootBtn = new GenericBtn(new CloseLooting(this));
+        GenericBtn endLootBtn = new GenericBtn(new CloseLooting(null));
         endLootBtn.onCreate(new Vector2(screenWidth/2, screenHeight * 0.95f), new Vector2(3,3),SpriteAnimationList.CompleteBtn);
         lootGenerics.add(endLootBtn);
         m_goList.add(endLootBtn);
@@ -106,28 +115,24 @@ public class MainGameScene extends GameScene {
 
                     //calculating grid position
                     {
-                    // Calculate cell spacing
-                    float cellWidth  = (slots[x][y].animatedSprite._width  * scale.x) + GAP;
-                    float cellHeight = (slots[x][y].animatedSprite._height * scale.y) + GAP;
+                        // Calculate cell spacing
+                        float cellWidth  = (slots[x][y].animatedSprite._width  * scale.x) + GAP;
+                        float cellHeight = (slots[x][y].animatedSprite._height * scale.y) + GAP;
 
-                    // Grid total size
-                    float gridSize  = cellWidth  * 5;
+                        // Grid total size
+                        float gridSize  = cellWidth  * 5;
 
-                    // Center X
-                    float startX = (screenWidth / 2f) - (gridSize / 2.5f);
-                    // Higher Y (25% from top)
-                    float startY = (screenHeight * 0.235f) - (gridSize/2.5f);
+                        // Center X
+                        float startX = (screenWidth / 2f) - (gridSize / 2.5f);
+                        // Higher Y (25% from top)
+                        float startY = (screenHeight * 0.235f) - (gridSize/2.5f);
 
-                    float worldX = startX + x * cellWidth;
-                    float worldY = startY + y * cellHeight;
-                    slots[x][y].setPosition(new Vector2(worldX,worldY));}
+                        float worldX = startX + x * cellWidth;
+                        float worldY = startY + y * cellHeight;
+                        slots[x][y].setPosition(new Vector2(worldX,worldY));}
                 }
             }
         }
-
-        testing.onCreate(new Vector2(screenWidth / 2, screenHeight/2 - 200),new Vector2(1, 1),SpriteAnimationList.ExamplePause);
-        testing.isActive = true;
-        m_goList.add(testing);;
     }
 
     @Override
@@ -491,7 +496,7 @@ public class MainGameScene extends GameScene {
                             if(((GenericBtn) entity).checkIfPressed(touchPos))
                             {
                                 GenericBtn btn = (GenericBtn) entity;
-                                IActivatable target = new RotateLoot(this);
+                                IActivatable target = new RotateLoot(null);
                                 if(btn.getCallback().getClass() == target.getClass())
                                 {
                                     btn.OnClick();

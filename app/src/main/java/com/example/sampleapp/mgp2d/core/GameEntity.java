@@ -62,6 +62,7 @@ public abstract class GameEntity {
 
     protected int _ordinal = 0;
     public int getOrdinal() { return _ordinal; }
+    public void setOrdinal(int ord) {_ordinal = ord;}
 
     private boolean _isDone = false;
     public void destroy() { _isDone = true; }

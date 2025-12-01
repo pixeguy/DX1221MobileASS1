@@ -2,13 +2,15 @@ package com.example.sampleapp.Interface;
 
 import com.example.sampleapp.Entity.Buttons.IActivatable;
 import com.example.sampleapp.Entity.Inventory.LootObj;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Scenes.MainGameScene;
+import com.example.sampleapp.mgp2d.core.GameScene;
 
 public class RotateLoot implements IActivatable {
-    private MainGameScene scene;
+    private GameLevelScene scene;
 
-    public RotateLoot(MainGameScene mainGameScene) {
-        this.scene = mainGameScene;
+    public RotateLoot(GameLevelScene gamescene) {
+        this.scene = gamescene;
     }
 
     @Override

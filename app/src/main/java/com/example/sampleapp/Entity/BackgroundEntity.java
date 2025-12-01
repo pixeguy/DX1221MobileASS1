@@ -13,9 +13,11 @@ public class BackgroundEntity extends GameEntity {
     public Bitmap backgroundBitmap;
     private int screenWidth;
     private int screenHeight;
+    public int imageID;
 
     public BackgroundEntity(int imageID)
     {
+        this.imageID = imageID;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
 
