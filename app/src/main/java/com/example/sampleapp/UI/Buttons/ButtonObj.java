@@ -1,4 +1,4 @@
-package com.example.sampleapp.Entity.Buttons;
+package com.example.sampleapp.UI.Buttons;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;

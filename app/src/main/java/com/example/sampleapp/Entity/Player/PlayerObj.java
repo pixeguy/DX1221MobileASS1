@@ -8,30 +8,40 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Interface.Damageable;
+import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
 import com.example.sampleapp.PostOffice.MessageWRU;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.PostOffice.PostOffice;
+import com.example.sampleapp.UI.Bars.UIHealthBar;
+import com.example.sampleapp.UI.Buttons.UIJoystick;
+import com.example.sampleapp.VisualEffect.OnHitVisualEffect;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
+import com.example.sampleapp.mgp2d.core.Singleton;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 /** @noinspection FieldCanBeLocal*/
 public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private static PlayerObj instance;
-    private Vector2 inputDirection = new Vector2(0, 0);
+    private UIHealthBar healthBar;
+    private HealthSystem healthSystem;
+    private OnHitVisualEffect hitVisualEffect;
+
+    private Vector2 inputDirection = null;
     public void SetInputDirection(Vector2 inputDirection) {
         this.inputDirection = inputDirection;
     }
 
     private final float movementSpeed = 650.0f;
     private final float shootSpeed = 1000.0f;
-    private final float fireRate = 0.5f;
+    private final float fireRate = 1.0f;
     private float shootTimer = 0.0f;
 
     private final float maxHealth = 1000.0f;
@@ -41,6 +51,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public int strength = 0;
 
     private Vibrator _vibrator;
+
 
     public static PlayerObj getInstance() {
         if(instance == null) {
@@ -60,14 +71,37 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _vibrator = (Vibrator) GameActivity.instance.getApplicationContext().
                 getSystemService(Context.VIBRATOR_SERVICE);
 
-        currentHealth = maxHealth;
         _ordinal = 1;
         isActive = true;
+
+        healthSystem = new HealthSystem(this, maxHealth);
+        healthBar = new UIHealthBar(pos, 150, 30);
+        healthBar.offset.set(0, -125);
+        healthBar.setOwner(this);
+        healthBar.setValue(maxHealth);
+        UIManager.getInstance().addElement(healthBar);
+
+        hitVisualEffect = new OnHitVisualEffect(this);
+        healthSystem.setOnDamageListener((damage, hp) -> {
+            healthBar.updateValue(hp);
+            hitVisualEffect.playHitFlash();
+            if(hp <= 0) {
+                UIManager.getInstance().removeElement(healthBar);
+            }
+
+            float healthPer = hp / maxHealth;
+            if ((damage > 40.0f || healthPer < 0.5f) &&
+                    _vibrator.hasVibrator() &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (damage + 50)));
+            }
+        });
     }
 
     @Override
     public void onUpdate(float dt) {
         super.onUpdate(dt);
+        hitVisualEffect.onUpdate(dt);
         HandMovement(dt);
         FindNearestEnemy();
         shootTimer -= dt;
@@ -120,19 +154,6 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
 
     @Override
     public void TakeDamage(float amount) {
-        if(currentHealth <= 0) {
-            isAlive = false;
-            currentHealth = 0;
-            return;
-        }
-
-        float healthPer = currentHealth / maxHealth;
-        if ((amount > 40.0f || healthPer < 0.5f) &&
-                _vibrator.hasVibrator() &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (amount + 50)));
-        }
-
-        currentHealth -= amount;
+        healthSystem.takeDamage(amount);
     }
 }

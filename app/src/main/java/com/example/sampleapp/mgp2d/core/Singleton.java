@@ -1,7 +1,11 @@
 package com.example.sampleapp.mgp2d.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class Singleton<T> {
-    private static final java.util.Map<Class<?>, Singleton<?>> instances = new java.util.HashMap<>();
+    private static final Map<Class<?>, Singleton<?>> instances = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     protected static synchronized <T extends Singleton<T>> T getInstance(Class<T> clazz) {

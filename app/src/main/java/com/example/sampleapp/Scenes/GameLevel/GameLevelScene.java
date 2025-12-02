@@ -13,21 +13,20 @@ import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.TestAbility;
 import com.example.sampleapp.Entity.BackgroundEntity;
-import com.example.sampleapp.Entity.Buttons.GenericBtn;
-import com.example.sampleapp.Entity.Buttons.IActivatable;
-import com.example.sampleapp.Entity.Buttons.JoystickObj;
-import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.UI.Buttons.GenericBtn;
+import com.example.sampleapp.UI.Buttons.IActivatable;
+import com.example.sampleapp.UI.Buttons.UIJoystick;
+import com.example.sampleapp.UI.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
-import com.example.sampleapp.Entity.Enemies.Golem.Golem;
-import com.example.sampleapp.Entity.Enemies.Slime.Slime;
-import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Entity.Projectile.EnemyFireMissile;
 import com.example.sampleapp.Entity.Projectile.EnemyToxicMissile;
 import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
-import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Interface.CloseLooting;
@@ -47,8 +46,6 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 import com.example.sampleapp.Managers.GameManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -56,10 +53,6 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     private int screenWidth;
     private int screenHeight;
-
-    private JoystickObj playerMovementJoystick;
-
-
 
     private ArrayList<LootButtonObj> lootBtns;
     boolean spawnPhase = false; boolean abilityPhase = false;
@@ -81,42 +74,41 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
 
-        m_goAbiLootList = new ArrayList<GameEntity>();
+        m_goAbiLootList = new ArrayList<>();
 
-        playerMovementJoystick = new JoystickObj(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 4);
-        playerMovementJoystick.setOrdinal(2);
-        playerMovementJoystick.isActive = true;
-        m_goList.add(playerMovementJoystick);
+        UIJoystick playerMovementJoystick = new UIJoystick(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 200, 100);
+        playerMovementJoystick.setSprites(SpriteList.BaseJoystickSprite.sprite, SpriteList.HandleJoystickSprite.sprite);
+        UIManager.getInstance().addElement(playerMovementJoystick);
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
 
         PlayerObj player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
+        player.SetInputDirection(playerMovementJoystick.getOutput());
         m_goList.add(player);
 
-        InitAbiLoot();
-        StartLootPhase();
+        //InitAbiLoot();
+        //StartLootPhase();
 
         GameManager.getInstance().startGame();
     }
 
     @Override
     public void onUpdate(float dt) {
-        for(GameEntity obj : m_goAbiLootList)
-        {
-            if(obj.isActive){
+        /*for(GameEntity obj : m_goAbiLootList) {
+            if(obj.isActive) {
                 obj.onUpdate(dt);
             }
         }
-        HandleTouch();
+        HandleTouch();*/
 
         if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) {
             return;
         }
-        GameManager.getInstance().updateGame(dt);
 
-        playerMovementJoystick.onUpdate(dt);
-        PlayerObj.getInstance().SetInputDirection(playerMovementJoystick.getInputDirection());
+        DamageTextManager.getInstance().onUpdate();
+        UIManager.getInstance().update(dt);
+        GameManager.getInstance().updateGame(dt);
 
         onUpdateGameObjects(dt);
         onPhysicsUpdate();
@@ -130,6 +122,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             if(go.canDestroy() || !go.isActive) continue;
             go.onRender(canvas);
         }
+        UIManager.getInstance().onRender(canvas);
     }
 
     protected void onUpdateGameObjects(float dt) {
@@ -149,6 +142,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     @Override
     public void onExit() {
         super.onExit();
+        UIManager.getInstance().clear();
         PostOffice.getInstance().clear();
         GameManager.getInstance().endGame();
     }
@@ -490,8 +484,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         spawnPhase = false;
     }
 
-    private void HandleTouch()
-    {
+    private void HandleTouch() {
         MotionEvent event = GameActivity.instance.getMotionEvent();
         if (event == null) {return;}
 
@@ -764,7 +757,6 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
     }
 
-
     public void RebuildLootBtns() {
         ArrayList<LootButtonObj> unusedButtons = new ArrayList<>();
         // Loop through your actual button list
@@ -831,5 +823,4 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         return null; // no slot found
     }
-
 }

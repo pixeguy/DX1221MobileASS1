@@ -1,8 +1,4 @@
-package com.example.sampleapp.Entity.Buttons;
-
-import android.graphics.Rect;
-
-import com.example.sampleapp.mgp2d.core.AnimatedSprite;
+package com.example.sampleapp.UI.Buttons;
 
 public class GenericBtn extends ButtonObj{
     private IActivatable callback;

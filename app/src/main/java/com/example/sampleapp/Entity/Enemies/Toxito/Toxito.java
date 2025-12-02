@@ -1,39 +1,34 @@
 package com.example.sampleapp.Entity.Enemies.Toxito;
 
-import android.graphics.Canvas;
-
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Enemies.Enemy;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeAttackState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeDeathState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeIdleState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeRunState;
-import com.example.sampleapp.Interface.Damageable;
-import com.example.sampleapp.PostOffice.Message;
-import com.example.sampleapp.PostOffice.ObjectBase;
-import com.example.sampleapp.Statemchine.Statemachine;
+import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.UI.Bars.UIHealthBar;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.Objects;
-import java.util.Random;
 
 /** @noinspection FieldCanBeLocal*/
 public class Toxito extends Enemy {
-    public static float detectionRange = 900.0f;
-    public static float baseSpeed = 500.0f;
+    // --- Stats ---
+    public static float DETECTION_RANGE = 900.0f;
+    public static float MOVE_SPEED = 500.0f;
+    private static final float MAX_ATTACK_COOLDOWN = 2.0f;
+    private static final float MAX_HEALTH = 100.0f;
 
+    // --- Properties ---
     private float attackCooldown = 2.0f;
-    private final float maxAttackCooldown = 2.0f;
-    private final float maxHealth = 100.0f;
+
 
     public void SetAttackCooldown() {
-        this.attackCooldown = maxAttackCooldown;
+        this.attackCooldown = MAX_ATTACK_COOLDOWN;
     }
 
     @Override
-    public void onCreate(Vector2 pos, Vector2 scale){
+    public void onCreate(Vector2 pos, Vector2 scale) {
         super.onCreate(pos, scale);
-        currentHealth = maxHealth;
+        Init(pos, MAX_HEALTH);
         facingDirection.set(0, -1);
 
         sm.AddState(new ToxitoMoveState(this, "Run"));
@@ -49,7 +44,7 @@ public class Toxito extends Enemy {
         super.onUpdate(dt);
 
         if(!Objects.equals(sm.GetCurrentStateID(), "Attack") && attackCooldown < 0.0f) {
-            if(!Objects.equals(sm.GetCurrentStateID(), "Death") && !CheckIfPlayerNear(detectionRange)) {
+            if(!Objects.equals(sm.GetCurrentStateID(), "Death") && !CheckIfPlayerNear(DETECTION_RANGE)) {
                 sm.ChangeState("Attack");
             }
         }

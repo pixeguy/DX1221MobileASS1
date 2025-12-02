@@ -39,14 +39,14 @@ public class ToxitoMoveState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(stateTimer >= moveTime && !((Enemy) m_go).CheckIfPlayerNear(Toxito.detectionRange)) {
+        if(stateTimer >= moveTime && !((Enemy) m_go).CheckIfPlayerNear(Toxito.DETECTION_RANGE)) {
             m_go.sm.ChangeState("Idle");
             return;
         }
 
         moveRight = moveLeft = moveUp = moveDown = true;
         Vector2 playerToEnemy = m_go._position.subtract(PlayerObj.getInstance().getPosition());
-        if(playerToEnemy.getMagnitude() < Toxito.detectionRange) {
+        if(playerToEnemy.getMagnitude() < Toxito.DETECTION_RANGE) {
             if(PlayerObj.getInstance().isAlive) {
                 Vector2 playerPos = PlayerObj.getInstance().getPosition();
                 if(playerPos.x > m_go._position.x)
@@ -64,7 +64,7 @@ public class ToxitoMoveState extends State {
         if(m_go.CheckIfOutsideWorldBound(m_go.facingDirection, 50)){
             target.set(m_go._position);
 
-            int[] directions = m_go.CheckForUnvailableDirection();
+            int[] directions = m_go.CheckForUnavailableDirection();
 
             if(directions[0] == 0) {
                 m_go.facingDirection = new Vector2(0, 1);
@@ -82,11 +82,11 @@ public class ToxitoMoveState extends State {
                 m_go.facingDirection = new Vector2(-1, 0);
                 m_go.SetAnimation(SpriteAnimationList.ToxitoWalkLeft);
             }
-            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.baseSpeed));
+            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.MOVE_SPEED));
         }
 
         Vector2 dir = target.subtract(m_go._position);
-        if(dir.getMagnitude() < Toxito.baseSpeed * dt) {
+        if(dir.getMagnitude() < Toxito.MOVE_SPEED * dt) {
             target.set(m_go._position);
             int directions = random.nextInt(4);
             if(directions == 0 && moveDown) {
@@ -106,11 +106,11 @@ public class ToxitoMoveState extends State {
                 m_go.SetAnimation(SpriteAnimationList.ToxitoWalkLeft);
             }
 
-            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.baseSpeed));
+            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.MOVE_SPEED));
         }
         else {
             try {
-                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Toxito.baseSpeed * dt)));
+                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Toxito.MOVE_SPEED * dt)));
             }catch (Exception ignored){
 
             }

@@ -1,16 +1,11 @@
 package com.example.sampleapp.Entity.Abilities;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import com.example.sampleapp.Entity.Buttons.GenericBtn;
+import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
-import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
-import com.example.sampleapp.mgp2d.core.GameActivity;
-import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class TestAbility extends Ability{

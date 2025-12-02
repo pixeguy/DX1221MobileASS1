@@ -42,8 +42,8 @@ public class PlayerMagicMissile extends Projectile {
         boolean isCollided = Collision.CollisionDetection(collider, targetGO.collider, new Vector2(0, 0));
         if(isCollided) {
             if(targetGO instanceof Damageable) {
-                float minDamage = 50.0f;
-                float maxDamage = 60.0f;
+                float minDamage = 30.0f;
+                float maxDamage = 50.0f;
                 float damage = (float) (Math.random() * (maxDamage - minDamage) + minDamage);
                 ((Damageable) targetGO).TakeDamage(damage);
             }
