@@ -86,8 +86,19 @@ public enum SpriteAnimationList {
     TestAbility(SpriteList.TestAbility.sprite,1,1,1,false),
 
     TestIcon(SpriteList.TestIcon.sprite, 1, 1, 1, false),
+
+    MultiShotBanner(SpriteList.MultiShotBanner.sprite,1,1,1,false),
+    MultiShotIcon(SpriteList.MultiShotIcon.sprite, 1, 1, 1, false),
+    RearShotBanner(SpriteList.RearShotBanner.sprite,1,1,1,false),
+    RearShotIcon(SpriteList.RearShotIcon.sprite, 1, 1, 1, false),
+    MagicOrbBanner(SpriteList.MagicOrbBanner.sprite,1,1,1,false),
+    MagicOrbIcon(SpriteList.MagicOrbIcon.sprite, 1, 1, 1, false),
+
     RotateBtn(SpriteList.RotateButtonSprite.sprite, 1,1,1,0,0,false),
     CompleteBtn(SpriteList.CompleteButtonSprite.sprite, 1,1,1,0,0,false),
+    MainMenuBtn(SpriteList.MainMenuButtonSprite.sprite, 1,1,1,0,0,false),
+    GameOverScreen(SpriteList.GameOverScreen.sprite, 1,1,1,0,0,false),
+
     EnemySpawnMarker(SpriteList.EnemySpawnMarkerSprite.sprite, 1, 1, 1, false),
     ;
 

@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
+import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.Statemachine;
 
@@ -29,7 +30,7 @@ public abstract class GameEntity {
     public Vector2 facingDirection = new Vector2(0, 0);
     public Statemachine sm = null;
 
-    protected float currentHealth = 100.0f;
+    public float currentHealth = 100.0f;
     public float mass = 1.0f;
 
     public GameEntity targetGO = null;

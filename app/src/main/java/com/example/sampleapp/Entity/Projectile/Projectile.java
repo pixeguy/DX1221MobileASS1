@@ -14,6 +14,7 @@ public class Projectile extends GameEntity implements ObjectBase {
     protected float m_speed = 0.0f;
     protected float currentLifetime = 0.0f;
     protected float maxLifetime = 5.0f;
+    public Vector2 targetPos;
 
     public void onCreate(float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);

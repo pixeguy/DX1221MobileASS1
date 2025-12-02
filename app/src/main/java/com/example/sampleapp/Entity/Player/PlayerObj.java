@@ -9,14 +9,18 @@ import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Entity.Abilities.Ability;
+import com.example.sampleapp.Entity.Abilities.DoubleShotAbi;
+import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
+import com.example.sampleapp.PostOffice.MessageSpawnRearProjectile;
 import com.example.sampleapp.PostOffice.MessageWRU;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
+import com.example.sampleapp.mgp2d.core.EmptyEntity;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -41,6 +45,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public int strength = 0;
 
     private Vibrator _vibrator;
+    public Vector2 targetPos;
 
     public static PlayerObj getInstance() {
         if(instance == null) {
@@ -77,6 +82,25 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             MessageSpawnProjectile message = new MessageSpawnProjectile(this,
                     MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
                     1000.0f, projectilePosition);
+            if (currAbility != null)
+            {
+                if(currAbility instanceof RearShotAbi)
+                {
+                    Vector2 projectilePosition2 = _position.add(facingDirection.multiply(-100.0f));
+                    MessageSpawnRearProjectile message2 = new MessageSpawnRearProjectile(targetPos,
+                            MessageSpawnRearProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
+                            1000.0f, projectilePosition2);
+                    PostOffice.getInstance().send("Scene", message2);
+                }
+                else if (currAbility instanceof DoubleShotAbi)
+                {
+                    Vector2 projectilePosition2 = _position.add(facingDirection.multiply(-100.0f));
+                    MessageSpawnProjectile message2 = new MessageSpawnProjectile(this,
+                            MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
+                            1000.0f, projectilePosition2);
+                    PostOffice.getInstance().send("Scene", message2);
+                }
+            }
             PostOffice.getInstance().send("Scene", message);
             shootTimer = fireRate;
         }
@@ -90,6 +114,14 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private void FindNearestEnemy() {
         MessageWRU message = new MessageWRU(this, MessageWRU.SEARCH_TYPE.NEAREST_ENEMY, shootSpeed);
         PostOffice.getInstance().send("Scene", message);
+
+        if(targetGO != null)
+        {
+            Vector2 dir = targetGO._position.subtract(_position);
+            float len = (float)Math.sqrt(dir.x*dir.x + dir.y*dir.y);
+            if (len > 0) dir = new Vector2(dir.x/len, dir.y/len);
+            targetPos = dir.multiply(0.1f);
+        }
     }
 
     private void HandMovement(float dt) {

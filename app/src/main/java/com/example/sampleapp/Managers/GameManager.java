@@ -1,10 +1,14 @@
 package com.example.sampleapp.Managers;
 
+import android.content.Intent;
 import android.util.Log;
 
+import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.PostOffice.PostOffice;
+import com.example.sampleapp.Scenes.MainMenu;
+import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
 public class GameManager extends Singleton<GameManager> implements ObjectBase {
@@ -65,6 +69,15 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
     public void updateGame(float deltaTime) {
         // Update the game logic here
         EnemyManager.getInstance().updateWave(deltaTime);
+        if (EnemyManager.getInstance().numWaves > 2)
+        {
+            //win
+            TransitionToState(GameState.GAME_OVER);
+        }
+        if(PlayerObj.getInstance().currentHealth <= 0)
+        {
+            //lose
+        }
     }
 
     public void endGame() {

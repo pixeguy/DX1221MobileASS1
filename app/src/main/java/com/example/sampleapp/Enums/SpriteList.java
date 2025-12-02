@@ -21,6 +21,12 @@ public enum SpriteList {
     InventorySlot(R.drawable.inventoryslot),
     TestAbility(R.drawable.testbanner),
     TestIcon(R.drawable.testicon),
+    MultiShotBanner(R.drawable.multishotabnner),
+    MultiShotIcon(R.drawable.multishot),
+    RearShotBanner(R.drawable.rearshotbanner),
+    RearShotIcon(R.drawable.rearshot),
+    MagicOrbBanner(R.drawable.magicorbbanner),
+    MagicOrbIcon(R.drawable.magicshot),
 
     // Enemies
 
@@ -44,12 +50,14 @@ public enum SpriteList {
 
     // UI
     ExamplePauseSprite(R.drawable.pause, 0, 0),
-    ExampleItemSprite(R.drawable.splash,0,0),
-    ExampleItem2Sprite(R.drawable.blank_bg,0,0),
+    ExampleItemSprite(R.drawable.splash, 0, 0),
+    ExampleItem2Sprite(R.drawable.blank_bg, 0, 0),
     InventorySlotSprite(R.drawable.inventoryslot),
 
     RotateButtonSprite(R.drawable.rotate),
     CompleteButtonSprite(R.drawable.completebtn),
+    MainMenuButtonSprite(R.drawable.mainmenu),
+    GameOverScreen(R.drawable.gameover),
     EnemySpawnMarkerSprite(R.drawable.enemy_spawn_indicator),
     GrassBgSprite(R.drawable.grassbg),
     ;

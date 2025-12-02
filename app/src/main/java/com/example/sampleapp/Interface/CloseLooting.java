@@ -14,6 +14,6 @@ public class CloseLooting implements IActivatable {
 
     @Override
     public void execute() {
-        //scene.EndLootPhase();
+        scene.EndLootPhase();
     }
 }
