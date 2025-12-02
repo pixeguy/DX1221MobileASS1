@@ -378,8 +378,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         abilityPhase = true;
     }
 
-    public void EndAbilityPhase()
-    {
+    public void EndAbilityPhase() {
         GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
         for(GameEntity entity : m_goList)
         {
