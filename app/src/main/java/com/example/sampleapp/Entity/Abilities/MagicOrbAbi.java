@@ -8,11 +8,11 @@ import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
-public class RearShotAbi extends Ability {
-    public RearShotAbi()
+public class MagicOrbAbi extends Ability{
+    public MagicOrbAbi()
     {
-        banner = SpriteAnimationList.RearShotBanner;
-        icon = SpriteAnimationList.RearShotIcon;
+        banner = SpriteAnimationList.MagicOrbBanner;
+        icon = SpriteAnimationList.MagicOrbIcon;
         name = "TestAbility";
     }
 

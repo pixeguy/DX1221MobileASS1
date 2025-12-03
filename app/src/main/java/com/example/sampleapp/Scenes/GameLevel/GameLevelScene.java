@@ -12,33 +12,29 @@ import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.Abilities.Ability;
-import com.example.sampleapp.Entity.Abilities.DoubleShotAbi;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
-import com.example.sampleapp.Entity.Abilities.TestAbility;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Buttons.IActivatable;
 import com.example.sampleapp.Entity.Buttons.JoystickObj;
 import com.example.sampleapp.Entity.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
-import com.example.sampleapp.Entity.Enemies.Golem.Golem;
-import com.example.sampleapp.Entity.Enemies.Slime.Slime;
-import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Entity.Projectile.EnemyFireMissile;
 import com.example.sampleapp.Entity.Projectile.EnemyToxicMissile;
 import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
-import com.example.sampleapp.Entity.SampleCoin;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Interface.BackToMenu;
 import com.example.sampleapp.Interface.CloseLooting;
+import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.Interface.RotateLoot;
 import com.example.sampleapp.Managers.EnemyManager;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageAddGO;
+import com.example.sampleapp.PostOffice.MessageCheckForDamageCollision;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
 import com.example.sampleapp.PostOffice.MessageSpawnRearProjectile;
 import com.example.sampleapp.PostOffice.MessageWRU;
@@ -54,8 +50,6 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 import com.example.sampleapp.Managers.GameManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -102,7 +96,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.add(player);
 
         InitAbiLoot();
-        LoseScreen();
+        StartAbilityPhase();
 
         GameManager.getInstance().startGame();
     }
@@ -294,7 +288,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         if(message instanceof MessageSpawnRearProjectile)
         {
             MessageSpawnRearProjectile messageSpawnProjectile = (MessageSpawnRearProjectile) message;
-            Vector2 targetPos = messageSpawnProjectile.targetPos;
+            Vector2 targetPos = messageSpawnProjectile.direction;
             switch (messageSpawnProjectile.projectileType) {
                 case PLAYER_FIRE_MISSILE:
                     PlayerMagicMissile playerProjectile = new PlayerMagicMissile();
@@ -305,6 +299,30 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     m_goListToAdd.add(playerProjectile);
                     break;
             }
+        }
+
+        if(message instanceof MessageCheckForDamageCollision) {
+            MessageCheckForDamageCollision msgCollisionCheck = (MessageCheckForDamageCollision) message;
+            GameEntity entityToCheck = msgCollisionCheck.gameEntityToCheck;
+            for(GameEntity entity : m_goList) {
+                if(entity == entityToCheck) continue;
+                if(entity.collider == null) {
+                    continue;
+                }
+                if(Collision.CollisionDetection(entityToCheck.collider, entity.collider, new Vector2(0, 0))) {
+
+                    if (entity instanceof Enemy) {
+                        float minDamage = 50.0f;
+                        float maxDamage = 60.0f;
+                        float damage = (float) (Math.random() * (maxDamage - minDamage) + minDamage);
+                        ((Enemy) entity).TakeDamage(damage);
+                        entityToCheck.destroy();
+                        break;
+                    }
+                }
+            }
+
+            return true;
         }
 
         if(message instanceof MessageAddGO)

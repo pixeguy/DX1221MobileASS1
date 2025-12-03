@@ -7,13 +7,17 @@ import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageCheckForDamageCollision;
 import com.example.sampleapp.PostOffice.ObjectBase;
+import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 /** @noinspection FieldCanBeLocal*/
 public class PlayerMagicMissile extends Projectile {
+
+    private Vector2 direction = new Vector2(0, 0);
 
     public void onCreate(GameEntity target, float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
@@ -31,10 +35,10 @@ public class PlayerMagicMissile extends Projectile {
         isActive = true;
     }
 
-    public void onCreate(Vector2 targetPos, float movementSpeed, Vector2 pos, Vector2 scale) {
+    public void onCreate(Vector2 direction, float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
+        facingDirection.set(direction);
         m_speed = movementSpeed;
-        this.targetPos = targetPos;
         animatedSprite = new AnimatedSprite(
                 SpriteAnimationList.PlayerShootMissile.sprite,
                 SpriteAnimationList.PlayerShootMissile.rows,
@@ -69,12 +73,18 @@ public class PlayerMagicMissile extends Projectile {
             }
         }
         else {
-            Vector2 direction = targetPos.subtract(_position);
-            direction.normalize();
-            facingDirection.set(direction);
-            System.out.println(targetPos);
-
             super.onUpdate(dt);
+
+            int[] directions = CheckForUnvailableDirection();
+            for(int i : directions) {
+                if(i != -1){
+                    destroy();
+                    return;
+                }
+            }
+
+            MessageCheckForDamageCollision msg = new MessageCheckForDamageCollision(this);
+            PostOffice.getInstance().send("Scene", msg);
         }
     }
 }

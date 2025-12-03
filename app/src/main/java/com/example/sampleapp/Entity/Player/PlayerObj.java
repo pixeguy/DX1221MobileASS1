@@ -25,6 +25,8 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
+import java.util.Vector;
+
 /** @noinspection FieldCanBeLocal*/
 public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private static PlayerObj instance;
@@ -86,8 +88,9 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             {
                 if(currAbility instanceof RearShotAbi)
                 {
+                    Vector2 diff = targetGO._position.subtract(_position);
                     Vector2 projectilePosition2 = _position.add(facingDirection.multiply(-100.0f));
-                    MessageSpawnRearProjectile message2 = new MessageSpawnRearProjectile(targetPos,
+                    MessageSpawnRearProjectile message2 = new MessageSpawnRearProjectile(diff.normalize().multiply(-1),
                             MessageSpawnRearProjectile.PROJECTILE_TYPE.PLAYER_FIRE_MISSILE,
                             1000.0f, projectilePosition2);
                     PostOffice.getInstance().send("Scene", message2);
@@ -118,9 +121,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         if(targetGO != null)
         {
             Vector2 dir = targetGO._position.subtract(_position);
-            float len = (float)Math.sqrt(dir.x*dir.x + dir.y*dir.y);
-            if (len > 0) dir = new Vector2(dir.x/len, dir.y/len);
-            targetPos = dir.multiply(0.1f);
+            targetPos = dir.multiply(-100f);
         }
     }
 

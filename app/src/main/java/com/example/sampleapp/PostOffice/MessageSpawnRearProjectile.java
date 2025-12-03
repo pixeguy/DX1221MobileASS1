@@ -11,16 +11,16 @@ public class MessageSpawnRearProjectile extends Message{
 
     public MessageSpawnRearProjectile.PROJECTILE_TYPE projectileType;
     public GameEntity go;
-    public Vector2 targetPos;
+    public Vector2 direction;
     public float movementSpeed;
     public Vector2 pos;
     public Vector2 facingDirection = new Vector2(0, 0);
 
 
-    public MessageSpawnRearProjectile(Vector2 targetpos, MessageSpawnRearProjectile.PROJECTILE_TYPE projectileType,
+    public MessageSpawnRearProjectile(Vector2 direction, MessageSpawnRearProjectile.PROJECTILE_TYPE projectileType,
                                   float movementSpeed, Vector2 pos){
         this.projectileType = projectileType;
-        this.targetPos = targetpos;
+        this.direction = direction;
         this.movementSpeed = movementSpeed;
         this.pos = pos;
     }
