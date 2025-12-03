@@ -85,6 +85,7 @@ public abstract class GameEntity {
 
     public Paint paint = new Paint();
     private boolean tinted = false;
+    public boolean visible = true;
 
     public void setTint(int color) {
         tinted = true;
@@ -92,7 +93,10 @@ public abstract class GameEntity {
         ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         paint.setColorFilter(filter);
     }
-
+    public void SetALPHATOZERO()
+    {
+        paint.setAlpha(128);
+    }
     public void clearTint() {
         tinted = false;
         paint.setColorFilter(null);

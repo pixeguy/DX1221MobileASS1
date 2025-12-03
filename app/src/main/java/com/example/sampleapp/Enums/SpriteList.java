@@ -62,6 +62,14 @@ public enum SpriteList {
     GameOverScreen(R.drawable.gameover),
     EnemySpawnMarkerSprite(R.drawable.enemy_spawn_indicator),
     GrassBgSprite(R.drawable.grassbg),
+    Crystal(R.drawable.crystal),
+    CrystalBtn(R.drawable.crystalbtn),
+    Potion(R.drawable.potion),
+    PotionBtn(R.drawable.potionbtn),
+    Sword(R.drawable.sword),
+    SwordBtn(R.drawable.swordbtn),
+    Staff(R.drawable.staff),
+    StaffBtn(R.drawable.staffbtn),
     ;
 
     public final int spriteID;

@@ -61,6 +61,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public int value = 0;
     public Ability currAbility;
     public int strength = 0;
+    public int defence = 0;
+    public int speed = 0;
 
     private Vibrator _vibrator;
     public Vector2 targetPos;
@@ -78,6 +80,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public static PlayerObj getInstance() {
         if(instance == null) {
             instance = new PlayerObj();
+            Log.d("PLAYER", "Created New Player");
         }
         return instance;
     }

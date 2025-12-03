@@ -100,6 +100,15 @@ public enum SpriteAnimationList {
     GameOverScreen(SpriteList.GameOverScreen.sprite, 1,1,1,0,0,false),
 
     EnemySpawnMarker(SpriteList.EnemySpawnMarkerSprite.sprite, 1, 1, 1, false),
+    Crystal(SpriteList.Crystal.sprite, 1, 1, 1, false),
+    CrystalBtn(SpriteList.CrystalBtn.sprite, 1, 1, 1, false),
+    Potion(SpriteList.Potion.sprite, 1, 1, 1, false),
+    PotionBtn(SpriteList.PotionBtn.sprite, 1, 1, 1, false),
+    Sword(SpriteList.Sword.sprite, 1, 1, 1, false),
+    SwordBtn(SpriteList.SwordBtn.sprite, 1, 1, 1, false),
+    Staff(SpriteList.Staff.sprite, 1, 1, 1, false),
+    StaffBtn(SpriteList.StaffBtn.sprite, 1, 1, 1, false),
+
     ;
 
     public final int rows;

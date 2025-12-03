@@ -14,8 +14,8 @@ public class LootButtonObj extends ButtonObj {
     public float lerpSpeed = 10f;      // tune this
 
 
-    public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList animSprite, LootType loot) {
-        super.onCreate(pos, scale, animSprite);
+    public void onCreate(Vector2 pos, Vector2 scale, LootType loot) {
+        super.onCreate(pos, scale, loot.spriteBtnID);
         this.loot = loot;
     }
 

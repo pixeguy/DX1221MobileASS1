@@ -99,7 +99,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.add(player);
 
         InitAbiLoot();
-        StartAbilityPhase();
+        StartLootPhase();
 
         GameManager.getInstance().startGame();
 
@@ -133,11 +133,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     @Override
     public void onUpdate(float dt) {
-        /*for(GameEntity obj : m_goAbiLootList) {
+        for(GameEntity obj : m_goAbiLootList) {
             if(obj.isActive) {
                 obj.onUpdate(dt);
             }
-        }*/
+        }
 
         HandleTouch();
 
@@ -160,6 +160,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.sort((go1, go2) -> go1.getOrdinal() - go2.getOrdinal()); // sort by ordinal
         for (GameEntity go : m_goList) {
             if(go.canDestroy() || !go.isActive) continue;
+            if(!go.visible) continue;
             go.onRender(canvas);
         }
         UIManager.getInstance().onRender(canvas);
@@ -517,8 +518,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         lootBtns = new ArrayList<>();
 
         Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-135);
-        Vector2 scale = new Vector2(0.1f, 0.1f);
-        float spacing = 72 * GameActivity.instance.getResources().getDisplayMetrics().density;
+        Vector2 scale = new Vector2(0.07f, 0.07f);
+        float spacing = 50 * GameActivity.instance.getResources().getDisplayMetrics().density;
         // create loot buttons AFTER the loop
         for (int i = 0; i < 5; i++)
         {
@@ -529,8 +530,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    SpriteAnimationList.ExampleItem,
-                    randomType
+                    LootType.Sword
             );
             lootBtnn.isActive = true;
             lootBtnn.setOrdinal(4);
@@ -622,7 +622,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         swipeGestureDetector.onTouchEvent(event);
 
-        /*int action = event.getActionMasked();
+        int action = event.getActionMasked();
         int index = event.getActionIndex();
         int pointerID = event.getPointerId(index);
         Vector2 touchPos = new Vector2(event.getX(index),event.getY(index));
@@ -677,6 +677,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                                     draggingObj = lootobj;
                                     lootBtn.isActive = false;
                                     //RelayoutLootButtons();
+                                    lootBtn.SetALPHATOZERO();
                                     lootobj.sourceButton = lootBtn;
                                     lootobj.sourceButton.used = true;
                                     initialRot = 0;
@@ -689,6 +690,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                                             if (loot.sourceButton == lootBtn) {
                                                 draggingObj = loot;
                                                 lootBtn.isActive = false;
+                                                lootBtn.paint.setAlpha(0);
                                                 initialRot = loot.rotationAngle;
 
                                                 if(loot.placed){
@@ -856,7 +858,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                             else{
                                 Log.d("Pointer","C");
                                 loot.sourceButton.rotationAngle = 0;
-                                loot.sourceButton._scale = new Vector2(0.1f,0.1f);
+                                loot.sourceButton._scale = new Vector2(0.07f,0.07f);
                                 loot.sourceButton.used = false;
                                 loot.sourceButton.isActive = true;
                                 m_goList.remove(draggingObj);
@@ -868,7 +870,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     }
                     else{
                         loot.sourceButton.rotationAngle = 0;
-                        loot.sourceButton._scale = new Vector2(0.1f,0.1f);
+                        loot.sourceButton._scale = new Vector2(0.07f,0.07f);
                         loot.sourceButton.used = false;
                         loot.sourceButton.isActive = true;
                         m_goList.remove(draggingObj);
@@ -892,7 +894,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             case MotionEvent.ACTION_CANCEL:
 
                 break;
-        }*/
+        }
     }
 
     public void RebuildLootBtns() {
@@ -905,12 +907,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
 
         Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-135);
-        float spacing = 72 * GameActivity.instance.getResources().getDisplayMetrics().density;
+        float spacing = 50 * GameActivity.instance.getResources().getDisplayMetrics().density;
 
         for(int i = 0; i < unusedButtons.size(); i++)
         {
             int offsetY = (int)spacing * i;
             LootButtonObj btn = unusedButtons.get(i);
+            btn.paint.setAlpha(1);
             btn.targetPos = new Vector2(startPos.x, startPos.y + offsetY);
         }
     }

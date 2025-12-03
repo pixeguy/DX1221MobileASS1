@@ -207,7 +207,6 @@ public class MainGameScene extends GameScene {
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    SpriteAnimationList.ExampleItem,
                     randomType
             );
             lootBtnn.isActive = true;
