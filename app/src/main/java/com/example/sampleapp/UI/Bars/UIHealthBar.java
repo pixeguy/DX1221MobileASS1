@@ -26,6 +26,7 @@ public class UIHealthBar extends UIElement {
 
     public UIHealthBar(Vector2 position, float width, float height) {
         super(position, width, height);
+        interactable = false;
     }
 
     public void setValue(float max) {

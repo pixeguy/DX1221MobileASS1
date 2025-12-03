@@ -92,33 +92,22 @@ public class UIManager extends Singleton<UIManager> {
     }
 
     private void assignTouchToElement(int pointerId, float x, float y) {
-        if(elements.size() > 1)
-        {
-            for (UIElement e : elements) {
-                for(UIElement e2 : elements) {
-                    if(e == e2) continue;
-
-                    if (!e2.isPointInside(x, y)) {
-                        e.onTouchDown(x, y);
-                        activeTouches.put(pointerId, e);
-                        return;
-                    }
-                }
-            }
-        }
-        else {
-            for (UIElement e : elements) {
+        for (UIElement e : elements) {
+            if (e.isPointInside(x, y) && e.interactable) {
                 e.onTouchDown(x, y);
+                Log.d("Touch", "Element touched");
                 activeTouches.put(pointerId, e);
             }
         }
-
-
     }
 
     public void clear() {
         elements.clear();
         toAdd.clear();
         toRemove.clear();
+    }
+
+    public boolean isTouched(int pointerId) {
+        return activeTouches.containsKey(pointerId);
     }
 }

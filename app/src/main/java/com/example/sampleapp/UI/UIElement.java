@@ -104,9 +104,9 @@ public abstract class UIElement {
         } else if (shape == ShapeType.Circle) {
             Vector2 c = getGlobalPosition();
             Vector2 scl = getGlobalScale();
-            float globalR = radius * (scl.x + scl.y);
-            float dx = px - (c.x + radius * scl.x);
-            float dy = py - (c.y + radius * scl.y);
+            float globalR = radius * ((scl.x + scl.y) / 2.0f);
+            float dx = px - (c.x * scl.x);
+            float dy = py - (c.y * scl.y);
             return (dx * dx + dy * dy) <= (globalR * globalR);
         }
         return false;

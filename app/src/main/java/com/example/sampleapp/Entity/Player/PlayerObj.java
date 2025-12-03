@@ -2,6 +2,7 @@ package com.example.sampleapp.Entity.Player;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -11,6 +12,7 @@ import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Interface.Damageable;
+import com.example.sampleapp.Managers.DamageTextManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
@@ -18,8 +20,10 @@ import com.example.sampleapp.PostOffice.MessageWRU;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.PostOffice.PostOffice;
+import com.example.sampleapp.UI.Bars.UICDBar;
 import com.example.sampleapp.UI.Bars.UIHealthBar;
 import com.example.sampleapp.UI.Buttons.UIJoystick;
+import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.VisualEffect.OnHitVisualEffect;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -27,10 +31,13 @@ import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Singleton;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
+import java.util.Random;
+
 /** @noinspection FieldCanBeLocal*/
 public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private static PlayerObj instance;
     private UIHealthBar healthBar;
+    private UICDBar dashCDBar;
     private HealthSystem healthSystem;
     private OnHitVisualEffect hitVisualEffect;
 
@@ -51,6 +58,15 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public int strength = 0;
 
     private Vibrator _vibrator;
+
+    private final Vector2 dashVelocity = new Vector2(0, 0);
+    private float dashTimer = 0.0f;
+    private final float dashDuration = 0.3f;
+    private final float dashSpeed = 4500.0f;
+    private float dashCDTimer;
+    private final float dashCDDuration = 2.0f;
+    private boolean isDashing = false;
+
 
 
     public static PlayerObj getInstance() {
@@ -74,6 +90,14 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _ordinal = 1;
         isActive = true;
 
+        dashCDBar = new UICDBar(150, 150, 150, 150);
+        dashCDBar.setFillMode(UICDBar.FillMode.CounterClockwise360);
+        dashCDBar.setCooldown(dashCDDuration);
+        dashCDBar.setTimer(dashCDTimer);
+        dashCDBar.setColors(Color.DKGRAY, Color.CYAN);
+        dashCDBar.zIndex = 1;
+        UIManager.getInstance().addElement(dashCDBar);
+
         healthSystem = new HealthSystem(this, maxHealth);
         healthBar = new UIHealthBar(pos, 150, 30);
         healthBar.offset.set(0, -125);
@@ -88,6 +112,14 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             if(hp <= 0) {
                 UIManager.getInstance().removeElement(healthBar);
             }
+
+            float ex = _position.x + Utilities.RandomFloat(-50, 50);
+            float ey = _position.y + 50;
+
+            if (damage > 40.0f)
+                DamageTextManager.getInstance().spawnText("CRIT " + (int)damage, ex, ey, Color.RED);
+            else
+                DamageTextManager.getInstance().spawnText("-" + (int)damage, ex, ey, Color.YELLOW);
 
             float healthPer = hp / maxHealth;
             if ((damage > 40.0f || healthPer < 0.5f) &&
@@ -114,9 +146,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             PostOffice.getInstance().send("Scene", message);
             shootTimer = fireRate;
         }
-
-        if(currAbility != null)
-        {
+        if(currAbility != null) {
             currAbility.onUpdate(dt);
         }
     }
@@ -127,15 +157,37 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     }
 
     private void HandMovement(float dt) {
-        _position.x += inputDirection.x * movementSpeed * dt;
-        _position.y += inputDirection.y * movementSpeed * dt;
-
-        Vector2 movementDirection = new Vector2(inputDirection.x, -inputDirection.y);
-
-        if(!movementDirection.equals(new Vector2(0, 0))) {
-            facingDirection.set(movementDirection.x, -movementDirection.y);
-            _rotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
+        if(!isDashing) {
+            Vector2 movementDirection = new Vector2(inputDirection.x, -inputDirection.y);
+            _position.x += movementDirection.x * movementSpeed * dt;
+            _position.y += -movementDirection.y * movementSpeed * dt;
+            if(!movementDirection.equals(new Vector2(0, 0))) {
+                facingDirection.set(movementDirection.x, -movementDirection.y);
+                _rotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
+            }
         }
+        else {
+            dashTimer -= dt;
+
+            _position.x += dashVelocity.x * dt;
+            _position.y += dashVelocity.y * dt;
+
+            float dashFriction = 8.5f;
+            dashVelocity.x -= dashVelocity.x * dashFriction * dt;
+            dashVelocity.y -= dashVelocity.y * dashFriction * dt;
+
+            if(dashTimer <= 0.0f) {
+                isDashing = false;
+                dashCDTimer = dashCDDuration;
+                dashVelocity.set(0, 0);
+            }
+        }
+
+        if(dashCDTimer > 0.0f) {
+            dashCDTimer -= dt;
+        }
+
+        dashCDBar.setTimer(dashCDTimer);
     }
 
     @Override
@@ -155,5 +207,12 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void TakeDamage(float amount) {
         healthSystem.takeDamage(amount);
+    }
+
+    public void Dash(Vector2 direction) {
+        if (isDashing || dashCDTimer > 0.0f) return;
+        isDashing = true;
+        dashVelocity.set(direction.multiply(dashSpeed));
+        dashTimer = dashDuration;
     }
 }

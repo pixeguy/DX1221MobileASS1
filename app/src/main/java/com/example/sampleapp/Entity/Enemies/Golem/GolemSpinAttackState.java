@@ -1,10 +1,14 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
+import android.graphics.Color;
+
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.Statemchine.State;
+import com.example.sampleapp.UI.Bars.UICDBar;
 import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -33,6 +37,8 @@ public class GolemSpinAttackState extends State {
 
     private final Vector2 targetDir = new Vector2(0, 0);
 
+    private UICDBar chargeBar;
+
     public GolemSpinAttackState(GameEntity go, String mStateID) {
         super(go, mStateID);
     }
@@ -43,6 +49,14 @@ public class GolemSpinAttackState extends State {
         m_go.SetAnimation(SpriteAnimationList.GolemSpinAttackFront);
         attackState = AttackState.Enter;
         ((Golem)m_go).isAttacking = true;
+
+        chargeBar = new UICDBar(m_go._position.x, m_go._position.y, 30, 100);
+        chargeBar.setOwner(m_go, new Vector2(-100, 25));
+        chargeBar.setFillMode(UICDBar.FillMode.BottomToTop);
+        chargeBar.setCooldown(2500);
+        chargeBar.setTimer(2500 - angularVel);
+        chargeBar.setColors(Color.BLACK, Color.RED);
+        UIManager.getInstance().addElement(chargeBar);
     }
 
     @Override
@@ -54,6 +68,7 @@ public class GolemSpinAttackState extends State {
                 acceleration += accelerationRate * dt;
                 angularVel += acceleration * dt;
                 angularVel = Math.min(angularVel, 2500.0f);
+                chargeBar.setTimer(2500 - angularVel);
                 if(angularVel >= 2500.0f) {
                     acceleration = 0.0f;
                     attackState = AttackState.Perform;
@@ -61,6 +76,7 @@ public class GolemSpinAttackState extends State {
                     Vector2 direction = diff.normalize();
                     targetDir.set(direction.multiply(-1));
                     velocity.set(targetDir.multiply(impulseForce));
+                    chargeBar.visible = false;
                 }
                 break;
             case Perform:
@@ -114,10 +130,10 @@ public class GolemSpinAttackState extends State {
         acceleration = 0.0f;
         angularVel = 0.0f;
         ((Golem)m_go).isAttacking = false;
+        UIManager.getInstance().removeElement(chargeBar);
     }
 
     private void ApplyPhysics(float dt, float worldWidth, float worldHeight) {
-
         velocity.x *= damping;
         velocity.y *= damping;
 

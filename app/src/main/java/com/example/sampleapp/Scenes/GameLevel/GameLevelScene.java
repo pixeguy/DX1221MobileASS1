@@ -14,6 +14,7 @@ import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.TestAbility;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
@@ -67,6 +68,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     Random rand = new Random();
     private ArrayList<GameEntity> m_goAbiLootList;
 
+    private SwipeGestureDetector swipeGestureDetector;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,6 +81,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         UIJoystick playerMovementJoystick = new UIJoystick(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 200, 100);
         playerMovementJoystick.setSprites(SpriteList.BaseJoystickSprite.sprite, SpriteList.HandleJoystickSprite.sprite);
+        playerMovementJoystick.zIndex = 1;
         UIManager.getInstance().addElement(playerMovementJoystick);
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
@@ -91,6 +95,33 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         //StartLootPhase();
 
         GameManager.getInstance().startGame();
+
+        swipeGestureDetector = new SwipeGestureDetector();
+        swipeGestureDetector.setOnSwipeListener(new SwipeGestureDetector.OnSwipeListener() {
+            @Override
+            public void onSwipeUp() {
+                Log.d("Swipe", "Up");
+                player.Dash(new Vector2(0,-1));
+            }
+
+            @Override
+            public void onSwipeDown() {
+                Log.d("Swipe", "Down");
+                player.Dash(new Vector2(0,1));
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                Log.d("Swipe", "Left");
+                player.Dash(new Vector2(-1,0));
+            }
+
+            @Override
+            public void onSwipeRight() {
+                Log.d("Swipe", "Right");
+                player.Dash(new Vector2(1,0));
+            }
+        });
     }
 
     @Override
@@ -99,8 +130,9 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             if(obj.isActive) {
                 obj.onUpdate(dt);
             }
-        }
-        HandleTouch();*/
+        }*/
+
+        HandleTouch();
 
         if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) {
             return;
@@ -486,14 +518,16 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     private void HandleTouch() {
         MotionEvent event = GameActivity.instance.getMotionEvent();
-        if (event == null) {return;}
+        if (event == null) { return; }
+        UIManager.getInstance().handleTouch(event);
 
-        int action = event.getActionMasked();
+        swipeGestureDetector.onTouchEvent(event);
+
+        /*int action = event.getActionMasked();
         int index = event.getActionIndex();
         int pointerID = event.getPointerId(index);
         Vector2 touchPos = new Vector2(event.getX(index),event.getY(index));
-        switch (action)
-        {
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if(!isTouching){ // action down registers as hold on android studio emulator
                     for(GameEntity entity : m_goAbiLootList)
@@ -754,7 +788,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             case MotionEvent.ACTION_CANCEL:
 
                 break;
-        }
+        }*/
     }
 
     public void RebuildLootBtns() {

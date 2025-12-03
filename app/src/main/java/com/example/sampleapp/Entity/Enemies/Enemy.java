@@ -13,6 +13,7 @@ import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.Statemchine.Statemachine;
 import com.example.sampleapp.UI.Bars.UIHealthBar;
+import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.VisualEffect.OnHitVisualEffect;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -58,7 +59,7 @@ public class Enemy extends GameEntity implements ObjectBase, Damageable {
             healthBar.updateValue(hp);
             hitVisualEffect.playHitFlash();
 
-            float ex = _position.x;
+            float ex = _position.x + Utilities.RandomFloat(-50, 50);
             float ey = _position.y + 50; // slightly above head
 
             if (damage > 45)

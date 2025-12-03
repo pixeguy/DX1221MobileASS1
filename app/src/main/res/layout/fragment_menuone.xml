@@ -4,9 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFC107"> <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:background="#FFC107">
+
+    <TextView
+        android:id="@+id/view_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Menu One"
         android:textSize="36sp"
         app:layout_constraintTop_toTopOf="parent"

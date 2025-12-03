@@ -44,6 +44,7 @@ public class UIDamageText extends UIElement {
     public UIDamageText(String text, float x, float y) {
         super(x, y, 0, 0);
         this.text = text;
+        interactable = false;
 
         Typeface font = ResourcesCompat.getFont(GameActivity.instance, R.font.alagard);
         paint.setTypeface(font);

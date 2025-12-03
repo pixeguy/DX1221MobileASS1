@@ -135,7 +135,6 @@ public class GameActivity extends FragmentActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         _motionEvent = event;
-        UIManager.getInstance().handleTouch(_motionEvent);
         return true;
     }
     private UpdateThread _updateThread;

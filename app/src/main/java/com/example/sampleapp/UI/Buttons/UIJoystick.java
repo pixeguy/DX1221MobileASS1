@@ -82,16 +82,8 @@ public class UIJoystick extends UIElement {
 
     @Override
     public void onTouchDown(float x, float y) {
-        if (isPointInside(x, y)) {
-            isDragging = true;
-            updateHandle(x, y);
-        }
-        else {
-            isDragging = true;
-            position.set(x, y);
-            handlePos.set(x, y);
-            updateHandle(x, y);
-        }
+        isDragging = true;
+        updateHandle(x, y);
     }
 
     @Override
