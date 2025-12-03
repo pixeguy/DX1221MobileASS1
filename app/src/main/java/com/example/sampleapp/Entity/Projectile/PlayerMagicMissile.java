@@ -75,7 +75,7 @@ public class PlayerMagicMissile extends Projectile {
         else {
             super.onUpdate(dt);
 
-            int[] directions = CheckForUnvailableDirection();
+            int[] directions = CheckForUnavailableDirection();
             for(int i : directions) {
                 if(i != -1){
                     destroy();

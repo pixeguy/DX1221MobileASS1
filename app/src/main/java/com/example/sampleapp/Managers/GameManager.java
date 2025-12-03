@@ -74,7 +74,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             //win
             TransitionToState(GameState.GAME_OVER);
         }
-        if(PlayerObj.getInstance().currentHealth <= 0)
+        if(PlayerObj.getInstance().healthSystem.getCurrentHealth() <= 0)
         {
             //lose
         }

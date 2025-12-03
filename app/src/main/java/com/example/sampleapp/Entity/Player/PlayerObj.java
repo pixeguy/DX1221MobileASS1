@@ -1,5 +1,4 @@
 package com.example.sampleapp.Entity.Player;
-package com.example.sampleapp.Entity.Player;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -44,7 +43,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private static PlayerObj instance;
     private UIHealthBar healthBar;
     private UICDBar dashCDBar;
-    private HealthSystem healthSystem;
+    public HealthSystem healthSystem;
     private OnHitVisualEffect hitVisualEffect;
 
     private Vector2 inputDirection = null;
