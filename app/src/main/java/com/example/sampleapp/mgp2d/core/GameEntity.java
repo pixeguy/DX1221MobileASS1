@@ -30,7 +30,6 @@ public abstract class GameEntity {
     public Vector2 facingDirection = new Vector2(0, 0);
     public Statemachine sm = null;
 
-    public float currentHealth = 100.0f;
     public float mass = 1.0f;
 
     public GameEntity targetGO = null;
@@ -48,8 +47,7 @@ public abstract class GameEntity {
         SetAnimation(spriteAnim);
     }
 
-    public void SetAnimation(SpriteAnimationList nextAnim)
-    {
+    public void SetAnimation(SpriteAnimationList nextAnim) {
         if(nextAnim == SpriteAnimationList.ExamplePause){
             Log.d("Button", "Btn created");
         }
@@ -87,11 +85,9 @@ public abstract class GameEntity {
 
     public Paint paint = new Paint();
     private boolean tinted = false;
-    private int tintColor = 0x77FF0000; // default: semi-transparent red
 
     public void setTint(int color) {
         tinted = true;
-        tintColor = color;
 
         ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         paint.setColorFilter(filter);
@@ -143,7 +139,7 @@ public abstract class GameEntity {
         return false;
     }
 
-    public int[] CheckForUnvailableDirection() {
+    public int[] CheckForUnavailableDirection() {
         int[] directions = new int[] {-1, -1, -1, -1};
         for(int i = 0; i < directions.length; i++) {
             Vector2 direction = new Vector2(0, 0);

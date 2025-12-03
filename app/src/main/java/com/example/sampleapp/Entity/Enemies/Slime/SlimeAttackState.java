@@ -39,7 +39,7 @@ public class SlimeAttackState extends State {
     @Override
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
-        if(!isDamageDone && ((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).attackRange)) {
+        if(!isDamageDone && ((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).ATTACK_RANGE)) {
             Random rand = new Random();
             float minDamage = 20.0f;
             float maxDamage = 45.0f;

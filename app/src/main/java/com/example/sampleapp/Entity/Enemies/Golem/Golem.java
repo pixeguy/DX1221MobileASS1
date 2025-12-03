@@ -1,11 +1,10 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Enemies.Enemy;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeAttackState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeDeathState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeIdleState;
-import com.example.sampleapp.Entity.Enemies.Slime.SlimeRunState;
+import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.UI.Bars.UIHealthBar;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.Objects;
@@ -13,36 +12,34 @@ import java.util.Random;
 
 /** @noinspection FieldCanBeLocal*/
 public class Golem extends Enemy {
-    public static int numSlam = 3;
-    public static float detectionRange = 800.0f;
-    public static float walkSpeed = 100.0f;
+    // --- Stats ---
+    public static int MAX_NUM_SLAM = 3;
+    public static float DETECT_RANGE = 800.0f;
+    public static float WALK_SPEED = 100.0f;
+    public static float RUN_SPEED = 300.0f;
+    public static float ATTACK_RANGE = 260.0f;
+    private final float MAX_SLAM_CD = 2.0f;
+    private final float MAX_SPIN_CD = 5.0f;
+    private final float MAX_HEALTH = 250.0f;
 
-    public static float runSpeed = 300.0f;
-
-    public static float attackRange = 260.0f;
-
+    // --- Properties ---
     private float slamAttackCooldown = 0.0f;
-
     private float spinAttackCD = 0.0f;
-
-    private final float maxAttackCooldown = 2.0f;
-    private final float maxSpinAttackCD = 5.0f;
-    private final float maxHealth = 250.0f;
 
     public boolean isAttacking = false;
 
     public void SetAttackCooldown() {
-        this.slamAttackCooldown = maxAttackCooldown;
+        this.slamAttackCooldown = MAX_SLAM_CD;
     }
 
     public void SetSpinAttackCooldown() {
-        this.spinAttackCD = maxSpinAttackCD;
+        this.spinAttackCD = MAX_SPIN_CD;
     }
 
     @Override
     public void onCreate(Vector2 pos, Vector2 scale) {
         super.onCreate(pos, scale);
-        currentHealth = maxHealth;
+        Init(pos, MAX_HEALTH);
         mass = 0.0f;
 
         int random = (int) (Math.random() * 4);
@@ -77,7 +74,7 @@ public class Golem extends Enemy {
         if(!isAttacking)
         {
             if(!Objects.equals(sm.GetCurrentStateID(), "SlamAttack") && slamAttackCooldown <= 0.0f) {
-                if(CheckIfPlayerNear(attackRange) && !Objects.equals(sm.GetCurrentStateID(), "Death")) {
+                if(CheckIfPlayerNear(ATTACK_RANGE) && !Objects.equals(sm.GetCurrentStateID(), "Death")) {
                     sm.ChangeState("SlamAttack");
                 }
             }

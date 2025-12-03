@@ -1,15 +1,10 @@
 package com.example.sampleapp.Entity.Projectile;
 
-import android.graphics.Canvas;
-
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
-import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.ObjectBase;
-import com.example.sampleapp.mgp2d.core.AnimatedSprite;
-import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.Random;
@@ -45,7 +40,7 @@ public class EnemyToxicMissile extends Projectile implements ObjectBase {
 
         super.onUpdate(dt);
 
-        int[] directions = CheckForUnvailableDirection();
+        int[] directions = CheckForUnavailableDirection();
         for(int i : directions) {
             if(i != -1){
                 destroy();

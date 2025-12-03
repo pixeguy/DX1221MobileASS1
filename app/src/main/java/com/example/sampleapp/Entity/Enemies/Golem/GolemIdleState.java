@@ -1,7 +1,5 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
-import android.util.Log;
-
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
@@ -45,9 +43,9 @@ public class GolemIdleState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(!((Enemy)m_go).CheckIfPlayerNear(Golem.attackRange))
+        if(!((Enemy)m_go).CheckIfPlayerNear(Golem.ATTACK_RANGE))
         {
-            if(((Enemy)m_go).CheckIfPlayerNear(Golem.detectionRange)){
+            if(((Enemy)m_go).CheckIfPlayerNear(Golem.DETECT_RANGE)){
                 m_go.sm.ChangeState("Run");
             }
             else if(stateTimer > idleTime) {

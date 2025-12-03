@@ -55,4 +55,12 @@ public class Utilities {
         }
         return new Vector2(0, 0);
     }
+
+    public static float RandomFloat(float min, float max) {
+        return (float) (Math.random() * (max - min) + min);
+    }
+
+    public static int RandomInt(int min, int max) {
+        return (int) (Math.random() * (max - min) + min);
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
-import android.util.Log;
-
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Player.PlayerObj;
@@ -49,7 +47,7 @@ public class GolemRunState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(!((Enemy)m_go).CheckIfPlayerNear(Golem.detectionRange))
+        if(!((Enemy)m_go).CheckIfPlayerNear(Golem.DETECT_RANGE))
         {
             m_go.sm.ChangeState("Idle");
             return;
@@ -70,7 +68,7 @@ public class GolemRunState extends State {
         }
 
         Vector2 dir = target.subtract(m_go._position);
-        if(dir.getMagnitude() < Golem.runSpeed * dt) {
+        if(dir.getMagnitude() < Golem.RUN_SPEED * dt) {
             target.set(m_go._position);
             int directions = random.nextInt(4);
             if(directions == 0 && moveDown) {
@@ -90,7 +88,7 @@ public class GolemRunState extends State {
                 m_go.SetAnimation(SpriteAnimationList.GolemRunLeft);
             }
 
-            target = m_go._position.add(m_go.facingDirection.multiply(Golem.runSpeed));
+            target = m_go._position.add(m_go.facingDirection.multiply(Golem.RUN_SPEED));
             CircleCollider2D collider = (CircleCollider2D) m_go.collider;
             if(target.x - collider.radius < 0.0f || target.x + collider.radius > GameActivity.instance.getResources().getDisplayMetrics().widthPixels ||
                 target.y - collider.radius < 0.0f || target.y + collider.radius > GameActivity.instance.getResources().getDisplayMetrics().heightPixels)
@@ -98,7 +96,7 @@ public class GolemRunState extends State {
         }
         else {
             try {
-                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Golem.runSpeed * dt)));
+                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Golem.RUN_SPEED * dt)));
             }catch (Exception ignored){
 
             }

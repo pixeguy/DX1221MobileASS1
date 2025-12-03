@@ -1,10 +1,7 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
-import android.util.Log;
-
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
-import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -51,7 +48,7 @@ public class GolemWalkState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(((Enemy) m_go).CheckIfPlayerNear(Golem.detectionRange))
+        if(((Enemy) m_go).CheckIfPlayerNear(Golem.DETECT_RANGE))
         {
             m_go.sm.ChangeState("Run");
             return;
@@ -64,7 +61,7 @@ public class GolemWalkState extends State {
         if(m_go.CheckIfOutsideWorldBound(m_go.facingDirection, 50)){
             target.set(m_go._position);
 
-            int[] directions = m_go.CheckForUnvailableDirection();
+            int[] directions = m_go.CheckForUnavailableDirection();
 
             if(directions[0] == 0) {
                 m_go.facingDirection = new Vector2(0, 1);
@@ -82,11 +79,11 @@ public class GolemWalkState extends State {
                 m_go.facingDirection = new Vector2(-1, 0);
                 m_go.SetAnimation(SpriteAnimationList.GolemWalkLeft);
             }
-            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.baseSpeed));
+            target = m_go._position.add(m_go.facingDirection.multiply(Toxito.MOVE_SPEED));
         }
 
         Vector2 dir = target.subtract(m_go._position);
-        if(dir.getMagnitude() < Golem.walkSpeed * dt) {
+        if(dir.getMagnitude() < Golem.WALK_SPEED * dt) {
             target.set(m_go._position);
             int directions = random.nextInt(4);
             if(directions == 0) {
@@ -106,11 +103,11 @@ public class GolemWalkState extends State {
                 m_go.SetAnimation(SpriteAnimationList.GolemWalkLeft);
             }
 
-            target = m_go._position.add(m_go.facingDirection.multiply(Golem.walkSpeed));
+            target = m_go._position.add(m_go.facingDirection.multiply(Golem.WALK_SPEED));
         }
         else {
             try {
-                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Golem.walkSpeed * dt)));
+                m_go.setPosition(m_go._position.add(m_go.facingDirection.multiply(Golem.WALK_SPEED * dt)));
             }catch (Exception ignored){
 
             }

@@ -1,7 +1,5 @@
 package com.example.sampleapp.Entity.Enemies.Toxito;
 
-import android.util.Log;
-
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
@@ -45,7 +43,7 @@ public class ToxitoIdleState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(((Enemy) m_go).CheckIfPlayerNear(Toxito.detectionRange) || stateTimer > idleTime) {
+        if(((Enemy) m_go).CheckIfPlayerNear(Toxito.DETECTION_RANGE) || stateTimer > idleTime) {
             m_go.sm.ChangeState("Run");
         }
     }

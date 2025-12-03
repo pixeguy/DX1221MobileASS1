@@ -54,7 +54,7 @@ public class GolemSlamAttackState extends State {
         int currentFrame = m_go.animatedSprite.GetCurrentFrame() % m_go.animatedSprite.GetNumCol();
         if(currentFrame >= 5 && currentFrame < 7)
         {
-            if(canDamage && ((Enemy)m_go).CheckIfPlayerNear(Golem.attackRange))
+            if(canDamage && ((Enemy)m_go).CheckIfPlayerNear(Golem.ATTACK_RANGE))
             {
                 float minDamage = 50.0f;
                 float maxDamage = 100.0f;
@@ -71,7 +71,7 @@ public class GolemSlamAttackState extends State {
             canDamage = true;
         }
 
-        if(currentNumSlam == Golem.numSlam)
+        if(currentNumSlam == Golem.MAX_NUM_SLAM)
         {
             m_go.sm.ChangeState("Idle");
         }

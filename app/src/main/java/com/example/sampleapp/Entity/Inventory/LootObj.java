@@ -3,7 +3,7 @@ package com.example.sampleapp.Entity.Inventory;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.UI.Buttons.LootButtonObj;
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;

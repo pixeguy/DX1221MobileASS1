@@ -1,18 +1,20 @@
 package com.example.sampleapp.Entity;
 
+import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class EnemySpawnMarker extends GameEntity {
-    private GameEntity storedEnemy;
+    private Enemy storedEnemy;
 
     private float currentTimer = 0.0f;
 
-    public void onCreate(GameEntity enemy, Vector2 pos, Vector2 scale) {
+    public void onCreate(Enemy enemy, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
         SetAnimation(SpriteAnimationList.EnemySpawnMarker);
         storedEnemy = enemy;
+        enemy.healthBar.visible = false;
         isActive = true;
     }
 
@@ -23,6 +25,7 @@ public class EnemySpawnMarker extends GameEntity {
         float maxWaitTime = 2.0f;
         if(currentTimer >= maxWaitTime) {
             storedEnemy.isActive = true;
+            storedEnemy.healthBar.visible = true;
             destroy();
         }
     }

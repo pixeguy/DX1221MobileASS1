@@ -53,6 +53,8 @@ public enum SpriteList {
     ExampleItemSprite(R.drawable.splash, 0, 0),
     ExampleItem2Sprite(R.drawable.blank_bg, 0, 0),
     InventorySlotSprite(R.drawable.inventoryslot),
+    BaseJoystickSprite(R.drawable.controllerposition),
+    HandleJoystickSprite(R.drawable.controllerradius),
 
     RotateButtonSprite(R.drawable.rotate),
     CompleteButtonSprite(R.drawable.completebtn),

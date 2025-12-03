@@ -14,10 +14,14 @@ import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
-import com.example.sampleapp.Entity.Buttons.GenericBtn;
-import com.example.sampleapp.Entity.Buttons.IActivatable;
-import com.example.sampleapp.Entity.Buttons.JoystickObj;
-import com.example.sampleapp.Entity.Buttons.LootButtonObj;
+import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Input.SwipeGestureDetector;
+import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.UI.Buttons.GenericBtn;
+import com.example.sampleapp.UI.Buttons.IActivatable;
+import com.example.sampleapp.UI.Buttons.UIJoystick;
+import com.example.sampleapp.UI.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Inventory.LootObj;
 import com.example.sampleapp.Entity.Inventory.LootSlot;
@@ -58,10 +62,6 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     private int screenWidth;
     private int screenHeight;
 
-    private JoystickObj playerMovementJoystick;
-
-
-
     private ArrayList<LootButtonObj> lootBtns;
     boolean spawnPhase = false; boolean abilityPhase = false;
     private ArrayList<GenericBtn> lootGenerics;
@@ -75,6 +75,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     Random rand = new Random();
     private ArrayList<GameEntity> m_goAbiLootList;
 
+    private SwipeGestureDetector swipeGestureDetector;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -82,42 +84,70 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
 
-        m_goAbiLootList = new ArrayList<GameEntity>();
+        m_goAbiLootList = new ArrayList<>();
 
-        playerMovementJoystick = new JoystickObj(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 4);
-        playerMovementJoystick.setOrdinal(2);
-        playerMovementJoystick.isActive = true;
-        m_goList.add(playerMovementJoystick);
+        UIJoystick playerMovementJoystick = new UIJoystick(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f + 900.0f), 200, 100);
+        playerMovementJoystick.setSprites(SpriteList.BaseJoystickSprite.sprite, SpriteList.HandleJoystickSprite.sprite);
+        playerMovementJoystick.zIndex = 1;
+        UIManager.getInstance().addElement(playerMovementJoystick);
 
         m_goList.add(new BackgroundEntity(R.drawable.grassbg));
 
         PlayerObj player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
+        player.SetInputDirection(playerMovementJoystick.getOutput());
         m_goList.add(player);
 
         InitAbiLoot();
         StartAbilityPhase();
 
         GameManager.getInstance().startGame();
+
+        swipeGestureDetector = new SwipeGestureDetector();
+        swipeGestureDetector.setOnSwipeListener(new SwipeGestureDetector.OnSwipeListener() {
+            @Override
+            public void onSwipeUp() {
+                Log.d("Swipe", "Up");
+                player.Dash(new Vector2(0,-1));
+            }
+
+            @Override
+            public void onSwipeDown() {
+                Log.d("Swipe", "Down");
+                player.Dash(new Vector2(0,1));
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                Log.d("Swipe", "Left");
+                player.Dash(new Vector2(-1,0));
+            }
+
+            @Override
+            public void onSwipeRight() {
+                Log.d("Swipe", "Right");
+                player.Dash(new Vector2(1,0));
+            }
+        });
     }
 
     @Override
     public void onUpdate(float dt) {
-        for(GameEntity obj : m_goAbiLootList)
-        {
-            if(obj.isActive){
+        /*for(GameEntity obj : m_goAbiLootList) {
+            if(obj.isActive) {
                 obj.onUpdate(dt);
             }
-        }
+        }*/
+
         HandleTouch();
 
         if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) {
             return;
         }
-        GameManager.getInstance().updateGame(dt);
 
-        playerMovementJoystick.onUpdate(dt);
-        PlayerObj.getInstance().SetInputDirection(playerMovementJoystick.getInputDirection());
+        DamageTextManager.getInstance().onUpdate();
+        UIManager.getInstance().update(dt);
+        GameManager.getInstance().updateGame(dt);
 
         onUpdateGameObjects(dt);
         onPhysicsUpdate();
@@ -132,6 +162,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             if(go.canDestroy() || !go.isActive) continue;
             go.onRender(canvas);
         }
+        UIManager.getInstance().onRender(canvas);
     }
 
     protected void onUpdateGameObjects(float dt) {
@@ -151,6 +182,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     @Override
     public void onExit() {
         super.onExit();
+        UIManager.getInstance().clear();
         PostOffice.getInstance().clear();
     }
 
@@ -583,17 +615,18 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.add(gameOverScreen);
     }
 
-    private void HandleTouch()
-    {
+    private void HandleTouch() {
         MotionEvent event = GameActivity.instance.getMotionEvent();
-        if (event == null) {return;}
+        if (event == null) { return; }
+        UIManager.getInstance().handleTouch(event);
 
-        int action = event.getActionMasked();
+        swipeGestureDetector.onTouchEvent(event);
+
+        /*int action = event.getActionMasked();
         int index = event.getActionIndex();
         int pointerID = event.getPointerId(index);
         Vector2 touchPos = new Vector2(event.getX(index),event.getY(index));
-        switch (action)
-        {
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if(!isTouching){ // action down registers as hold on android studio emulator
                     for(GameEntity entity : m_goAbiLootList)
@@ -859,9 +892,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             case MotionEvent.ACTION_CANCEL:
 
                 break;
-        }
+        }*/
     }
-
 
     public void RebuildLootBtns() {
         ArrayList<LootButtonObj> unusedButtons = new ArrayList<>();
@@ -929,5 +961,4 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         return null; // no slot found
     }
-
 }

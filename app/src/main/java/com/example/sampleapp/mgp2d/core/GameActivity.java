@@ -68,6 +68,8 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.sampleapp.Managers.UIManager;
+
 public class GameActivity extends FragmentActivity {
 
     private static class UpdateThread extends Thread {

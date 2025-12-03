@@ -1,6 +1,5 @@
 package com.example.sampleapp.Entity.Enemies.Slime;
 
-import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -19,7 +18,7 @@ public class SlimeIdleState extends State {
     @Override
     public void OnEnter() {
         super.OnEnter();
-        if(((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).attackRange)) {
+        if(((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).ATTACK_RANGE)) {
             if(m_go.facingDirection.equals(0, -1))
                 m_go.SetAnimation(SpriteAnimationList.SlimeIdleBack);
             else if(m_go.facingDirection.equals(0, 1))
@@ -84,7 +83,7 @@ public class SlimeIdleState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(stateTimer >= idleDuration && !((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).attackRange)) {
+        if(stateTimer >= idleDuration && !((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).ATTACK_RANGE)) {
             m_go.sm.ChangeState("SlimeRun");
         }
     }

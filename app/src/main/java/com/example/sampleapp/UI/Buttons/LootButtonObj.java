@@ -1,7 +1,6 @@
-package com.example.sampleapp.Entity.Buttons;
+package com.example.sampleapp.UI.Buttons;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.example.sampleapp.Enums.LootType;
 import com.example.sampleapp.Enums.SpriteAnimationList;
