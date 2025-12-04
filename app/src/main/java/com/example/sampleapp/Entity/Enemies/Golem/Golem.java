@@ -19,8 +19,8 @@ public class Golem extends Enemy {
     public static float RUN_SPEED = 300.0f;
     public static float ATTACK_RANGE = 260.0f;
     private final float MAX_SLAM_CD = 2.0f;
-    private final float MAX_SPIN_CD = 5.0f;
-    private final float MAX_HEALTH = 250.0f;
+    private final float MAX_SPIN_CD = 10.0f;
+    private final float MAX_HEALTH = 2500000.0f;
 
     // --- Properties ---
     private float slamAttackCooldown = 0.0f;
@@ -71,10 +71,10 @@ public class Golem extends Enemy {
     public void onUpdate(float dt) {
         super.onUpdate(dt);
 
-        if(!isAttacking)
+        if(!isAttacking && !Objects.equals(sm.GetCurrentStateID(), "Death"))
         {
             if(!Objects.equals(sm.GetCurrentStateID(), "SlamAttack") && slamAttackCooldown <= 0.0f) {
-                if(CheckIfPlayerNear(ATTACK_RANGE) && !Objects.equals(sm.GetCurrentStateID(), "Death")) {
+                if(CheckIfPlayerNear(ATTACK_RANGE)) {
                     sm.ChangeState("SlamAttack");
                 }
             }
@@ -82,7 +82,7 @@ public class Golem extends Enemy {
             if(!Objects.equals(sm.GetCurrentStateID(), "SpinAttack") && spinAttackCD <= 0.0f) {
                 Random rand = new Random();
                 float percent = rand.nextFloat();
-                if(!Objects.equals(sm.GetCurrentStateID(), "Death") && percent < 0.1f) {
+                if(!CheckIfPlayerNear(DETECT_RANGE) && percent < 0.1f) {
                     sm.ChangeState("SpinAttack");
                 }
             }

@@ -75,7 +75,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private final float dashCDDuration = 2.0f;
     private boolean isDashing = false;
 
-
+    public Vector2 _orignalPos = new Vector2(0, 0);
 
     public static PlayerObj getInstance() {
         if(instance == null) {
@@ -88,6 +88,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
         onCreate(pos, scale);
+        _orignalPos.set(pos);
         sprite = spriteAnim.sprite;
         animatedSprite = new AnimatedSprite(sprite, spriteAnim.rows, spriteAnim.columns, spriteAnim.fps, spriteAnim.startFrame, spriteAnim.endFrame);
         animatedSprite.setLooping(false);
@@ -99,7 +100,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _ordinal = 1;
         isActive = true;
 
-        dashCDBar = new UICDBar(150, 150, 150, 150);
+        dashCDBar = new UICDBar(150, 150, 150, 150, false);
         dashCDBar.setFillMode(UICDBar.FillMode.CounterClockwise360);
         dashCDBar.setCooldown(dashCDDuration);
         dashCDBar.setTimer(dashCDTimer);

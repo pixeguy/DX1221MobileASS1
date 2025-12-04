@@ -1,9 +1,13 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
+import android.graphics.RectF;
+import android.util.Log;
+
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -17,9 +21,12 @@ public class GolemRunState extends State {
     private boolean moveRight, moveLeft, moveUp, moveDown = true;
     private Vector2 target = new Vector2(0, 0);
 
+    private RectF world_bounds;
+
     public GolemRunState(GameEntity go, String mStateID) {
         super(go, mStateID);
         random = new Random();
+        world_bounds = GameLevelScene.world_bounds;
     }
 
     @Override
@@ -90,8 +97,7 @@ public class GolemRunState extends State {
 
             target = m_go._position.add(m_go.facingDirection.multiply(Golem.RUN_SPEED));
             CircleCollider2D collider = (CircleCollider2D) m_go.collider;
-            if(target.x - collider.radius < 0.0f || target.x + collider.radius > GameActivity.instance.getResources().getDisplayMetrics().widthPixels ||
-                target.y - collider.radius < 0.0f || target.y + collider.radius > GameActivity.instance.getResources().getDisplayMetrics().heightPixels)
+            if(m_go.CheckIfOutsideWorldBound(m_go.facingDirection, (int) Golem.RUN_SPEED))
                 target.set(m_go._position);
         }
         else {

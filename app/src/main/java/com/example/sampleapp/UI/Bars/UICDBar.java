@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
+import com.example.sampleapp.Entity.Camera2D;
 import com.example.sampleapp.UI.UIElement;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -41,8 +42,10 @@ public class UICDBar extends UIElement {
         this.offset = offset;
     }
 
-    public UICDBar(float x, float y, float width, float height) {
+    public UICDBar(float x, float y, float width, float height, boolean world_space) {
         super(x, y, width, height);
+        this.world_space = world_space;
+        interactable = false;
     }
 
     public void setFillMode(FillMode mode) {
@@ -74,6 +77,14 @@ public class UICDBar extends UIElement {
     @Override
     public void onRender(Canvas canvas) {
         if (!visible) return;
+
+        if(world_space) {
+            canvas.save();
+            canvas.translate(
+                    -Camera2D.getInstance().target.x,
+                    -Camera2D.getInstance().target.y
+            );
+        }
 
         RectF rect = getTransformedBounds();
         float ratio = 1f - (timer / cooldown);
@@ -181,8 +192,6 @@ public class UICDBar extends UIElement {
             }
         }
 
-
-
         if (timer <= 0f) {
             float pulse = (float)(Math.sin(glowTimer * 8f) * 0.5f + 0.5f);
             paint.setStyle(Paint.Style.STROKE);
@@ -202,6 +211,8 @@ public class UICDBar extends UIElement {
             }
             paint.setStyle(Paint.Style.FILL);
         }
+
+        if(world_space) canvas.restore();
     }
 
     private void drawRadialFill(Canvas canvas, RectF rect, float ratio) {

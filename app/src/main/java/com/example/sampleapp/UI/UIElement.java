@@ -28,7 +28,7 @@ public abstract class UIElement {
     public int zIndex = 0;
     public boolean visible = true;
     public boolean interactable = true;
-
+    protected boolean world_space = false;
     protected Bitmap baseSprite = null;
     protected Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     public UIElement parent = null;

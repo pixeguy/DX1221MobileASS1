@@ -1,5 +1,6 @@
 package com.example.sampleapp.Managers;
 
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.example.sampleapp.Entity.Enemies.Enemy;
@@ -9,6 +10,7 @@ import com.example.sampleapp.PostOffice.MessageAddGO;
 import com.example.sampleapp.PostOffice.MessageCount;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.PostOffice.PostOffice;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.mgp2d.core.Singleton;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -16,7 +18,7 @@ import java.util.Vector;
 
 public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase {
 
-    int[] enemySpawnPattern = { 2, 2, 1 }; // 2 Slime, 2 Toxito, 1 Golem
+    int[] enemySpawnPattern = { 4, 2, 2 }; // 4 Slime, 2 Toxito, 2 Golem
     int numWaves = 0;
 
     public static EnemyManager getInstance() {
@@ -70,8 +72,13 @@ public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase 
         // Start the wave logic here
         for(int i = 0; i < enemySpawnPattern.length; ++i) {
             for(int j = 0; j < enemySpawnPattern[i]; ++j) {
-                float randxPos = (float)Math.random() * 1000;
-                float randyPos = (float)Math.random() * 1000;
+
+                RectF world_bounds = GameLevelScene.world_bounds;
+
+                float randxPos = (float)Math.random() * world_bounds.right;
+                float minY = world_bounds.top;
+                float maxY = world_bounds.bottom;
+                float randyPos = (float)Math.random() * (maxY - minY) + minY;
                 Enemy enemy = EnemyFactory.CreateEnemy(EnemyFactory.EnemyType.values()[i], new Vector2(randxPos, randyPos));
                 AddEnemy(enemy);
                 MessageAddGO message = new MessageAddGO(enemy);
