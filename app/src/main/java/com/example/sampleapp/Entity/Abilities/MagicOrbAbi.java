@@ -2,13 +2,16 @@ package com.example.sampleapp.Entity.Abilities;
 
 import android.graphics.Canvas;
 
+import com.example.sampleapp.Entity.Projectile.PlayerMagicMissile;
+import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
+import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
-public class MagicOrbAbi extends Ability{
+public class MagicOrbAbi extends Ability {
     public MagicOrbAbi()
     {
         banner = SpriteAnimationList.MagicOrbBanner;
@@ -26,12 +29,15 @@ public class MagicOrbAbi extends Ability{
         System.out.println("Got Ability");
         PlayerObj.getInstance().currAbility = this;
         gotten = true;
+
+        MessageSpawnProjectile msg = new MessageSpawnProjectile(PlayerObj.getInstance(), MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FLYING_ORB, 5, new Vector2(0,0));
+        PostOffice.getInstance().send("Scene", msg);
     }
 
     @Override
     public void onUpdate(float dt) {
         if(gotten){
-            //System.out.println("Updating Ability");
+
         }
     }
 

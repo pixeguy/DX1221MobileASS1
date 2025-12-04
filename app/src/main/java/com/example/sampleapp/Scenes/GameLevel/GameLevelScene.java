@@ -16,10 +16,12 @@ import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Camera2D;
+import com.example.sampleapp.Entity.Projectile.PlayerFlyingOrb;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
 import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.PostOffice.MessageCheckCollision;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.UI.Buttons.IActivatable;
 import com.example.sampleapp.UI.Buttons.UIJoystick;
@@ -235,7 +237,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     protected void onHandleIfOutsideWorldBound() {
         for(Collider2D collider2D : ColliderManager.GetInstance().m_colliders) {
             GameEntity go = collider2D.gameEntity;
-            if(go.canDestroy() || !go.isAlive) continue;
+            if(go.canDestroy() || !go.isAlive || collider2D.isTrigger) continue;
 
             float minX = world_bounds.left;
             float minY = world_bounds.top;
@@ -258,7 +260,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     go._position.y += Math.abs(minY - (go.getPosition().y - circleCollider2D.radius));
                 }
             }
-            else{
+            else {
                 BoxCollider2D boxCollider2D = (BoxCollider2D) collider2D;
                 if(boxCollider2D.getBound().left < minX) {
                     go._position.x += minX - boxCollider2D.getBound().left;
@@ -315,6 +317,17 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                             new Vector2(0.05f, 0.05f));
                     m_goListToAdd.add(playerProjectile);
                     break;
+                case PLAYER_FLYING_ORB:
+                    PlayerFlyingOrb playerFlyingOrb = new PlayerFlyingOrb();
+                    playerFlyingOrb.onCreate(messageSpawnProjectile.movementSpeed, 0,
+                            new Vector2(0.075f, 0.075f));
+                    m_goListToAdd.add(playerFlyingOrb);
+
+                    PlayerFlyingOrb playerFlyingOrb2 = new PlayerFlyingOrb();
+                    playerFlyingOrb2.onCreate(messageSpawnProjectile.movementSpeed, (float) Math.PI,
+                            new Vector2(0.075f, 0.075f));
+                    m_goListToAdd.add(playerFlyingOrb2);
+                    break;
                 case ENEMY_FIRE_MISSILE:
                     EnemyFireMissile enemyFireProjectile = new EnemyFireMissile();
                     enemyFireProjectile.onCreate(
@@ -361,7 +374,6 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                     continue;
                 }
                 if(Collision.CollisionDetection(entityToCheck.collider, entity.collider, new Vector2(0, 0))) {
-
                     if (entity instanceof Enemy) {
                         float minDamage = 50.0f;
                         float maxDamage = 60.0f;
@@ -369,6 +381,25 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                         ((Enemy) entity).TakeDamage(damage);
                         entityToCheck.destroy();
                         break;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        if(message instanceof MessageCheckCollision) {
+            MessageCheckCollision messageCheckCollision = (MessageCheckCollision) message;
+            GameEntity entityToCheck = messageCheckCollision.gameEntityToCheck;
+            for(GameEntity entity : m_goList) {
+                if (entity == entityToCheck) continue;
+                if (entity.collider == null) {
+                    continue;
+                }
+
+                if (Collision.CollisionDetection(entityToCheck.collider, entity.collider, new Vector2(0, 0))) {
+                    if (entity instanceof Enemy) {
+                        messageCheckCollision.collisionList.add(entity.collider);
                     }
                 }
             }

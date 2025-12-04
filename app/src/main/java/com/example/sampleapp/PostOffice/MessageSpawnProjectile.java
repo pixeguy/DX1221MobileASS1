@@ -8,8 +8,10 @@ public class MessageSpawnProjectile extends Message{
     public enum PROJECTILE_TYPE {
         PLAYER_FIRE_MISSILE,
         PLAYER_FIRE_REAR,
+        PLAYER_FLYING_ORB,
         ENEMY_FIRE_MISSILE,
-        ENEMY_TOXIC_MISSILE
+        ENEMY_TOXIC_MISSILE,
+
     }
 
     public PROJECTILE_TYPE projectileType;
@@ -24,14 +26,6 @@ public class MessageSpawnProjectile extends Message{
                                   float movementSpeed, Vector2 pos) {
         this.projectileType = projectileType;
         this.go = go;
-        this.movementSpeed = movementSpeed;
-        this.pos = pos;
-    }
-
-    public MessageSpawnProjectile(Vector2 targetpos, PROJECTILE_TYPE projectileTypeE,
-                                  float movementSpeed, Vector2 pos){
-        this.projectileType = projectileType;
-        this.targetPos = targetpos;
         this.movementSpeed = movementSpeed;
         this.pos = pos;
     }

@@ -12,9 +12,11 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class Projectile extends GameEntity implements ObjectBase {
     protected float m_speed = 0.0f;
+
+    protected boolean destroyable = true;
+
     protected float currentLifetime = 0.0f;
     protected float maxLifetime = 5.0f;
-    public Vector2 targetPos;
 
     public void onCreate(float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
@@ -29,7 +31,7 @@ public class Projectile extends GameEntity implements ObjectBase {
         _position.set(getPosition().add(facingDirection.multiply(m_speed * dt)));
 
         currentLifetime += dt;
-        if(currentLifetime >= maxLifetime) destroy();
+        if(currentLifetime >= maxLifetime && destroyable) destroy();
     }
 
     @Override

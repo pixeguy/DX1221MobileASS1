@@ -3,10 +3,13 @@ package com.example.sampleapp.Entity.Projectile;
 import android.graphics.Canvas;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
+import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
+import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageCheckCollision;
 import com.example.sampleapp.PostOffice.MessageCheckForDamageCollision;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.PostOffice.PostOffice;
@@ -14,11 +17,11 @@ import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
+import java.util.HashMap;
+import java.util.List;
+
 /** @noinspection FieldCanBeLocal*/
 public class PlayerMagicMissile extends Projectile {
-
-    private Vector2 direction = new Vector2(0, 0);
-
     public void onCreate(GameEntity target, float movementSpeed, Vector2 pos, Vector2 scale) {
         onCreate(pos, scale);
         m_speed = movementSpeed;
@@ -82,9 +85,6 @@ public class PlayerMagicMissile extends Projectile {
                     return;
                 }
             }
-
-            MessageCheckForDamageCollision msg = new MessageCheckForDamageCollision(this);
-            PostOffice.getInstance().send("Scene", msg);
         }
     }
 }
