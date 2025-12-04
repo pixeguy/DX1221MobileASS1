@@ -3,12 +3,10 @@ package com.example.sampleapp.Enums;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public enum LootType {
-    Loot1(SpriteAnimationList.Example2Item, SpriteAnimationList.ExampleItem,new Vector2(0.12f,0.08f), new Vector2(3,1),100),
-    Loot2(SpriteAnimationList.ExamplePause,SpriteAnimationList.ExampleItem,new Vector2(0.8f,0.8f), new Vector2(1,1),200),
     Crystal(SpriteAnimationList.Crystal, SpriteAnimationList.CrystalBtn, new Vector2(0.09412f,0.09412f), new Vector2(1,1),100),
     Potion(SpriteAnimationList.Potion, SpriteAnimationList.PotionBtn, new Vector2(0.09412f,0.09412f), new Vector2(1,1),100),
     Sword(SpriteAnimationList.Sword, SpriteAnimationList.SwordBtn, new Vector2(0.09412f,0.09412f), new Vector2(2,1),100),
-    Staff(SpriteAnimationList.Staff, SpriteAnimationList.StaffBtn, new Vector2(0.04706f,0.04706f), new Vector2(3,1),100),
+    Staff(SpriteAnimationList.Staff, SpriteAnimationList.StaffBtn, new Vector2(0.09412f,0.09412f), new Vector2(3,1),100),
     Teapot(SpriteAnimationList.Teapot, SpriteAnimationList.TeapotBtn, new Vector2(0.04706f,0.04706f), new Vector2(2,2),100),
     ;
 

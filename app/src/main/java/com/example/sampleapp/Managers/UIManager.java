@@ -46,6 +46,7 @@ public class UIManager extends Singleton<UIManager> {
     }
 
     public void onRender(Canvas canvas) {
+        if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) return;
         // Sort by zIndex before drawing
         elements.sort(Comparator.comparingDouble(e -> e.zIndex));
         for (UIElement e : elements)

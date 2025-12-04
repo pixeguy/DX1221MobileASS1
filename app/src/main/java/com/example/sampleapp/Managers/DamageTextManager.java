@@ -1,5 +1,7 @@
 package com.example.sampleapp.Managers;
 
+import android.util.Log;
+
 import com.example.sampleapp.UI.Text.UIDamageText;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
@@ -21,6 +23,7 @@ public class DamageTextManager extends Singleton<DamageTextManager> {
     }
 
     public void onUpdate() {
+        Log.d("Text", "sas");
         for (int i = texts.size() - 1; i >= 0; i--) {
             UIDamageText t = texts.get(i);
             if (t.isExpired()) {

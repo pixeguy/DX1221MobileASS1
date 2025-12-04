@@ -58,7 +58,7 @@ public class LootButtonObj extends ButtonObj {
     public void onRender(Canvas canvas) {
 
         // Assuming you have access to animatedSprite here (based on your previous code):
-        animatedSprite.render(canvas, (int) _position.x, (int) _position.y, _scale,rotationAngle, null);
+        animatedSprite.render(canvas, (int) _position.x, (int) _position.y, _scale,rotationAngle, paint);
 
         UpdateBounds();
     }

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.PostOffice.Message;
+import com.example.sampleapp.PostOffice.MessageEndGame;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.Scenes.MainMenu;
@@ -19,6 +20,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
         PAUSED,
         GAME_OVER
     }
+    private boolean isGameOver = false;
 
     private GameState _currentState = GameState.RUNNING;
 
@@ -69,16 +71,25 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
 
     public void updateGame(float deltaTime) {
         // Update the game logic here
-        EnemyManager.getInstance().updateWave(deltaTime);
-        if (EnemyManager.getInstance().numWaves > 2)
+        if(isGameOver) return;
+
+        if (EnemyManager.getInstance().numWaves > 1)
         {
             //win
-            TransitionToState(GameState.GAME_OVER);
+            MessageEndGame msg = new MessageEndGame(MessageEndGame.END_CONDITION.LOOTING_PHASE);
+            PostOffice.getInstance().send("Scene",msg);
+            isGameOver = true;
+            return;
         }
         if(PlayerObj.getInstance().healthSystem.getCurrentHealth() <= 0)
         {
             //lose
+            MessageEndGame msg = new MessageEndGame(MessageEndGame.END_CONDITION.LOSE_PHASE);
+            PostOffice.getInstance().send("Scene",msg);
+            isGameOver = true;
+            return;
         }
+        EnemyManager.getInstance().updateWave(deltaTime);
     }
 
     public void endGame() {

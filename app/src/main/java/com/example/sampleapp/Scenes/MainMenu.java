@@ -41,13 +41,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.layoutmainmenu);
 
-
-        helpButton = findViewById(R.id.button2);
-        helpButton.setOnClickListener(this);
-
-        startButton = findViewById(R.id.button);
-        startButton.setOnClickListener(this);
-
         ViewPager2 viewPager = findViewById(R.id.view_pager);
 
         // 1. Create an instance of the custom adapter
@@ -60,18 +53,12 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v){
-        if(v == helpButton){
-            startActivity(new Intent().setClass(this,HelpPage.class));
-        }
-        else if(v == startButton)
-        {
-            startActivity(new Intent().setClass(this, GameActivity.class));
-            GameScene.enter(GameLevelScene.class);
-        }
+
     }
 
     public void StartGame() {
         startActivity(new Intent(this, GameActivity.class));
+        GameScene.clearClass();
         GameScene.enter(GameLevelScene.class);
     }
 }

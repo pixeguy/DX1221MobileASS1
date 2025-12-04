@@ -25,6 +25,11 @@ public abstract class GameScene {
     protected Vector<GameEntity> m_goListToAdd = new Vector<>();
     protected Vector<GameEntity> m_goListToRemove = new Vector<>();
 
+    public static void clearClass()
+    {
+        map.clear();
+    }
+
     public static void enter(Class<?> gameSceneClass) {
         if (!map.containsKey(gameSceneClass)) {
             try {
