@@ -27,11 +27,13 @@ public class MagicOrbAbi extends Ability {
     @Override
     public void onGetAbility() {
         System.out.println("Got Ability");
-        PlayerObj.getInstance().currAbility = this;
+        if(PlayerObj.getInstance().currAbility == null)  {
+            MessageSpawnProjectile msg = new MessageSpawnProjectile(PlayerObj.getInstance(), MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FLYING_ORB, 5, new Vector2(0,0));
+            PostOffice.getInstance().send("Scene", msg);
+            PlayerObj.getInstance().currAbility = this;
+        }
         gotten = true;
 
-        MessageSpawnProjectile msg = new MessageSpawnProjectile(PlayerObj.getInstance(), MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FLYING_ORB, 5, new Vector2(0,0));
-        PostOffice.getInstance().send("Scene", msg);
     }
 
     @Override

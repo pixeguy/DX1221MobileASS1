@@ -13,6 +13,7 @@ import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.Abilities.Ability;
+import com.example.sampleapp.Entity.Abilities.MagicOrbAbi;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Camera2D;
@@ -112,7 +113,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.add(player);
 
         InitAbiLoot();
-        //StartLootPhase();
+        StartAbilityPhase();
 
         GameManager.getInstance().startGame();
 
@@ -497,7 +498,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         // ---- CREATE 3 ABILITIES ----
         for (int i = 0; i < count; i++)
         {
-            Ability ability = new RearShotAbi();   // change this to different abilities if needed
+            Ability ability = new MagicOrbAbi();   // change this to different abilities if needed
             float xPos = startX + (i * spacing);
 
             ability.onCreate(new Vector2(xPos, centerY), new Vector2(0.35f, 0.4f));
