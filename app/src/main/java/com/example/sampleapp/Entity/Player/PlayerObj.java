@@ -224,10 +224,6 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void onRender(Canvas canvas) {
         super.onRender(canvas);
-        if (currAbility != null)
-        {
-            currAbility.onRender(canvas);
-        }
     }
 
     @Override

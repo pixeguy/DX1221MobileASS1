@@ -185,6 +185,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         canvas.restore();
 
         UIManager.getInstance().onRender(canvas);
+
+        if (PlayerObj.getInstance().currAbility != null)
+        {
+            PlayerObj.getInstance().currAbility.onRender(canvas);
+        }
     }
 
     protected void onUpdateGameObjects(float dt) {
