@@ -1,11 +1,14 @@
 package com.example.sampleapp.mgp2d.core;
 
+import static com.example.sampleapp.Scenes.GameLevel.GameLevelScene.screenHeight;
+
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.BoxCollider2D;
@@ -13,6 +16,7 @@ import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Statemchine.Statemachine;
 
 public abstract class GameEntity {
@@ -101,38 +105,41 @@ public abstract class GameEntity {
     public boolean CheckIfOutsideWorldBound(Vector2 direction, int offset) {
         if(collider == null) return false;
 
-        int screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
+        RectF wordBound = GameLevelScene.world_bounds;
+        int minX = (int) wordBound.left;
+        int minY = (int) wordBound.top;
+        int maxX = (int) wordBound.right;
+        int maxY = (int) wordBound.bottom;
 
         if(collider.numVertices == 1) {
             CircleCollider2D circleCollider2D = (CircleCollider2D) collider;
             if(direction.equals(0, -1)) {
-                return _position.y - circleCollider2D.radius - offset < 0;
+                return _position.y - circleCollider2D.radius - offset < minY;
             }
             else if(direction.equals(0, 1)) {
-                return _position.y + circleCollider2D.radius + offset > screenHeight;
+                return _position.y + circleCollider2D.radius + offset > maxY;
 
             }
             else if(direction.equals(-1, 0)) {
-                return _position.x - circleCollider2D.radius - offset < 0;
+                return _position.x - circleCollider2D.radius - offset < minX;
             }
             else if(direction.equals(1, 0)) {
-                return _position.x + circleCollider2D.radius + offset > screenWidth;
+                return _position.x + circleCollider2D.radius + offset > maxX;
             }
         }
         else {
             BoxCollider2D boxCollider2D = (BoxCollider2D) collider;
             if(direction.equals(0, -1)) {
-                return _position.y - boxCollider2D.height / 2.0f - offset < 0;
+                return _position.y - boxCollider2D.height / 2.0f - offset < minY;
             }
             else if(direction.equals(0, 1)) {
-                return _position.y + boxCollider2D.height / 2.0f + offset > screenHeight;
+                return _position.y + boxCollider2D.height / 2.0f + offset > maxY;
             }
             else if(direction.equals(-1, 0)) {
-                return _position.x - boxCollider2D.width / 2.0f - offset < 0;
+                return _position.x - boxCollider2D.width / 2.0f - offset < minX;
             }
             else if(direction.equals(1, 0)) {
-                return _position.x + boxCollider2D.width / 2.0f + offset > screenWidth;
+                return _position.x + boxCollider2D.width / 2.0f + offset > maxX;
             }
         }
 

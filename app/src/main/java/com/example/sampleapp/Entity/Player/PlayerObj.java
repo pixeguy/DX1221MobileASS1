@@ -97,7 +97,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _ordinal = 1;
         isActive = true;
 
-        dashCDBar = new UICDBar(150, 150, 150, 150);
+        dashCDBar = new UICDBar(150, 150, 150, 150, false);
         dashCDBar.setFillMode(UICDBar.FillMode.CounterClockwise360);
         dashCDBar.setCooldown(dashCDDuration);
         dashCDBar.setTimer(dashCDTimer);

@@ -8,14 +8,15 @@ import android.graphics.Typeface;
 
 import androidx.core.content.res.ResourcesCompat;
 
+import com.example.sampleapp.Entity.Camera2D;
 import com.example.sampleapp.R;
 import com.example.sampleapp.UI.UIElement;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 public class UIDamageText extends UIElement {
-    private String text;
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final String text;
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private float lifetime = 1.0f;    // seconds total
     private float elapsed = 0f;
@@ -72,7 +73,13 @@ public class UIDamageText extends UIElement {
         if (!visible) return;
         if (alpha <= 0f) return;
 
+        canvas.save();
+        canvas.translate(
+                -Camera2D.getInstance().target.x,
+                -Camera2D.getInstance().target.y
+        );
         RectF rect = getTransformedBounds();
         canvas.drawText(text, rect.centerX(), rect.centerY(), paint);
+        canvas.restore();
     }
 }

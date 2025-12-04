@@ -1,12 +1,14 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
 import android.graphics.Color;
+import android.graphics.RectF;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.UI.Bars.UICDBar;
 import com.example.sampleapp.Utilities.Utilities;
@@ -39,8 +41,11 @@ public class GolemSpinAttackState extends State {
 
     private UICDBar chargeBar;
 
+    private RectF world_bounds;
+
     public GolemSpinAttackState(GameEntity go, String mStateID) {
         super(go, mStateID);
+        world_bounds = GameLevelScene.world_bounds;
     }
 
     @Override
@@ -50,7 +55,7 @@ public class GolemSpinAttackState extends State {
         attackState = AttackState.Enter;
         ((Golem)m_go).isAttacking = true;
 
-        chargeBar = new UICDBar(m_go._position.x, m_go._position.y, 30, 100);
+        chargeBar = new UICDBar(m_go._position.x, m_go._position.y, 30, 100, true);
         chargeBar.setOwner(m_go, new Vector2(-100, 25));
         chargeBar.setFillMode(UICDBar.FillMode.BottomToTop);
         chargeBar.setCooldown(2500);
@@ -80,8 +85,7 @@ public class GolemSpinAttackState extends State {
                 }
                 break;
             case Perform:
-                ApplyPhysics(dt, GameActivity.instance.getResources().getDisplayMetrics().widthPixels,
-                        GameActivity.instance.getResources().getDisplayMetrics().heightPixels);
+                ApplyPhysics(dt);
 
                 if(velocity.getMagnitude() <= 10.0f) {
                     acceleration = 0.0f;
@@ -133,26 +137,31 @@ public class GolemSpinAttackState extends State {
         UIManager.getInstance().removeElement(chargeBar);
     }
 
-    private void ApplyPhysics(float dt, float worldWidth, float worldHeight) {
+    private void ApplyPhysics(float dt) {
         velocity.x *= damping;
         velocity.y *= damping;
+
+        int minX = (int) world_bounds.left;
+        int minY = (int) world_bounds.top;
+        int maxX = (int) world_bounds.right;
+        int maxY = (int) world_bounds.bottom;
 
         m_go.setPosition(m_go.getPosition().add(velocity.multiply(dt)));
 
         CircleCollider2D collider = (CircleCollider2D) m_go.collider;
-        if(m_go._position.x - collider.radius < 0) {
+        if(m_go._position.x - collider.radius < minX) {
             velocity.x = -velocity.x * bounciness;
         }
 
-        if(m_go._position.x + collider.radius > worldWidth) {
+        if(m_go._position.x + collider.radius > maxX) {
             velocity.x = -velocity.x * bounciness;
         }
 
-        if(m_go._position.y - collider.radius < 0) {
+        if(m_go._position.y - collider.radius < minY) {
             velocity.y = -velocity.y * bounciness;
         }
 
-        if(m_go._position.y + collider.radius > worldHeight) {
+        if(m_go._position.y + collider.radius > maxY) {
             velocity.y = -velocity.y * bounciness;
         }
 

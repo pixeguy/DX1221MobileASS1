@@ -2,6 +2,7 @@ package com.example.sampleapp.Scenes.GameLevel;
 
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -61,8 +62,9 @@ import java.util.Random;
 
 public class GameLevelScene extends GameScene implements ObjectBase {
 
-    private int screenWidth;
-    private int screenHeight;
+    public static int screenWidth;
+    public static int screenHeight;
+    public static RectF world_bounds;
 
     private ArrayList<LootButtonObj> lootBtns;
     boolean spawnPhase = false; boolean abilityPhase = false;
@@ -85,6 +87,9 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         PostOffice.getInstance().register("Scene", this);
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
+        world_bounds = new RectF(0, -screenHeight, screenWidth, screenHeight);
+        Camera2D.getInstance().setBounds(world_bounds);
+        Camera2D.getInstance().setPosition(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f));
 
         m_goAbiLootList = new ArrayList<>();
 
@@ -93,7 +98,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         playerMovementJoystick.zIndex = 1;
         UIManager.getInstance().addElement(playerMovementJoystick);
 
-        m_goList.add(new BackgroundEntity(R.drawable.grassbg));
+        BackgroundEntity bg1 = new BackgroundEntity(R.drawable.grassbg);
+        m_goList.add(bg1);
+        BackgroundEntity bg2 = new BackgroundEntity(R.drawable.grassbg);
+        bg2._position.y = -screenHeight;
+        m_goList.add(bg2);
 
         PlayerObj player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
@@ -154,18 +163,16 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         onUpdateGameObjects(dt);
         onPhysicsUpdate();
         onHandleIfOutsideWorldBound();
-
-        Camera2D.getInstance().follow(PlayerObj.getInstance()._position, dt);
     }
 
     @Override
     public void onRender(Canvas canvas) {
         canvas.save();
+        Camera2D.getInstance().follow(PlayerObj.getInstance()._position);
         canvas.translate(
-                -Camera2D.getInstance()._position.x + screenWidth / 2f,
-                -Camera2D.getInstance()._position.y + screenHeight / 2f
+                -Camera2D.getInstance().target.x,
+                -Camera2D.getInstance().target.y
         );
-
         m_goList.sort(Comparator.comparingInt(GameEntity::getOrdinal)); // sort by ordinal
         for (GameEntity go : m_goList) {
             if(go.canDestroy() || !go.isActive) continue;
@@ -229,10 +236,10 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             GameEntity go = collider2D.gameEntity;
             if(go.canDestroy() || !go.isAlive) continue;
 
-            float minX = 0;
-            float minY = 0;
-            float maxX = screenWidth;
-            float maxY = screenHeight;
+            float minX = world_bounds.left;
+            float minY = world_bounds.top;
+            float maxX = world_bounds.right;
+            float maxY = world_bounds.bottom;
 
             if(collider2D.numVertices == 1) {
                 CircleCollider2D circleCollider2D = (CircleCollider2D) collider2D;
@@ -497,7 +504,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                 abi.selfBtn.isActive = false;
                 abi.isActive = false; // ability update will be called through player;
                 abi._scale = new Vector2(0.3f,0.3f);
-                abi._position = new Vector2(0 + 125,screenHeight/2);
+                abi._position = new Vector2(125, (float) screenHeight /2);
                 abi.paint.setAlpha(128);
             }
         }
@@ -527,7 +534,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         lootBtns = new ArrayList<>();
 
-        Vector2 startPos = new Vector2(screenWidth/2, screenHeight/2-135);
+        Vector2 startPos = new Vector2((float) screenWidth /2, (float) screenHeight /2-135);
         Vector2 scale = new Vector2(0.1f, 0.1f);
         float spacing = 72 * GameActivity.instance.getResources().getDisplayMetrics().density;
         // create loot buttons AFTER the loop
@@ -612,14 +619,14 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         IActivatable target = new BackToMenu();
         GenericBtn menuBtn = new GenericBtn(target);
-        menuBtn.onCreate(new Vector2(screenWidth/2, screenHeight * 0.80f), new Vector2(3.5f,3.5f),SpriteAnimationList.MainMenuBtn);
+        menuBtn.onCreate(new Vector2((float) screenWidth /2, screenHeight * 0.80f), new Vector2(3.5f,3.5f),SpriteAnimationList.MainMenuBtn);
         menuBtn.setOrdinal(4);
         menuBtn.isActive = true;
         m_goAbiLootList.add(menuBtn);
         m_goList.add(menuBtn);
 
         EmptyEntity gameOverScreen = new EmptyEntity();
-        gameOverScreen.onCreate(new Vector2(screenWidth/2, screenHeight * 0.40f), new Vector2(3.5f,3.5f),SpriteAnimationList.GameOverScreen);
+        gameOverScreen.onCreate(new Vector2((float) screenWidth /2, screenHeight * 0.40f), new Vector2(3.5f,3.5f),SpriteAnimationList.GameOverScreen);
         gameOverScreen.setOrdinal(4);
         gameOverScreen.isActive = true;
         m_goAbiLootList.add(gameOverScreen);

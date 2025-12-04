@@ -43,14 +43,11 @@ public class GolemIdleState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
 
-        if(!((Enemy)m_go).CheckIfPlayerNear(Golem.ATTACK_RANGE))
-        {
-            if(((Enemy)m_go).CheckIfPlayerNear(Golem.DETECT_RANGE)){
-                m_go.sm.ChangeState("Run");
-            }
-            else if(stateTimer > idleTime) {
-                m_go.sm.ChangeState("Walk");
-            }
+        if(((Enemy)m_go).CheckIfPlayerNear(Golem.DETECT_RANGE)){
+            m_go.sm.ChangeState("Run");
+        }
+        else if(stateTimer > idleTime) {
+            m_go.sm.ChangeState("Walk");
         }
     }
 

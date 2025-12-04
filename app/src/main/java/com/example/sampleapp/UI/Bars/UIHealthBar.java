@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.example.sampleapp.Entity.Camera2D;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.UI.UIElement;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
@@ -67,6 +69,11 @@ public class UIHealthBar extends UIElement {
     public void onRender(Canvas canvas) {
         if (!visible) return;
 
+        canvas.save();
+        canvas.translate(
+                -Camera2D.getInstance().target.x,
+                -Camera2D.getInstance().target.y
+        );
         RectF rect = getTransformedBounds();
         float ratio = getRatio();
 
@@ -77,7 +84,7 @@ public class UIHealthBar extends UIElement {
             float positionX = owner.getPosition().x + offset.x;
             float positionY = owner.getPosition().y + offset.y;
 
-            if(positionY < 0) {
+            if(positionY < GameLevelScene.world_bounds.top) {
                 positionY = owner.getPosition().y - offset.y;
             }
 
@@ -111,9 +118,9 @@ public class UIHealthBar extends UIElement {
             canvas.drawRect(fillRect, paint);
         }
 
-        // --- Draw children (like icons/text) ---
         for (UIElement child : children)
             child.onRender(canvas);
+        canvas.restore();
     }
 
     public GameEntity getOwner() {

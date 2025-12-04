@@ -26,6 +26,17 @@ public class BackgroundEntity extends GameEntity {
         isActive = true;
     }
 
+    public BackgroundEntity(int imageID, int width, int height)
+    {
+        this.imageID = imageID;
+        screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
+        screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
+
+        Bitmap bmp = BitmapFactory.decodeResource(GameActivity.instance.getResources(), imageID);
+        backgroundBitmap = Bitmap.createScaledBitmap(bmp, width, height, false);
+        isActive = true;
+    }
+
     @Override
     public void onUpdate(float dt) {
     }

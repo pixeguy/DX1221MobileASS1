@@ -1,5 +1,7 @@
 package com.example.sampleapp.Entity.Enemies.Golem;
 
+import android.util.Log;
+
 import com.example.sampleapp.Entity.Enemies.Enemy;
 import com.example.sampleapp.Entity.Enemies.Toxito.Toxito;
 import com.example.sampleapp.Enums.SpriteAnimationList;
@@ -59,6 +61,7 @@ public class GolemWalkState extends State {
         }
 
         if(m_go.CheckIfOutsideWorldBound(m_go.facingDirection, 50)){
+            Log.d("Golem", "Outside world bound");
             target.set(m_go._position);
 
             int[] directions = m_go.CheckForUnavailableDirection();
