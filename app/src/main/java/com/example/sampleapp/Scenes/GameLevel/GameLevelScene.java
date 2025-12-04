@@ -14,6 +14,7 @@ import com.example.sampleapp.Collision.Detection.PhysicsManifold;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
+import com.example.sampleapp.Entity.Camera2D;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
@@ -54,6 +55,7 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 import com.example.sampleapp.Managers.GameManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -98,8 +100,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         player.SetInputDirection(playerMovementJoystick.getOutput());
         m_goList.add(player);
 
-        InitAbiLoot();
-        StartAbilityPhase();
+        //InitAbiLoot();
+        //StartAbilityPhase();
 
         GameManager.getInstance().startGame();
 
@@ -153,15 +155,24 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         onPhysicsUpdate();
         onHandleIfOutsideWorldBound();
 
+        Camera2D.getInstance().follow(PlayerObj.getInstance()._position, dt);
     }
 
     @Override
     public void onRender(Canvas canvas) {
-        m_goList.sort((go1, go2) -> go1.getOrdinal() - go2.getOrdinal()); // sort by ordinal
+        canvas.save();
+        canvas.translate(
+                -Camera2D.getInstance()._position.x + screenWidth / 2f,
+                -Camera2D.getInstance()._position.y + screenHeight / 2f
+        );
+
+        m_goList.sort(Comparator.comparingInt(GameEntity::getOrdinal)); // sort by ordinal
         for (GameEntity go : m_goList) {
             if(go.canDestroy() || !go.isActive) continue;
             go.onRender(canvas);
         }
+        canvas.restore();
+
         UIManager.getInstance().onRender(canvas);
     }
 
