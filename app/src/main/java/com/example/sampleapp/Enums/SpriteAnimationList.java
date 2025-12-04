@@ -108,6 +108,8 @@ public enum SpriteAnimationList {
     SwordBtn(SpriteList.SwordBtn.sprite, 1, 1, 1, false),
     Staff(SpriteList.Staff.sprite, 1, 1, 1, false),
     StaffBtn(SpriteList.StaffBtn.sprite, 1, 1, 1, false),
+    Teapot(SpriteList.Teapot.sprite, 1, 1, 1, false),
+    TeapotBtn(SpriteList.TeapotBtn.sprite, 1, 1, 1, false),
 
     ;
 

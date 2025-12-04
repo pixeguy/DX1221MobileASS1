@@ -70,6 +70,8 @@ public enum SpriteList {
     SwordBtn(R.drawable.swordbtn),
     Staff(R.drawable.staff),
     StaffBtn(R.drawable.staffbtn),
+    Teapot(R.drawable.teapot),
+    TeapotBtn(R.drawable.teapotbtn),
     ;
 
     public final int spriteID;

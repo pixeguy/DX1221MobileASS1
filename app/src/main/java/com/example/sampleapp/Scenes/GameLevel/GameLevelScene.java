@@ -530,7 +530,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    LootType.Sword
+                    LootType.Teapot
             );
             lootBtnn.isActive = true;
             lootBtnn.setOrdinal(4);
