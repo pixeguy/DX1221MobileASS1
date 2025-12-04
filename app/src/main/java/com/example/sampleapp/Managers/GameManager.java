@@ -52,6 +52,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             case GAME_OVER:
                 // Handle game over logic (e.g., show game over screen)
                 Log.d("GameManager", "Transitioning to Game Over");
+
                 break;
         }
     }

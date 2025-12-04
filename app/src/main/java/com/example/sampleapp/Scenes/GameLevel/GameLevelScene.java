@@ -110,7 +110,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         m_goList.add(player);
 
         InitAbiLoot();
-        StartLootPhase();
+        //StartLootPhase();
 
         GameManager.getInstance().startGame();
 

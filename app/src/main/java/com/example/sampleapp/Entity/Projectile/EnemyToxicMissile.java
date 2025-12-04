@@ -13,7 +13,7 @@ public class EnemyToxicMissile extends Projectile implements ObjectBase {
     private float acceleration = 0.0f;
     private boolean isGettingPosition = false;
 
-    private float acclerationRate;
+    private float accelerationRate;
 
     @Override
     public void onCreate(float movementSpeed, Vector2 pos, Vector2 scale) {
@@ -21,13 +21,13 @@ public class EnemyToxicMissile extends Projectile implements ObjectBase {
         SetAnimation(SpriteAnimationList.EnemyShootToxicMissile);
         collider = new CircleCollider2D(this, animatedSprite.GetRect(_position, _scale).width() / 10.0f);
         collider.isTrigger = true;
-        acclerationRate = movementSpeed;
+        accelerationRate = movementSpeed;
         m_speed = 0.0f;
     }
 
     @Override
     public void onUpdate(float dt) {
-        acceleration += acclerationRate * dt;
+        acceleration += accelerationRate * dt;
         m_speed += acceleration * dt;
 
         if(!isGettingPosition)

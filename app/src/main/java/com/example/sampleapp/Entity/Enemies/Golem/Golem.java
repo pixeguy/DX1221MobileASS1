@@ -20,7 +20,7 @@ public class Golem extends Enemy {
     public static float ATTACK_RANGE = 260.0f;
     private final float MAX_SLAM_CD = 2.0f;
     private final float MAX_SPIN_CD = 10.0f;
-    private final float MAX_HEALTH = 2500000.0f;
+    private final float MAX_HEALTH = 250.0f;
 
     // --- Properties ---
     private float slamAttackCooldown = 0.0f;
