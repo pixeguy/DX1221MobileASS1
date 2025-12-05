@@ -220,13 +220,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         PostOffice.getInstance().clear();
         ScreenManager.exitCurrent();
         EnemyManager.getInstance().ClearEnemies();
-        /*m_goAbiLootList.clear();
+        m_goAbiLootList.clear();
         for(int i = 0; i < m_goList.size(); ++i) {
             if(m_goList.get(i) instanceof PlayerObj) continue;
             m_goList.remove(m_goList.get(i));
         }
         m_goListToAdd.clear();
-        m_goListToRemove.clear();*/
+        m_goListToRemove.clear();
     }
 
     protected void onPhysicsUpdate() {

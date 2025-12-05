@@ -57,7 +57,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         speedCostText = rootView.findViewById(R.id.SpeedCost);
 
         // ========== Update UI ==========
-        xpText.setText("Current XP : " + PlayerObj.getInstance().value);
+        xpText.setText("Current G : " + PlayerObj.getInstance().value);
 
         strengthValText.setText("Strength : " + PlayerObj.getInstance().strength + " + " + tempStrength);
         strengthCostText.setText("Cost : " + strengthCost);
@@ -113,7 +113,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 strengthValText.setText("Strength : " + player.strength + " + " + tempStrength);
                 strengthCostText.setText("Cost : " + strengthCost);
-                xpText.setText("Current XP : " + tempXp);
+                xpText.setText("Current G : " + tempXp);
             }
 
         }
@@ -129,7 +129,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 defenceValText.setText("Defence : " + player.defence + " + " + tempDefence);
                 defenceCostText.setText("Cost : " + defenceCost);
-                xpText.setText("Current XP : " + tempXp);
+                xpText.setText("Current G : " + tempXp);
             }
 
         }
@@ -145,7 +145,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 speedValText.setText("Speed : " + player.speed + " + " + tempSpeed);
                 speedCostText.setText("Cost : " + speedCost);
-                xpText.setText("Current XP : " + tempXp);
+                xpText.setText("Current G : " + tempXp);
             }
 
         }
@@ -173,7 +173,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             speedCost = showSpeed * 15;
 
             // UI Refresh
-            xpText.setText("Current XP : " + player.value);
+            xpText.setText("Current G : " + player.value);
 
             strengthValText.setText("Strength : " + player.strength + " + 0");
             strengthCostText.setText("Cost : " + strengthCost);
@@ -214,7 +214,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             speedValText.setText("Speed : " + player.speed + " + 0");
             speedCostText.setText("Cost : " + speedCost);
 
-            xpText.setText("Current XP : " + tempXp);
+            xpText.setText("Current G : " + tempXp);
         }
 
     }

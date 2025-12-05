@@ -4,10 +4,10 @@ import com.example.sampleapp.mgp2d.core.Vector2;
 
 public enum LootType {
     Crystal(SpriteAnimationList.Crystal, SpriteAnimationList.CrystalBtn, new Vector2(0.09412f,0.09412f), new Vector2(1,1),100),
-    Potion(SpriteAnimationList.Potion, SpriteAnimationList.PotionBtn, new Vector2(0.09412f,0.09412f), new Vector2(1,1),100),
-    Sword(SpriteAnimationList.Sword, SpriteAnimationList.SwordBtn, new Vector2(0.09412f,0.09412f), new Vector2(2,1),100),
-    Staff(SpriteAnimationList.Staff, SpriteAnimationList.StaffBtn, new Vector2(0.09412f,0.09412f), new Vector2(3,1),100),
-    Teapot(SpriteAnimationList.Teapot, SpriteAnimationList.TeapotBtn, new Vector2(0.04706f,0.04706f), new Vector2(2,2),100),
+    Potion(SpriteAnimationList.Potion, SpriteAnimationList.PotionBtn, new Vector2(0.09412f,0.09412f), new Vector2(1,1),80),
+    Sword(SpriteAnimationList.Sword, SpriteAnimationList.SwordBtn, new Vector2(0.09412f,0.09412f), new Vector2(2,1),120),
+    Staff(SpriteAnimationList.Staff, SpriteAnimationList.StaffBtn, new Vector2(0.09412f,0.09412f), new Vector2(3,1),120),
+    Teapot(SpriteAnimationList.Teapot, SpriteAnimationList.TeapotBtn, new Vector2(0.04706f,0.04706f), new Vector2(2,2),150),
     ;
 
     public final SpriteAnimationList spriteID;

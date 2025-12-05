@@ -22,7 +22,7 @@ public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase 
     int[] enemySpawnPattern = { 4, 2, 2 }; // 4 Slime, 2 Toxito, 2 Golem
     public int numWaves = 0;
 
-    public static int MAX_WAVE = 1;
+    public static int MAX_WAVE = 2;
 
     public static EnemyManager getInstance() {
         return Singleton.getInstance(EnemyManager.class);
