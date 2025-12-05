@@ -142,6 +142,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
                 _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (damage + 50)));
             }
         });
+
+        paint.reset();
     }
 
     @Override
