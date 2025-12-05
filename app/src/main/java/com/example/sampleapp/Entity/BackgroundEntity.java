@@ -11,8 +11,8 @@ import com.example.sampleapp.mgp2d.core.GameEntity;
 
 public class BackgroundEntity extends GameEntity {
     public Bitmap backgroundBitmap;
-    private int screenWidth;
-    private int screenHeight;
+    private final int screenWidth;
+    private final int screenHeight;
     public int imageID;
 
     public BackgroundEntity(int imageID)

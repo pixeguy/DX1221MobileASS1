@@ -22,11 +22,14 @@ import com.example.sampleapp.Entity.Projectile.PlayerFlyingOrb;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.ScreenManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.MessageCheckCollision;
 import com.example.sampleapp.PostOffice.MessageEndGame;
+import com.example.sampleapp.Screens.PausedScreen;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.UI.Buttons.IActivatable;
+import com.example.sampleapp.UI.Buttons.UIButton;
 import com.example.sampleapp.UI.Buttons.UIJoystick;
 import com.example.sampleapp.UI.Buttons.LootButtonObj;
 import com.example.sampleapp.Entity.Enemies.Enemy;
@@ -86,6 +89,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     private SwipeGestureDetector swipeGestureDetector;
 
+    private UIButton pausedBtn;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -115,6 +120,15 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         player.SetInputDirection(playerMovementJoystick.getOutput());
         player.currAbility = null;
         m_goList.add(player);
+
+        pausedBtn = new UIButton(100, 100, 200, 200, SpriteList.PausedBtnIcon, new Vector2(0.4f, 0.4f));
+        pausedBtn.setAlpha(0);
+        pausedBtn.zIndex = 1;
+        pausedBtn.setOnRelease(() -> {
+            GameManager.getInstance().TransitionToState(GameManager.GameState.PAUSED);
+            ScreenManager.setScreen(new PausedScreen());
+        });
+        UIManager.getInstance().addElement(pausedBtn);
 
         InitAbiLoot();
         StartAbilityPhase();
@@ -147,13 +161,12 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         HandleTouch();
         GameManager.getInstance().updateGame(dt);
+        UIManager.getInstance().update(dt);
         if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) {
-            Log.d("GM", "Game Paused");
             return;
         }
 
         DamageTextManager.getInstance().onUpdate();
-        UIManager.getInstance().update(dt);
 
         onUpdateGameObjects(dt);
         onPhysicsUpdate();
@@ -205,6 +218,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         super.onExit();
         UIManager.getInstance().clear();
         PostOffice.getInstance().clear();
+        ScreenManager.exitCurrent();
     }
 
     protected void onPhysicsUpdate() {

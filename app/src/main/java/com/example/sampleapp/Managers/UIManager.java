@@ -1,23 +1,22 @@
 package com.example.sampleapp.Managers;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.example.sampleapp.UI.Buttons.UIJoystick;
 import com.example.sampleapp.UI.UIElement;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class UIManager extends Singleton<UIManager> {
     private final Map<Integer, UIElement> activeTouches = new HashMap<>();
     private final List<UIElement> elements = new ArrayList<>();
+    private final List<UIElement> focusElements = new ArrayList<>();
+    private final List<UIElement> toRemoveFocusElements = new ArrayList<>();
     private final List<UIElement> toAdd = new ArrayList<>();
     private final List<UIElement> toRemove = new ArrayList<>();
     private UIElement focusedElement;
@@ -30,12 +29,35 @@ public class UIManager extends Singleton<UIManager> {
         toAdd.add(element);
     }
 
+    public void addElements(List<UIElement> elements) {
+        toAdd.addAll(elements);
+    }
+
+    public void addFocusElements(List<UIElement> elements) {
+        focusElements.addAll(elements);
+    }
+
     public void removeElement(UIElement element) {
         toRemove.add(element);
     }
 
+    public void removeElements(List<UIElement> elements) {
+        toRemove.addAll(elements);
+    }
+
+    public void removeFocusElements(List<UIElement> elements) {
+        toRemoveFocusElements.addAll(elements);
+    }
+
     public void update(float dt) {
-        // Manage additions/removals
+        focusElements.removeAll(toRemoveFocusElements);
+        toRemoveFocusElements.clear();
+
+        for (UIElement e : focusElements)
+            e.onUpdate(dt);
+
+        if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) return;
+
         elements.addAll(toAdd);
         toAdd.clear();
         elements.removeAll(toRemove);
@@ -46,6 +68,9 @@ public class UIManager extends Singleton<UIManager> {
     }
 
     public void onRender(Canvas canvas) {
+        focusElements.sort(Comparator.comparingDouble(e -> e.zIndex));
+        for (UIElement e : focusElements)
+            if (e.visible) e.onRender(canvas);
         if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) return;
         // Sort by zIndex before drawing
         elements.sort(Comparator.comparingDouble(e -> e.zIndex));
@@ -96,7 +121,13 @@ public class UIManager extends Singleton<UIManager> {
         for (UIElement e : elements) {
             if (e.isPointInside(x, y) && e.interactable) {
                 e.onTouchDown(x, y);
-                Log.d("Touch", "Element touched");
+                activeTouches.put(pointerId, e);
+            }
+        }
+
+        for (UIElement e : focusElements) {
+            if (e.isPointInside(x, y) && e.interactable) {
+                e.onTouchDown(x, y);
                 activeTouches.put(pointerId, e);
             }
         }

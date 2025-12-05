@@ -10,8 +10,8 @@ public enum LootType {
     Teapot(SpriteAnimationList.Teapot, SpriteAnimationList.TeapotBtn, new Vector2(0.04706f,0.04706f), new Vector2(2,2),100),
     ;
 
-    public SpriteAnimationList spriteID;
-    public SpriteAnimationList spriteBtnID;
+    public final SpriteAnimationList spriteID;
+    public final SpriteAnimationList spriteBtnID;
 
     public final Vector2 actualScale;
 

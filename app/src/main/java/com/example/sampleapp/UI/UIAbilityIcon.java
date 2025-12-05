@@ -30,11 +30,6 @@ public class UIAbilityIcon extends UIIcon {
     }
 
     @Override
-    public void onRender(Canvas canvas) {
-        super.onRender(canvas);
-    }
-
-    @Override
     public void onUpdate(float dt) {
         super.onUpdate(dt);
         if (hoverTimer > 0.2f) {

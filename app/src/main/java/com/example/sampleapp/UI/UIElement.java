@@ -2,7 +2,10 @@ package com.example.sampleapp.UI;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 
 import com.example.sampleapp.Managers.UIManager;
@@ -69,6 +72,10 @@ public abstract class UIElement {
         if (s == ShapeType.Circle) {
             this.radius = Math.min(bounds.width(), bounds.height()) / 2f;
         }
+    }
+
+    public void setColor(int color) {
+        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
     }
 
     public void setAlpha(int alpha) {
