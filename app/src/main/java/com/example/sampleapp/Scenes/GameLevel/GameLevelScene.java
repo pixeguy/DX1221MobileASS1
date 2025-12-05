@@ -638,34 +638,30 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     public void EndLootPhase() {
         GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
-        Iterator<GameEntity> iter = m_goAbiLootList.iterator();
 
-        while (iter.hasNext()) {
-            GameEntity entity = iter.next();
+        for (int i = m_goAbiLootList.size() - 1; i >= 0; i--) {
+            GameEntity entity = m_goAbiLootList.get(i);
 
             if (entity instanceof LootObj) {
                 LootObj loot = (LootObj) entity;
                 if (loot.placed) {
                     PlayerObj.getInstance().value += loot.lootType.value;
                 }
-                m_goAbiLootList.remove(entity);
-                iter.remove(); // ✔️ SAFE remove
+                m_goAbiLootList.remove(i);
             }
             else if (entity instanceof LootButtonObj) {
-                m_goAbiLootList.remove(entity);
-                iter.remove(); // ✔️ SAFE remove
+                m_goAbiLootList.remove(i);
             }
             else if (entity instanceof LootSlot) {
                 LootSlot slot = (LootSlot) entity;
                 slot.occupied = false;
                 entity.isActive = false;
-                // do NOT remove this one
             }
-            else if (entity instanceof BackgroundEntity){
+            else if (entity instanceof BackgroundEntity) {
                 BackgroundEntity bg = (BackgroundEntity) entity;
-                entity.isActive = false;
-                if (bg.imageID == R.drawable.grassbg)
-                {
+                if (bg.imageID != R.drawable.grassbg) {
+                    entity.isActive = false;
+                } else {
                     entity.isActive = true;
                 }
             }
