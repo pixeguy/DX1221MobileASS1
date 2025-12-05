@@ -2,9 +2,13 @@ package com.example.sampleapp.Entity.Abilities;
 
 import android.graphics.Canvas;
 
+import com.example.sampleapp.Enums.AbilityList;
+import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.UI.UIAbilityIcon;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -24,6 +28,10 @@ public class DoubleShotAbi extends Ability{
     @Override
     public void onGetAbility() {
         System.out.println("Got Ability");
+        iconUI.setPosition(new Vector2(50, 1000), new Vector2(200, 0));
+        iconUI.setPivot(1, 1);
+        iconUI.setAlpha(125);
+        iconUI.interactable = true;
         PlayerObj.getInstance().currAbility = this;
         gotten = true;
     }
@@ -39,8 +47,13 @@ public class DoubleShotAbi extends Ability{
     public void onCreate(Vector2 pos, Vector2 scale) {
         super.onCreate(pos, scale);
 
+        iconUI = new UIAbilityIcon(pos.x, pos.y, 150, 150, AbilityList.Multishot);
+        iconUI.setBaseSprite(icon.sprite);
+        iconUI.zIndex = 1;
+        iconUI.interactable = false;
+        UIManager.getInstance().addElement(iconUI);
+
         bannerAnim = new AnimatedSprite(banner.sprite,banner.rows, banner.columns,banner.fps);
-        iconAnim = new AnimatedSprite(icon.sprite,icon.rows, icon.columns,icon.fps);
 
         selfBtn = new GenericBtn(this);
         selfBtn.onCreate(_position,_scale,banner);
@@ -51,9 +64,6 @@ public class DoubleShotAbi extends Ability{
     public void onRender(Canvas canvas) {
         if (!gotten){
             bannerAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
-        }
-        else {
-            iconAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
         }
     }
 }

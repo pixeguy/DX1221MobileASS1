@@ -34,7 +34,7 @@ public abstract class UIElement {
     public UIElement parent = null;
     public final List<UIElement> children = new ArrayList<>();
 
-    public UIElement(float x, float y, float width, float height) {
+    protected UIElement(float x, float y, float width, float height) {
         float halfWidth = width / 2f;
         float halfHeight = height / 2f;
         this.position.set(x, y);
@@ -42,7 +42,7 @@ public abstract class UIElement {
         this.shape = ShapeType.Rect;
     }
 
-    public UIElement(Vector2 position, float width, float height) {
+    protected UIElement(Vector2 position, float width, float height) {
         float halfWidth = width / 2f;
         float halfHeight = height / 2f;
         this.position.set(position);
@@ -50,14 +50,14 @@ public abstract class UIElement {
         this.shape = ShapeType.Rect;
     }
 
-    public UIElement(float x, float y, float radius) {
+    protected UIElement(float x, float y, float radius) {
         this.position.set(x, y);
         this.bounds = new RectF(-radius, -radius, radius, radius);
         this.shape = ShapeType.Circle;
         this.radius = radius;
     }
 
-    public UIElement(Vector2 position, float radius) {
+    protected UIElement(Vector2 position, float radius) {
         this.position.set(position);
         this.bounds = new RectF(-radius, -radius, radius, radius);
         this.shape = ShapeType.Circle;
@@ -69,6 +69,14 @@ public abstract class UIElement {
         if (s == ShapeType.Circle) {
             this.radius = Math.min(bounds.width(), bounds.height()) / 2f;
         }
+    }
+
+    public void setAlpha(int alpha) {
+        paint.setAlpha(alpha);
+    }
+
+    public void setBaseSprite(Bitmap sprite) {
+        this.baseSprite = sprite;
     }
 
     public RectF getTransformedBounds() {
@@ -110,6 +118,12 @@ public abstract class UIElement {
             return (dx * dx + dy * dy) <= (globalR * globalR);
         }
         return false;
+    }
+
+    public void addParent(UIElement parent) {
+        if(this.parent != null) parent.removeChild(this);
+        this.parent = parent;
+        if(this.parent != null) parent.addChild(this);
     }
 
     public void addChild(UIElement child) {

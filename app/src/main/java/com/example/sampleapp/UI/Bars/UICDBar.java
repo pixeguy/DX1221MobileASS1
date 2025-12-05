@@ -30,8 +30,6 @@ public class UICDBar extends UIElement {
 
     private int bgColor = Color.DKGRAY;
     private int fillColor = Color.CYAN;
-
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private float glowTimer = 0f;
 
     private GameEntity owner;
@@ -212,6 +210,9 @@ public class UICDBar extends UIElement {
             paint.setStyle(Paint.Style.FILL);
         }
 
+        for(UIElement child : children) {
+            child.onRender(canvas);
+        }
         if(world_space) canvas.restore();
     }
 

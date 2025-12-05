@@ -72,6 +72,7 @@ public enum SpriteList {
     StaffBtn(R.drawable.staffbtn),
     Teapot(R.drawable.teapot),
     TeapotBtn(R.drawable.teapotbtn),
+    DashIcon(R.drawable.dash_icon)
     ;
 
     public final int spriteID;

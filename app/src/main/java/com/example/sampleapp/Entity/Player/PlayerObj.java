@@ -13,6 +13,7 @@ import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.DoubleShotAbi;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
+import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.Managers.DamageTextManager;
 import com.example.sampleapp.Managers.UIManager;
@@ -26,6 +27,7 @@ import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.UI.Bars.UICDBar;
 import com.example.sampleapp.UI.Bars.UIHealthBar;
 import com.example.sampleapp.UI.Buttons.UIJoystick;
+import com.example.sampleapp.UI.UIIcon;
 import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.VisualEffect.OnHitVisualEffect;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
@@ -96,12 +98,18 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _ordinal = 1;
         isActive = true;
 
-        dashCDBar = new UICDBar(150, 150, 150, 150, false);
+        dashCDBar = new UICDBar(50, 950, 150, 150, false);
+        dashCDBar.setPivot(1, 0);
         dashCDBar.setFillMode(UICDBar.FillMode.CounterClockwise360);
         dashCDBar.setCooldown(dashCDDuration);
         dashCDBar.setTimer(dashCDTimer);
         dashCDBar.setColors(Color.DKGRAY, Color.CYAN);
         dashCDBar.zIndex = 1;
+
+        UIIcon dashIcon = new UIIcon(0, 0, 100, 100);
+        dashIcon.setBaseSprite(SpriteList.DashIcon.sprite);
+        dashIcon.zIndex = 1;
+        dashIcon.addParent(dashCDBar);
         UIManager.getInstance().addElement(dashCDBar);
 
         healthSystem = new HealthSystem(this, maxHealth);

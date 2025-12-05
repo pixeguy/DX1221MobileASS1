@@ -71,6 +71,8 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.sampleapp.Managers.UIManager;
 
 public class GameActivity extends FragmentActivity {
+    private float deltaTime = 0;
+    public float getDeltaTime() { return deltaTime; }
 
     private static class UpdateThread extends Thread {
         public boolean _isRunning = true;
@@ -97,6 +99,7 @@ public class GameActivity extends FragmentActivity {
                 // Calculating deltaTime
                 long currentTime = System.nanoTime();
                 float deltaTime = (currentTime-prevTime)/1000000000.0f;
+                GameActivity.instance.deltaTime = deltaTime;
                 prevTime = currentTime;
 
                 if (GameScene.getNext() != GameScene.getCurrent())

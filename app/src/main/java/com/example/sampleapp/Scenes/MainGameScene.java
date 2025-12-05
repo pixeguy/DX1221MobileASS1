@@ -305,7 +305,7 @@ public class MainGameScene extends GameScene {
                 Ability abi = (Ability) entity;
                 abi.selfBtn.isActive = false;
                 abi.isActive = false; // ability update will be called through player;
-                abi._position = new Vector2(abi.iconAnim._width - 50,screenHeight/2);
+                abi._position = new Vector2(abi.iconUI.getTransformedBounds().width() - 50, (float) screenHeight /2);
                 abi.paint.setAlpha(128);
             }
         }

@@ -19,7 +19,7 @@ public class Golem extends Enemy {
     public static float RUN_SPEED = 300.0f;
     public static float ATTACK_RANGE = 260.0f;
     private final float MAX_SLAM_CD = 2.0f;
-    private final float MAX_SPIN_CD = 10.0f;
+    private final float MAX_SPIN_CD = 3.0f;
     private final float MAX_HEALTH = 250.0f;
 
     // --- Properties ---

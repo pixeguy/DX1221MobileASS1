@@ -2,9 +2,11 @@ package com.example.sampleapp.Entity.Abilities;
 
 import android.graphics.Canvas;
 
+import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.UI.UIAbilityIcon;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
@@ -41,7 +43,10 @@ public class TestAbility extends Ability{
         super.onCreate(pos, scale);
 
         bannerAnim = new AnimatedSprite(banner.sprite,banner.rows, banner.columns,banner.fps);
-        iconAnim = new AnimatedSprite(icon.sprite,icon.rows, icon.columns,icon.fps);
+
+        iconUI = new UIAbilityIcon(pos.x, pos.y, 100, 100, null);
+        iconUI.setBaseSprite(icon.sprite);
+        UIManager.getInstance().addElement(iconUI);
 
         selfBtn = new GenericBtn(this);
         selfBtn.onCreate(_position,_scale,banner);
@@ -52,9 +57,6 @@ public class TestAbility extends Ability{
     public void onRender(Canvas canvas) {
         if (!gotten){
             bannerAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
-        }
-        else {
-            iconAnim.render(canvas,(int)_position.x,(int)_position.y, _scale, paint);
         }
     }
 

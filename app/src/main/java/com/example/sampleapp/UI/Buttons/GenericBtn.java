@@ -14,7 +14,6 @@ public class GenericBtn extends ButtonObj{
     @Override
     public void OnClick() {
         super.OnClick();
-        // This line is now universal: it triggers whatever the 'target' needs to do.
         callback.execute();
     }
 }

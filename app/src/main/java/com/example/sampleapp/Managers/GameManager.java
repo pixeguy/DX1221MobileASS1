@@ -8,7 +8,9 @@ import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageEndGame;
 import com.example.sampleapp.PostOffice.ObjectBase;
 import com.example.sampleapp.PostOffice.PostOffice;
+import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Scenes.MainMenu;
+import com.example.sampleapp.UI.Text.UICounter;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
@@ -30,7 +32,14 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
 
     private GameManager() {
         PostOffice.getInstance().register("GameManager", this);
+        timerCounter = new UICounter(GameLevelScene.world_bounds.width() / 2.0f, 200, 300, 300, 70.0f);
+        timerCounter.zIndex = 1;
+        timerCounter.setText("Timer", "00:00");
+        UIManager.getInstance().addElement(timerCounter);
     }
+
+    private float timer = 0.0f;
+    private final UICounter timerCounter;
 
     public void TransitionToState(GameState newState)
     {
@@ -54,7 +63,6 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             case GAME_OVER:
                 // Handle game over logic (e.g., show game over screen)
                 Log.d("GameManager", "Transitioning to Game Over");
-
                 break;
         }
     }
@@ -67,13 +75,14 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
     public void startGame() {
         // Start the game logic here
         EnemyManager.getInstance().startWave();
+        timer = 0.0f;
     }
 
     public void updateGame(float deltaTime) {
         // Update the game logic here
         if(isGameOver) return;
 
-        if (EnemyManager.getInstance().numWaves > 1)
+        if (EnemyManager.getInstance().numWaves == EnemyManager.MAX_WAVE && EnemyManager.getInstance().GetNumOfEnemies() == 0)
         {
             //win
             MessageEndGame msg = new MessageEndGame(MessageEndGame.END_CONDITION.LOOTING_PHASE);
@@ -90,6 +99,8 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             return;
         }
         EnemyManager.getInstance().updateWave(deltaTime);
+        timer += deltaTime;
+        timerCounter.setText("Timer", String.format("%02d:%02d", (int) (timer / 60), (int) (timer % 60)));
     }
 
     public void endGame() {
