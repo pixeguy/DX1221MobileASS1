@@ -219,6 +219,14 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         UIManager.getInstance().clear();
         PostOffice.getInstance().clear();
         ScreenManager.exitCurrent();
+        EnemyManager.getInstance().ClearEnemies();
+        /*m_goAbiLootList.clear();
+        for(int i = 0; i < m_goList.size(); ++i) {
+            if(m_goList.get(i) instanceof PlayerObj) continue;
+            m_goList.remove(m_goList.get(i));
+        }
+        m_goListToAdd.clear();
+        m_goListToRemove.clear();*/
     }
 
     protected void onPhysicsUpdate() {
@@ -614,7 +622,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             lootBtnn.onCreate(
                     new Vector2(startPos.x, startPos.y + offsetY),
                     scale,
-                    LootType.Staff
+                    randomType
             );
             lootBtnn.isActive = true;
             lootBtnn.setOrdinal(4);

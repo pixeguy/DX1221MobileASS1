@@ -20,9 +20,9 @@ import java.util.Vector;
 public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase {
 
     int[] enemySpawnPattern = { 4, 2, 2 }; // 4 Slime, 2 Toxito, 2 Golem
-    int numWaves = 0;
+    public int numWaves = 0;
 
-    public static int MAX_WAVE = 3;
+    public static int MAX_WAVE = 1;
 
     public static EnemyManager getInstance() {
         return Singleton.getInstance(EnemyManager.class);
@@ -30,13 +30,10 @@ public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase 
 
     private final Vector<Enemy> enemiesList = new Vector<>();;
 
-    private final UICounter waveCounter;
+    public UICounter waveCounter;
 
     private EnemyManager() {
         PostOffice.getInstance().register("EnemyManager", this);
-        waveCounter = new UICounter(GameLevelScene.screenWidth / 2.0f, 100, 300, 300, 100.0f);
-        waveCounter.zIndex = 1;
-        UIManager.getInstance().addElement(waveCounter);
     }
 
     public void AddEnemy(Enemy enemy) {

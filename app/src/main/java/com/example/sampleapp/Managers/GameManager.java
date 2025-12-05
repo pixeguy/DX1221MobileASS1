@@ -32,14 +32,10 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
 
     private GameManager() {
         PostOffice.getInstance().register("GameManager", this);
-        timerCounter = new UICounter(GameLevelScene.world_bounds.width() / 2.0f, 200, 300, 300, 70.0f);
-        timerCounter.zIndex = 1;
-        timerCounter.setText("Timer", "00:00");
-        UIManager.getInstance().addElement(timerCounter);
     }
 
     private float timer = 0.0f;
-    private final UICounter timerCounter;
+    private UICounter timerCounter;
 
     public void TransitionToState(GameState newState)
     {
@@ -74,8 +70,18 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
 
     public void startGame() {
         // Start the game logic here
-        EnemyManager.getInstance().startWave();
+        EnemyManager.getInstance().numWaves = 0;
         timer = 0.0f;
+        timerCounter = new UICounter(GameLevelScene.world_bounds.width() / 2.0f, 200, 300, 300, 70.0f);
+        timerCounter.zIndex = 1;
+        timerCounter.setText("Timer", "00:00");
+        UIManager.getInstance().addElement(timerCounter);
+
+        EnemyManager.getInstance().waveCounter = new UICounter(GameLevelScene.screenWidth / 2.0f, 100, 300, 300, 100.0f);
+        EnemyManager.getInstance().waveCounter.zIndex = 1;
+        UIManager.getInstance().addElement(EnemyManager.getInstance().waveCounter);
+
+        EnemyManager.getInstance().startWave();
     }
 
     public void updateGame(float deltaTime) {
