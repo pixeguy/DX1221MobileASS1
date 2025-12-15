@@ -54,6 +54,15 @@ public class Camera2D extends Singleton<Camera2D> {
         }
     }
 
+    public void Reset()
+    {
+        original_position.set(0,0);
+        _position.set(original_position);
+        target.set(0,0);
+        prevTarget.set(0,0);
+        zoom = 1f;
+    }
+
     // Example: these depend on your renderer
     private float getViewportWidth() { return GameLevelScene.screenWidth / zoom; }
     private float getViewportHeight() { return GameLevelScene.screenHeight / zoom; }

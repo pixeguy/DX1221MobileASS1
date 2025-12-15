@@ -98,8 +98,6 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         screenHeight = GameActivity.instance.getResources().getDisplayMetrics().heightPixels;
         screenWidth = GameActivity.instance.getResources().getDisplayMetrics().widthPixels;
         world_bounds = new RectF(0, -screenHeight, screenWidth, screenHeight);
-        Camera2D.getInstance().setBounds(world_bounds);
-        Camera2D.getInstance().setPosition(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f));
 
         m_goAbiLootList = new ArrayList<>();
 
@@ -114,6 +112,9 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         BackgroundEntity bg2 = new BackgroundEntity(R.drawable.grassbg);
         bg2._position.y = -screenHeight;
         m_goList.add(bg2);
+
+        Camera2D.getInstance().setBounds(world_bounds);
+        Camera2D.getInstance().setPosition(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f));
 
         PlayerObj player = PlayerObj.getInstance();
         player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
@@ -227,6 +228,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         m_goListToAdd.clear();
         m_goListToRemove.clear();
+
+        Camera2D.getInstance().Reset();
     }
 
     protected void onPhysicsUpdate() {
