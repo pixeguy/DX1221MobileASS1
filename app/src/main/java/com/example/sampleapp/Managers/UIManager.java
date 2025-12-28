@@ -3,7 +3,7 @@ package com.example.sampleapp.Managers;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
 import java.util.ArrayList;

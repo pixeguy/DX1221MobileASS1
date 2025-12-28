@@ -1,14 +1,12 @@
-package com.example.sampleapp.UI;
+package com.example.sampleapp.UI.Core;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 
-import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.ArrayList;

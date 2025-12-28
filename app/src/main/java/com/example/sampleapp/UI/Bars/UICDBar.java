@@ -10,7 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
 import com.example.sampleapp.Entity.Camera2D;
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

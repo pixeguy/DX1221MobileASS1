@@ -1,10 +1,8 @@
 package com.example.sampleapp.Screens;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 
 import com.example.sampleapp.Managers.GameManager;
 import com.example.sampleapp.Managers.ScreenManager;
@@ -13,7 +11,7 @@ import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Scenes.MainMenu;
 import com.example.sampleapp.UI.Buttons.UIButton;
 import com.example.sampleapp.UI.Text.UIText;
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

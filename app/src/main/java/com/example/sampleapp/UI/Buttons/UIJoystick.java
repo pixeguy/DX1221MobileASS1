@@ -3,13 +3,10 @@ package com.example.sampleapp.UI.Buttons;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.Utilities.Utilities;
-import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 
 @SuppressWarnings("FieldCanBeLocal")

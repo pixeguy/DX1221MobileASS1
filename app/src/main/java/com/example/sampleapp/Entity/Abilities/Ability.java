@@ -3,7 +3,7 @@ package com.example.sampleapp.Entity.Abilities;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.UI.Buttons.IActivatable;
 import com.example.sampleapp.Enums.SpriteAnimationList;
-import com.example.sampleapp.UI.UIAbilityIcon;
+import com.example.sampleapp.UI.Icon.UIAbilityIcon;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 

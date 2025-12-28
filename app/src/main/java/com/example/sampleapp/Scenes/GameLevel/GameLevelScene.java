@@ -2,6 +2,7 @@ package com.example.sampleapp.Scenes.GameLevel;
 
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -374,8 +375,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             return true;
         }
 
-        if(message instanceof MessageSpawnRearProjectile)
-        {
+        if(message instanceof MessageSpawnRearProjectile) {
             MessageSpawnRearProjectile messageSpawnProjectile = (MessageSpawnRearProjectile) message;
             Vector2 targetPos = messageSpawnProjectile.direction;
             switch (messageSpawnProjectile.projectileType) {
@@ -432,20 +432,20 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             return true;
         }
 
-        if(message instanceof MessageAddGO)
-        {
+        if(message instanceof MessageAddGO) {
             MessageAddGO messageAddGO = (MessageAddGO) message;
             m_goListToAdd.add(messageAddGO.go);
             return true;
         }
 
-        if (message instanceof MessageEndGame){
+        if (message instanceof MessageEndGame) {
             MessageEndGame msg = (MessageEndGame) message;
             if (msg.condition == MessageEndGame.END_CONDITION.LOOTING_PHASE)
             {
                 StartLootPhase();
             }else { LoseScreen(); }
         }
+
         return false;
     }
 

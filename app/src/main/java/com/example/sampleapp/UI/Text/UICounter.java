@@ -9,7 +9,7 @@ import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.sampleapp.R;
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 
 public class UICounter extends UIElement {

@@ -1,6 +1,5 @@
 package com.example.sampleapp.UI.Buttons;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,8 +10,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.R;
-import com.example.sampleapp.UI.UIElement;
-import com.example.sampleapp.UI.UIIcon;
+import com.example.sampleapp.UI.Core.UIElement;
+import com.example.sampleapp.UI.Icon.UIIcon;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

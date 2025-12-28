@@ -1,8 +1,6 @@
 package com.example.sampleapp.Screens;
 
-import android.content.Context;
-
-import com.example.sampleapp.UI.UIElement;
+import com.example.sampleapp.UI.Core.UIElement;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.sampleapp.UI;
+package com.example.sampleapp.UI.Icon;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,7 +9,7 @@ import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.sampleapp.R;
-import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
+import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

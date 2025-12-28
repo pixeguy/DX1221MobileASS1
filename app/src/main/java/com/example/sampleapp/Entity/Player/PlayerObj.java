@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Core.HealthSystem;
@@ -26,19 +25,13 @@ import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.UI.Bars.UICDBar;
 import com.example.sampleapp.UI.Bars.UIHealthBar;
-import com.example.sampleapp.UI.Buttons.UIJoystick;
-import com.example.sampleapp.UI.UIIcon;
+import com.example.sampleapp.UI.Icon.UIIcon;
 import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.VisualEffect.OnHitVisualEffect;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
-import com.example.sampleapp.mgp2d.core.EmptyEntity;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
-import com.example.sampleapp.mgp2d.core.Singleton;
 import com.example.sampleapp.mgp2d.core.Vector2;
-
-import java.util.Vector;
-import java.util.Random;
 
 /** @noinspection FieldCanBeLocal*/
 public class PlayerObj extends GameEntity implements ObjectBase, Damageable {

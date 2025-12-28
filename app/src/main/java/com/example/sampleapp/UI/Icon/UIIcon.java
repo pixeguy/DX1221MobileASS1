@@ -1,7 +1,9 @@
-package com.example.sampleapp.UI;
+package com.example.sampleapp.UI.Icon;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+
+import com.example.sampleapp.UI.Core.UIElement;
 
 public class UIIcon extends UIElement {
     public UIIcon(float x, float y, float width, float height) {

@@ -1,6 +1,4 @@
-package com.example.sampleapp.UI;
-
-import android.graphics.Canvas;
+package com.example.sampleapp.UI.Icon;
 
 import com.example.sampleapp.Enums.AbilityList;
 import com.example.sampleapp.Managers.UIManager;

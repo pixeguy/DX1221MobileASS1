@@ -6,7 +6,7 @@ import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
-import com.example.sampleapp.UI.UIAbilityIcon;
+import com.example.sampleapp.UI.Icon.UIAbilityIcon;
 import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.Vector2;
 

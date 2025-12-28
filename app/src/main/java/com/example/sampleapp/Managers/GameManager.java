@@ -70,7 +70,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
 
     public void startGame() {
         // Start the game logic here
-        EnemyManager.getInstance().numWaves = 0;
+         EnemyManager.getInstance().numWaves = 0;
         timer = 0.0f;
         timerCounter = new UICounter(GameLevelScene.world_bounds.width() / 2.0f, 200, 300, 300, 70.0f);
         timerCounter.zIndex = 1;

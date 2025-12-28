@@ -56,8 +56,7 @@ public class EnemyManager extends Singleton<EnemyManager> implements ObjectBase 
         return enemiesList.size();
     }
 
-    public int GetNumOfEnemies(String enemyName)
-    {
+    public int GetNumOfEnemies(String enemyName) {
         int count = 0;
         for(Enemy enemy : enemiesList)
         {
