@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -20,10 +23,12 @@ import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Camera2D;
 import com.example.sampleapp.Entity.Projectile.PlayerFlyingOrb;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
 import com.example.sampleapp.Managers.ScreenManager;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.MessageCheckCollision;
 import com.example.sampleapp.PostOffice.MessageEndGame;
@@ -133,6 +138,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         });
         UIManager.getInstance().addElement(pausedBtn);
 
+        SoundManager.getInstance().InitAudio();
+
         InitAbiLoot();
         StartAbilityPhase();
 
@@ -152,6 +159,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             @Override
             public void onSwipeRight() { player.Dash(new Vector2(1,0)); }
         });
+    }
+
+    @Override public void onEnter()
+    {
+        super.onEnter();
+        SoundManager.getInstance().InitAudio();
+        SoundManager.getInstance().startMusic();
     }
 
     @Override
@@ -230,6 +244,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         m_goListToAdd.clear();
         m_goListToRemove.clear();
+        SoundManager.getInstance().stopAudio();
 
         Camera2D.getInstance().Reset();
     }
@@ -343,6 +358,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                             messageSpawnProjectile.pos,
                             new Vector2(0.05f, 0.05f));
                     m_goListToAdd.add(playerProjectile);
+                    SoundManager.getInstance().PlayAudio(SoundList.PlayerShoot,1);
                     break;
                 case PLAYER_FLYING_ORB:
                     PlayerFlyingOrb playerFlyingOrb = new PlayerFlyingOrb();
