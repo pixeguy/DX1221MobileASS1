@@ -8,6 +8,15 @@ public enum SpriteAnimationList {
     //PlayerAnimations
     PlayerIdle(SpriteList.PlayerSprite.sprite, 1, 1, 1, 0, 0, false),
 
+    PlayerForward(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,0,24,true),
+    PlayerUpRight(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,25,48,true),
+    PlayerRight(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,49,72,true),
+    PlayerDownRight(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,73,96,true),
+    PlayerDown(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,97,121,true),
+    PlayerDownLeft(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,122,144,true),
+    PlayerLeft(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,145,168,true),
+    PlayerUpLeft(SpriteList.PlayerSpriteSheet.sprite, 8,24,12,169,192,true),
+
     //Projectile Animations
     PlayerShootMissile(SpriteList.PlayerMagicMissileSprite.sprite, 1, 5, 12, 0, 4, true),
     EnemyShootFireMissile(SpriteList.EnemyFireMissileSprite.sprite, 1, 5, 12, 0, 4, true),

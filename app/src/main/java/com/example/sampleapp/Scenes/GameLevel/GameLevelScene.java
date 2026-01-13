@@ -118,7 +118,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         Camera2D.getInstance().setPosition(new Vector2(screenWidth / 2.0f, screenHeight / 2.0f));
 
         PlayerObj player = PlayerObj.getInstance();
-        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(0.075f,0.075f), SpriteAnimationList.PlayerIdle);
+        player.onCreate(new Vector2(screenWidth / 2.0f,screenHeight / 2.0f + 400.0f), new Vector2(1,1), SpriteAnimationList.PlayerForward);
+
         player.SetInputDirection(playerMovementJoystick.getOutput());
         player.currAbility = null;
         m_goList.add(player);

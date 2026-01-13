@@ -74,7 +74,9 @@ public enum SpriteList {
     TeapotBtn(R.drawable.teapotbtn),
     DashIcon(R.drawable.dash_icon),
     PausedBtnIcon(R.drawable.paused_button),
-    ResumeBtnIcon(R.drawable.resume_button)
+    ResumeBtnIcon(R.drawable.resume_button),
+
+    PlayerSpriteSheet(R.drawable.player_spritesheet)
     ;
 
     public final int spriteID;

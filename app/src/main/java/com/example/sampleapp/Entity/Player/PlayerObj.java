@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Core.HealthSystem;
@@ -82,7 +83,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         onCreate(pos, scale);
         sprite = spriteAnim.sprite;
         animatedSprite = new AnimatedSprite(sprite, spriteAnim.rows, spriteAnim.columns, spriteAnim.fps, spriteAnim.startFrame, spriteAnim.endFrame);
-        animatedSprite.setLooping(false);
+        animatedSprite.setLooping(true);
         collider = new CircleCollider2D(this, animatedSprite.GetRect(_position, _scale).width() / 2.0f);
         PostOffice.getInstance().register(String.valueOf(_id), this);
         _vibrator = (Vibrator) GameActivity.instance.getApplicationContext().
@@ -144,6 +145,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         super.onUpdate(dt);
         hitVisualEffect.onUpdate(dt);
         HandMovement(dt);
+        HandleAnimation();
         FindNearestEnemy();
         shootTimer -= dt;
         if(targetGO != null && shootTimer <= 0.0f && inputDirection.equals(0, 0)) {
@@ -190,6 +192,46 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         }
     }
 
+    private void HandleAnimation()
+    {
+        if (facingDirection.equals(new Vector2(0,0)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerForward);
+        }
+        if (facingDirection.equals(new Vector2(0,-1)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerForward);
+        }
+        if (facingDirection.equals(new Vector2(0,1)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerDown);
+        }
+        if (facingDirection.equals(new Vector2(0.70710677f,-0.81649655f)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerUpRight);
+        }
+        if (facingDirection.equals(new Vector2(1,0)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerRight);
+        }
+        if (facingDirection.equals(new Vector2(0.70710677f,0.81649655f)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerDownRight);
+        }
+        if (facingDirection.equals(new Vector2(-0.70710677f,0.81649655f)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerDownLeft);
+        }
+        if (facingDirection.equals(new Vector2(-0.70710677f,0)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerLeft);
+        }
+        if (facingDirection.equals(new Vector2(-0.70710677f,-0.81649655f)))
+        {
+            SetAnimation(SpriteAnimationList.PlayerUpLeft);
+        }
+    }
+
     private void HandMovement(float dt) {
         if(!isDashing) {
             Vector2 movementDirection = new Vector2(inputDirection.x, -inputDirection.y);
@@ -197,7 +239,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             _position.y += -movementDirection.y * movementSpeed * dt;
             if(!movementDirection.equals(new Vector2(0, 0))) {
                 facingDirection.set(movementDirection.x, -movementDirection.y);
-                _rotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
+                Log.d("FacingRaw", "x=" + facingDirection.x + " y=" + facingDirection.y);
+                //_rotationZ = (float) Math.toDegrees(Vector2.Angle(movementDirection, new Vector2(-1, 0)));
             }
         }
         else {
