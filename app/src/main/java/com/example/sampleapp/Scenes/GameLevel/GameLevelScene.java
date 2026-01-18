@@ -358,7 +358,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                             messageSpawnProjectile.pos,
                             new Vector2(0.05f, 0.05f));
                     m_goListToAdd.add(playerProjectile);
-                    SoundManager.getInstance().PlayAudio(SoundList.PlayerShoot,1);
+                    //SoundManager.getInstance().PlayAudio(SoundList.PlayerShoot,1);
                     break;
                 case PLAYER_FLYING_ORB:
                     PlayerFlyingOrb playerFlyingOrb = new PlayerFlyingOrb();
