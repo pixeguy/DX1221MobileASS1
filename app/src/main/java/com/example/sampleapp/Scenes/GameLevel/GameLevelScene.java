@@ -1,6 +1,8 @@
 package com.example.sampleapp.Scenes.GameLevel;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -69,6 +71,13 @@ import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
 import com.example.sampleapp.Managers.GameManager;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -96,6 +105,64 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     private SwipeGestureDetector swipeGestureDetector;
 
     private UIButton pausedBtn;
+
+
+
+    private static final String PREFSNAME = "main_game_prefs";
+    private static final String BESTSCORE = "best_score";
+    private static final String FILEBESTSCORE = "best_score.txt";
+    private SharedPreferences prefs;
+    private int currentScore = 0;
+    private int bestScore = 0;
+    private int fileBestScore = 0;
+    private void initPreferences()
+    {
+        prefs = GameActivity.instance.getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE);
+        loadBestScore();
+    }
+
+    private void loadBestScore() {
+        if (prefs != null)
+        {
+            bestScore = prefs.getInt(BESTSCORE, 0);
+        }
+    }
+
+    private void saveBestScore()
+    {
+        if (prefs != null)
+        {
+            prefs.edit().putInt(BESTSCORE, bestScore).apply();
+        }
+    }
+
+    private void saveBestScoreToFile()
+    {
+        try(OutputStream outputStream = GameActivity.instance.openFileOutput(FILEBESTSCORE, Context.MODE_PRIVATE))
+        {
+            outputStream.write(Integer.toString(fileBestScore).getBytes(StandardCharsets.UTF_8));
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadBestScoreFromFile() {
+        try (InputStream input = GameActivity.instance.openFileInput(FILEBESTSCORE);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(input,StandardCharsets.UTF_8))){
+            String line = reader.readLine();
+            if (line != null) {
+                fileBestScore = Integer.parseInt(line.trim());
+            }
+        }
+        catch (FileNotFoundException f)
+        {
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void onCreate() {
