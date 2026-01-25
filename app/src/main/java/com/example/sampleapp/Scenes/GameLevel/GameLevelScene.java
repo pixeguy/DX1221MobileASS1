@@ -24,6 +24,7 @@ import com.example.sampleapp.Entity.Abilities.MagicOrbAbi;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
 import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Camera2D;
+import com.example.sampleapp.Entity.Player.PlayerRecordEntry;
 import com.example.sampleapp.Entity.Projectile.PlayerFlyingOrb;
 import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
@@ -114,44 +115,23 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     private SharedPreferences prefs;
     private int currentScore = 0;
     private int bestScore = 0;
-    private int fileBestScore = 0;
-    private void initPreferences()
-    {
-        prefs = GameActivity.instance.getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE);
-        loadBestScore();
-    }
-
-    private void loadBestScore() {
-        if (prefs != null)
-        {
-            bestScore = prefs.getInt(BESTSCORE, 0);
-        }
-    }
-
-    private void saveBestScore()
-    {
-        if (prefs != null)
-        {
-            prefs.edit().putInt(BESTSCORE, bestScore).apply();
-        }
-    }
-
-    private void saveBestScoreToFile()
+    public void saveBestScoreToFile(PlayerRecordEntry entry)
     {
         try(OutputStream outputStream = GameActivity.instance.openFileOutput(FILEBESTSCORE, Context.MODE_PRIVATE))
         {
-            outputStream.write(Integer.toString(fileBestScore).getBytes(StandardCharsets.UTF_8));
+            outputStream.write(Integer.toString(entry.score).getBytes(StandardCharsets.UTF_8));
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void loadBestScoreFromFile() {
+    public PlayerRecordEntry loadBestScoreFromFile() {
+        PlayerRecordEntry entry = new PlayerRecordEntry();
         try (InputStream input = GameActivity.instance.openFileInput(FILEBESTSCORE);
              BufferedReader reader = new BufferedReader(new InputStreamReader(input,StandardCharsets.UTF_8))){
             String line = reader.readLine();
             if (line != null) {
-                fileBestScore = Integer.parseInt(line.trim());
+                entry.score = Integer.parseInt(line.trim());
             }
         }
         catch (FileNotFoundException f)
@@ -162,6 +142,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         {
             throw new RuntimeException(e);
         }
+        return entry;
     }
 
     @Override
