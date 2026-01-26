@@ -48,7 +48,11 @@ public class PausedScreen extends BaseScreen{
 
         UIButton quit = new UIButton(GameLevelScene.screenWidth * 0.5f, 700, buttonSize.x, buttonSize.y, "Quit");
         quit.setTextSize(textSize);
-        quit.setOnClick(() -> GameActivity.instance.startActivity(new Intent().setClass(GameActivity.instance, MainMenu.class)));
+        quit.setOnClick(() ->
+        {
+
+            GameActivity.instance.startActivity(new Intent().setClass(GameActivity.instance, MainMenu.class));
+        });
 
         uiElementList.add(label);
         uiElementList.add(resume);

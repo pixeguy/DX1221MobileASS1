@@ -26,4 +26,8 @@ public class Singleton<T> {
             throw new RuntimeException("Instance already exists for: " + this.getClass().getName());
         }
     }
+
+    public void ClearSingleton() {
+        instances.remove(this.getClass());
+    }
 }

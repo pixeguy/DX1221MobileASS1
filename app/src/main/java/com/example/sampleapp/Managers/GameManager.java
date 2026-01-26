@@ -82,6 +82,8 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
         UIManager.getInstance().addElement(EnemyManager.getInstance().waveCounter);
 
         EnemyManager.getInstance().startWave();
+
+        isGameOver = false;
     }
 
     public void updateGame(float deltaTime) {

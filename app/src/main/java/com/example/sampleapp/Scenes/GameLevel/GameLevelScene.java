@@ -295,6 +295,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         SoundManager.getInstance().stopAudio();
 
         Camera2D.getInstance().Reset();
+        ColliderManager.GetInstance().ClearColliders();
     }
 
     protected void onPhysicsUpdate() {

@@ -59,6 +59,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     public void StartGame() {
         startActivity(new Intent(this, GameActivity.class));
         GameScene.clearClass();
-        GameScene.enter(MainGameScene.class);
+        GameScene.enter(GameLevelScene.class);
     }
 }

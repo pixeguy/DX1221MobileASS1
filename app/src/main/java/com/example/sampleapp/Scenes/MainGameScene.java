@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -206,14 +208,17 @@ public class MainGameScene extends GameScene {
     @Override
     public void onRender(Canvas canvas) {
         canvas.drawBitmap(backgroundBitmap,backgroundPosition,0,null);
-        canvas.drawBitmap(backgroundBitmap1,backgroundPosition + screenWidth,0,null);
-        for(GameEntity obj : m_goList)
+        //canvas.drawBitmap(backgroundBitmap1,backgroundPosition + screenWidth,0,null);
+        /*for(GameEntity obj : m_goList)
         {
             if(obj.isActive){
                 obj.onRender(canvas);
             }
-        }
+        }*/
         String scores = UpdateScores();
-        canvas.drawText(scores, screenWidth/2,120,null);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(80);
+        canvas.drawText("Hello world", screenWidth/2,screenHeight / 2,paint);
     }
 }

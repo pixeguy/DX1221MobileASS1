@@ -22,4 +22,9 @@ public class ColliderManager {
         return instance;
 
     }
+
+    public void ClearColliders()
+    {
+        m_colliders.clear();
+    }
 }
