@@ -15,6 +15,7 @@ import com.example.sampleapp.Entity.BackgroundEntity;
 import com.example.sampleapp.Entity.Player.PlayerRecordEntry;
 import com.example.sampleapp.Interface.BackToMenu;
 import com.example.sampleapp.Interface.SaveNewScore;
+import com.example.sampleapp.Managers.SaveManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.UI.Buttons.GenericBtn;
 import com.example.sampleapp.UI.Buttons.IActivatable;
@@ -58,69 +59,9 @@ public class MainGameScene extends GameScene {
     private int screenWidth;
     private int screenHeight;
 
-    private static final String FILEBESTSCORE = "best_score.txt";
-    public List<PlayerRecordEntry> scores;
     private boolean isTouching = false;
 
-    public void saveScoresJson(List<PlayerRecordEntry> scores)
-    {
-        JSONArray arr = new JSONArray();
-        for (PlayerRecordEntry e : scores)
-        {
-            JSONObject o = new JSONObject();
-            try {
-                o.put("score", e.score);
-                // o.put("name", e.name);
-                arr.put(o);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
 
-        try (OutputStream os = GameActivity.instance.openFileOutput(FILEBESTSCORE, Context.MODE_PRIVATE))
-        {
-            os.write(arr.toString().getBytes(StandardCharsets.UTF_8));
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-    private static String readAllText(InputStream input) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line); // no newline needed for JSON
-            }
-        }
-        return sb.toString();
-    }
-    public List<PlayerRecordEntry> loadScoresJson()
-    {
-        List<PlayerRecordEntry> list = new ArrayList<>();
-
-        try (InputStream input = GameActivity.instance.openFileInput(FILEBESTSCORE))
-        {
-            String json = readAllText(input);
-            JSONArray arr = new JSONArray(json);
-
-            for (int i = 0; i < arr.length(); i++)
-            {
-                JSONObject o = arr.getJSONObject(i);
-                PlayerRecordEntry e = new PlayerRecordEntry();
-                e.score = o.getInt("score");
-                list.add(e);
-            }
-        }
-        catch (FileNotFoundException f) { }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        return list;
-    }
 
     @Override
     public void onCreate() {
@@ -143,7 +84,6 @@ public class MainGameScene extends GameScene {
     public void onEnter()
     {
         super.onEnter();
-        scores = loadScoresJson();
         GenericBtn save = new GenericBtn(new SaveNewScore(this));
         save.onCreate(new Vector2((float) screenWidth/2, screenHeight * 0.80f), new Vector2(3.5f,3.5f),SpriteAnimationList.MainMenuBtn);
         save.setOrdinal(4);
@@ -196,7 +136,7 @@ public class MainGameScene extends GameScene {
     {
         StringBuilder sb = new StringBuilder();
 
-        for (PlayerRecordEntry e : this.scores)
+        for (PlayerRecordEntry e : SaveManager.getInstance().scores)
         {
             sb.append(e.score).append('\n');
         }

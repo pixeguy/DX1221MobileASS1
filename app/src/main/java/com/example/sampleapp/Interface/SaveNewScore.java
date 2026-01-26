@@ -16,7 +16,7 @@ public class SaveNewScore  implements IActivatable {
     public void execute() {
         PlayerRecordEntry entry = new PlayerRecordEntry();
         entry.score = 50;
-        scene.scores.add(entry);
-        scene.saveScoresJson(scene.scores);
+        //scene.scores.add(entry);
+        //scene.saveScoresJson(scene.scores);
     }
 }

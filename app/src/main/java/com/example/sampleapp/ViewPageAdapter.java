@@ -9,6 +9,7 @@ public class ViewPageAdapter extends FragmentStateAdapter {
     private final Fragment[] fragments = new Fragment[]{
             new menuone(),
             new menutwo(),
+            new menuleader(),
     };
 
     public ViewPageAdapter(@NonNull FragmentActivity fragmentActivity) {
