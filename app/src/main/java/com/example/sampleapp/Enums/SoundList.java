@@ -7,7 +7,11 @@ import com.example.sampleapp.R;
 
 public enum SoundList {
     Bgm(R.raw.bgm,false),
-    //PlayerShoot(R.raw.explode,true)
+    PlayerShoot(R.raw.shoot,true),
+    PlayerDamage(R.raw.damage, true),
+    PlayerCompleteLevel(R.raw.level_complete, true),
+    PlayerFailLevel(R.raw.level_fail, true),
+    PlayerDie(R.raw.die, true)
     ;
     public int resourceID;
     public int soundID;
