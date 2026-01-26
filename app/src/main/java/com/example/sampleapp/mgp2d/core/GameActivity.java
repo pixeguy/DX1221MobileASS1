@@ -68,6 +68,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
 
 public class GameActivity extends FragmentActivity {
@@ -156,6 +157,7 @@ public class GameActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         View decorView = getWindow().getDecorView();
+        SoundManager.getInstance().resumeSounds();
         // Hide both the navigation bar and the status bar.
         // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
         // a general rule, you should design your app to hide the status bar whenever you
@@ -176,6 +178,7 @@ public class GameActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         _updateThread.terminate();
+        SoundManager.getInstance().pauseSounds();
         GameScene.exitCurrent();
     }
 
@@ -183,6 +186,7 @@ public class GameActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         _updateThread.terminate();
+        SoundManager.getInstance().pauseSounds();
         GameScene.exitCurrent();
     }
 }

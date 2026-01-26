@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;  // CORRECT
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.ViewPageAdapter;
@@ -56,9 +57,27 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
     }
 
+    private boolean goingToGame = false;
+
     public void StartGame() {
+        goingToGame = true;
         startActivity(new Intent(this, GameActivity.class));
         GameScene.clearClass();
         GameScene.enter(GameLevelScene.class);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!goingToGame) {
+            SoundManager.getInstance().pauseSounds();
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        goingToGame = false;
+        SoundManager.getInstance().resumeSounds();
     }
 }

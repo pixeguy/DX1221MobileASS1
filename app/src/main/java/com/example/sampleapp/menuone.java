@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Scenes.MainMenu;
 import com.example.sampleapp.mgp2d.core.GameActivity;
@@ -35,6 +36,7 @@ public class menuone extends Fragment implements View.OnClickListener {
         if (PlayButton != null){
             PlayButton.setOnClickListener(this);
         }
+        SoundManager.getInstance().startMusic();
         return rootView;
     }
 

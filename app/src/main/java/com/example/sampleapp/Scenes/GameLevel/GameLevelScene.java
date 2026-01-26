@@ -186,7 +186,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         });
         UIManager.getInstance().addElement(pausedBtn);
 
-        SoundManager.getInstance().InitAudio();
+        //SoundManager.getInstance().InitAudio();
 
         InitAbiLoot();
         StartAbilityPhase();
@@ -212,8 +212,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
     @Override public void onEnter()
     {
         super.onEnter();
-        SoundManager.getInstance().InitAudio();
-        SoundManager.getInstance().startMusic();
+        //SoundManager.getInstance().InitAudio();
+        //SoundManager.getInstance().startMusic();
     }
 
     @Override

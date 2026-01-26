@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.R;
 
 public class SplashPage extends Activity {

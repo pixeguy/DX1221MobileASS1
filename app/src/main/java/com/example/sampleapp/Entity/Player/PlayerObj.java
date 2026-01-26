@@ -63,6 +63,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private Vibrator _vibrator;
     public Vector2 targetPos;
 
+    private Vector2 prevFacingDirection = new Vector2(0, 0);
+
     private final Vector2 dashVelocity = new Vector2(0, 0);
     private float dashTimer = 0.0f;
     private final float dashDuration = 0.3f;
@@ -77,6 +79,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         }
         return instance;
     }
+
 
     @Override
     public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
@@ -180,6 +183,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         if(currAbility != null) {
             currAbility.onUpdate(dt);
         }
+
+        prevFacingDirection = facingDirection.copy();
     }
 
     private void FindNearestEnemy() {
@@ -194,6 +199,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
 
     private void HandleAnimation()
     {
+        if(facingDirection.equals(prevFacingDirection)) return;
         if (facingDirection.equals(new Vector2(0,0)))
         {
             SetAnimation(SpriteAnimationList.PlayerForward);
@@ -206,7 +212,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         {
             SetAnimation(SpriteAnimationList.PlayerDown);
         }
-        if (facingDirection.equals(new Vector2(0.70710677f,-0.81649655f)))
+        if (facingDirection.equals(new Vector2(1,-1).normalize()))
         {
             SetAnimation(SpriteAnimationList.PlayerUpRight);
         }
@@ -214,19 +220,19 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         {
             SetAnimation(SpriteAnimationList.PlayerRight);
         }
-        if (facingDirection.equals(new Vector2(0.70710677f,0.81649655f)))
+        if (facingDirection.equals(new Vector2(1,1).normalize()))
         {
             SetAnimation(SpriteAnimationList.PlayerDownRight);
         }
-        if (facingDirection.equals(new Vector2(-0.70710677f,0.81649655f)))
+        if (facingDirection.equals(new Vector2(-1,1).normalize()))
         {
             SetAnimation(SpriteAnimationList.PlayerDownLeft);
         }
-        if (facingDirection.equals(new Vector2(-0.70710677f,0)))
+        if (facingDirection.equals(new Vector2(-1,0).normalize()))
         {
             SetAnimation(SpriteAnimationList.PlayerLeft);
         }
-        if (facingDirection.equals(new Vector2(-0.70710677f,-0.81649655f)))
+        if (facingDirection.equals(new Vector2(-1,-1).normalize()))
         {
             SetAnimation(SpriteAnimationList.PlayerUpLeft);
         }

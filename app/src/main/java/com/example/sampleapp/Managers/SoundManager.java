@@ -24,12 +24,28 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
         {
             bgmPlayer.start();
         }
-    }
+   }
 
-    public void InitAudio() {
+   public void pauseSounds()
+   {
+       if (bgmPlayer != null)
+           bgmPlayer.pause();
+       if (soundPool != null)
+           soundPool.autoPause();
+   }
+
+   public void resumeSounds()
+   {
+       if (bgmPlayer != null)
+           bgmPlayer.start();
+       if (soundPool != null)
+           soundPool.autoResume();
+   }
+
+    public void InitAudio(android.content.Context ctx) {
         if(bgmPlayer == null)
         {
-            bgmPlayer = MediaPlayer.create(GameActivity.instance, SoundList.Bgm.resourceID);
+            bgmPlayer = MediaPlayer.create(ctx, SoundList.Bgm.resourceID);
             if (bgmPlayer != null)
             {
                 bgmPlayer.setLooping(true);
@@ -50,7 +66,7 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
 
             for(SoundList s : SoundList.values())
             {
-                s.load(soundPool, GameActivity.instance);
+                s.load(soundPool, ctx);
             }
             soundPool.setOnLoadCompleteListener((pool, sampleId,status) -> {
                 if (status != 0) return;
