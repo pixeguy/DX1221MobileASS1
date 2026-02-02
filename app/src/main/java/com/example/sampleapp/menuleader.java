@@ -25,9 +25,7 @@ public class menuleader  extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_menuleader, container, false);
         Log.d("FRAGMENT", "Host = " + getActivity().getClass().getSimpleName());
         TextView txt = rootView.findViewById(R.id.leaderboardText);
-        PlayerRecordEntry entry = new PlayerRecordEntry();
-        entry.score = 50;
-        SaveManager.getInstance().addScoreAndSave(requireContext(),entry);
+
         List<PlayerRecordEntry> entries = SaveManager.getInstance().loadScoresJson(requireContext());
 
         if (entries == null || entries.isEmpty()) {
@@ -36,7 +34,7 @@ public class menuleader  extends Fragment implements View.OnClickListener {
         }
 
         // (Optional) sort highest score first
-        Collections.sort(entries, (a, b) -> Integer.compare(b.score, a.score));
+        Collections.sort(entries, (a, b) -> Float.compare(b.score, a.score));
 
         StringBuilder sb = new StringBuilder();
         int rank = 1;

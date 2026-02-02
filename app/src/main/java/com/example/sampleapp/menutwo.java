@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Managers.SaveManager;
 
 public class menutwo extends Fragment implements View.OnClickListener {
     // ======== Strength ========
@@ -57,7 +58,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         speedCostText = rootView.findViewById(R.id.SpeedCost);
 
         // ========== Update UI ==========
-        xpText.setText("Current G : " + PlayerObj.getInstance().value);
+        xpText.setText("Current G : " + SaveManager.getInstance().LoadLocalValueJson(requireContext()));
 
         strengthValText.setText("Strength : " + PlayerObj.getInstance().strength + " + " + tempStrength);
         strengthCostText.setText("Cost : " + strengthCost);
@@ -76,7 +77,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         rootView.findViewById(R.id.ResetBtn).setOnClickListener(this);
 
         // ========== Initial Values ==========
-        tempXp = PlayerObj.getInstance().value;
+        tempXp = SaveManager.getInstance().LoadLocalValueJson(requireContext());
 
         // Strength
         tempStrength = 0;
@@ -157,7 +158,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             player.defence += tempDefence;
             player.speed += tempSpeed;
 
-            player.value = tempXp;
+            SaveManager.getInstance().saveLocalValueJson(requireContext(),tempXp);
 
             // Reset everything
             tempStrength = 0;
@@ -197,7 +198,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             showSpeed = player.speed;
 
             // Reset XP
-            tempXp = player.value;
+            tempXp = SaveManager.getInstance().LoadLocalValueJson(requireContext());
 
             // Reset costs
             strengthCost = showStrength * 15;

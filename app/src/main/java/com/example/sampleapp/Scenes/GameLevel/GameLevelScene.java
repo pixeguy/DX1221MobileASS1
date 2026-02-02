@@ -30,6 +30,7 @@ import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.SaveManager;
 import com.example.sampleapp.Managers.ScreenManager;
 import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
@@ -107,43 +108,8 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
     private UIButton pausedBtn;
 
+    PlayerRecordEntry currEntry = new PlayerRecordEntry();
 
-
-    private static final String PREFSNAME = "main_game_prefs";
-    private static final String BESTSCORE = "best_score";
-    private static final String FILEBESTSCORE = "best_score.txt";
-    private SharedPreferences prefs;
-    private int currentScore = 0;
-    private int bestScore = 0;
-    public void saveBestScoreToFile(PlayerRecordEntry entry)
-    {
-        try(OutputStream outputStream = GameActivity.instance.openFileOutput(FILEBESTSCORE, Context.MODE_PRIVATE))
-        {
-            outputStream.write(Integer.toString(entry.score).getBytes(StandardCharsets.UTF_8));
-        }catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public PlayerRecordEntry loadBestScoreFromFile() {
-        PlayerRecordEntry entry = new PlayerRecordEntry();
-        try (InputStream input = GameActivity.instance.openFileInput(FILEBESTSCORE);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(input,StandardCharsets.UTF_8))){
-            String line = reader.readLine();
-            if (line != null) {
-                entry.score = Integer.parseInt(line.trim());
-            }
-        }
-        catch (FileNotFoundException f)
-        {
-
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return entry;
-    }
 
     @Override
     public void onCreate() {
@@ -714,6 +680,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             if (entity instanceof LootObj) {
                 LootObj loot = (LootObj) entity;
                 if (loot.placed) {
+                    currEntry.lootValue += loot.lootType.value;
                     PlayerObj.getInstance().value += loot.lootType.value;
                 }
                 m_goAbiLootList.remove(i);
@@ -739,6 +706,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         {
             btn.isActive = false;
         }
+
+        currEntry.score = GameManager.getInstance().GetTimer();
+        SaveManager.getInstance().addToLocalValueAndSave(GameActivity.instance,currEntry.lootValue);
+        SaveManager.getInstance().addScoreAndSave(GameActivity.instance,currEntry);
+
 
         System.out.println(PlayerObj.getInstance().value);
         lootBtns = null;
@@ -803,6 +775,9 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                                 IActivatable target2 = new BackToMenu();
                                 if(btn.getCallback().getClass() == target2.getClass())
                                 {
+                                    PlayerRecordEntry entry = new PlayerRecordEntry();
+                                    entry.score = GameManager.getInstance().GetTimer();
+                                    SaveManager.getInstance().addScoreAndSave(GameActivity.instance,entry);
                                     btn.OnClick();
                                 }
                                 break;

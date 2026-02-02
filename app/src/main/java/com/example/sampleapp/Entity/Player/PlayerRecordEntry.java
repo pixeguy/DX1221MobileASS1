@@ -1,5 +1,6 @@
 package com.example.sampleapp.Entity.Player;
 
 public class PlayerRecordEntry {
-    public int score;
+    public int lootValue;
+    public float score;
 }

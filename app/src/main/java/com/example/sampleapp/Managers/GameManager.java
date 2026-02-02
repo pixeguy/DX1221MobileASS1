@@ -111,6 +111,9 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
         timerCounter.setText("Timer", String.format("%02d:%02d", (int) (timer / 60), (int) (timer % 60)));
     }
 
+    public float GetTimer()
+    {return timer;}
+
     public void endGame() {
         // End the game logic here
     }

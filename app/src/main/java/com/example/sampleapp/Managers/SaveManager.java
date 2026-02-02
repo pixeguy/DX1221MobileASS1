@@ -23,9 +23,50 @@ import java.util.List;
 
 public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
     private static final String FILEBESTSCORE = "best_score.txt";
+    private static final String FILEGLOBAL =  "persistent.txt";
     public List<PlayerRecordEntry> scores = new ArrayList<>();
 
     public static SaveManager getInstance() { return Singleton.getInstance(SaveManager.class);}
+
+    public void saveLocalValueJson(Context ctx, int value)
+    {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("value", value);
+        }
+        catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
+
+        try (OutputStream os = ctx.openFileOutput(FILEGLOBAL, Context.MODE_PRIVATE))
+        {
+            os.write(o.toString().getBytes(StandardCharsets.UTF_8));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int LoadLocalValueJson(Context ctx)
+    {
+        int val = 0;
+
+        try (InputStream input = ctx.openFileInput(FILEGLOBAL))
+        {
+            String json = readAllText(input);
+
+            JSONObject o = new JSONObject(json);
+            val = (int) o.optDouble("value", 0.0);
+        }
+        catch (FileNotFoundException f) { }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return val;
+    }
 
     public void saveScoresJson(Context ctx, List<PlayerRecordEntry> scores)
     {
@@ -50,6 +91,14 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public int addToLocalValueAndSave(Context ctx, int add)
+    {
+        int curr = LoadLocalValueJson(ctx);
+        int newVal = curr + add;
+        saveLocalValueJson(ctx, newVal);
+        return newVal; // optional, convenient for UI
     }
 
     public void addScoreAndSave(Context ctx, PlayerRecordEntry entry)
