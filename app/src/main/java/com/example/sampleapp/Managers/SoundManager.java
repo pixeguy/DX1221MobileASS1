@@ -20,6 +20,10 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
     private MediaPlayer bgmPlayer;
     private SoundPool soundPool;
 
+    private float masterVolume = 1.0f;
+    private float musicVolume = 1.0f;
+    private float orignalBgmVol = 0.5f;
+
     public static SoundManager getInstance() { return Singleton.getInstance(SoundManager.class);}
    public void startMusic() {
         if(bgmPlayer != null && !bgmPlayer.isPlaying())
@@ -51,7 +55,8 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
             if (bgmPlayer != null)
             {
                 bgmPlayer.setLooping(true);
-                bgmPlayer.setVolume(0.5f,0.5f);
+                float volume = orignalBgmVol * masterVolume * musicVolume;
+                bgmPlayer.setVolume(volume,volume);
             }
         }
 
@@ -103,7 +108,8 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
     public void PlayAudio(SoundList sound, float vol)
     {
         if (!sound.loaded) return;
-        soundPool.play(sound.soundID,vol,vol,1,1,1);
+        float finalV = vol * masterVolume;
+        soundPool.play(sound.soundID,finalV,finalV,1,1,1);
     }
 
     public void PlayAudio(SoundList sound, float vol, float pitch, float pitchVariance)
@@ -121,7 +127,9 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
 
         // Ensure finalPitch stays within SoundPool's supported range (0.5 to 2.0)
         finalPitch = Math.max(0.5f, Math.min(2.0f, finalPitch));
-        soundPool.play(sound.soundID, vol, vol, 1, 0, pitch);
+
+        float finalV = vol * masterVolume;
+        soundPool.play(sound.soundID, finalV, finalV, 1, 0, pitch);
     }
 
     public void PlayAudioAtPosition(SoundList sound, Vector2 sourcePos, Vector2 listenerPos, float maxDistance) {
@@ -147,5 +155,25 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
     @Override
     public boolean handle(Message message) {
         return false;
+    }
+
+    public float getMasterVolume() {
+        return masterVolume;
+    }
+
+    public float getMusicVolume() {
+        return musicVolume;
+    }
+
+    public void setMasterVolume(float v) {
+        masterVolume = v;
+        bgmPlayer.setVolume(orignalBgmVol * masterVolume * musicVolume,
+                           orignalBgmVol * masterVolume * musicVolume);
+    }
+
+    public void setMusicVolume(float v) {
+        musicVolume = v;
+        bgmPlayer.setVolume(orignalBgmVol * masterVolume * musicVolume,
+                           orignalBgmVol * masterVolume * musicVolume);
     }
 }

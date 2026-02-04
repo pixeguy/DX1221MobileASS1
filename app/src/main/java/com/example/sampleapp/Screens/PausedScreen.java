@@ -30,6 +30,7 @@ public class PausedScreen extends BaseScreen{
 
     UIButton resume;
     UIButton quit;
+    UIButton settings;
 
     @Override
     protected void init() {
@@ -50,23 +51,33 @@ public class PausedScreen extends BaseScreen{
         resume.setColor(Color.RED);
         resume.setTextSize(textSize);
         resume.setOnRelease(() -> {
+            SoundManager.getInstance().resumeSounds();
             SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
             ScreenManager.setScreen((Class<?>) null);
             GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
         });
 
-        quit = new UIButton(GameLevelScene.screenWidth * 0.5f, 700, buttonSize.x, buttonSize.y, "Quit");
+        settings = new UIButton(GameLevelScene.screenWidth * 0.5f, 700, buttonSize.x, buttonSize.y, "Settings");
+        settings.setColor(Color.RED);
+        settings.setTextSize(textSize);
+        settings.setOnRelease(() -> {
+            SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
+            UIManager.getInstance().showSettingsDialog(resume, quit, settings);
+        });
+
+        quit = new UIButton(GameLevelScene.screenWidth * 0.5f, 1000, buttonSize.x, buttonSize.y, "Quit");
         quit.setColor(Color.RED);
         quit.setTextSize(textSize);
         quit.setOnRelease(() ->
         {
             SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
-            UIManager.getInstance().showWarningDialog(false, resume, quit);
+            UIManager.getInstance().showWarningDialog(false, resume, quit, settings);
         });
 
         uiElementList.add(label);
         uiElementList.add(resume);
         uiElementList.add(quit);
+        uiElementList.add(settings);
 
         UIManager.getInstance().addFocusElements(uiElementList);
     }

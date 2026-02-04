@@ -148,6 +148,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         pausedBtn.setAlpha(0);
         pausedBtn.zIndex = 1;
         pausedBtn.setOnRelease(() -> {
+            SoundManager.getInstance().pauseSounds();
             GameManager.getInstance().TransitionToState(GameManager.GameState.PAUSED);
             ScreenManager.setScreen(new PausedScreen());
             SoundManager.getInstance().PlayAudio(SoundList.Click, 1.0f, 0.9f, 0.8f);

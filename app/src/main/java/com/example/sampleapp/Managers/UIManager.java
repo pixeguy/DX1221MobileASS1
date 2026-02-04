@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.R;
@@ -161,17 +162,7 @@ public class UIManager extends Singleton<UIManager> {
             // 2. Build the dialog
             AlertDialog dialog = new AlertDialog.Builder(GameActivity.instance)
                     .setView(dialogView)
-                    .setCancelable(true) // Allows back button to close it
-                    .setOnCancelListener((dialogInterface -> {
-                        for (UIElement element : elementsToDisable) {
-                            if (element != null) element.interactable = true;
-                        }
-                        showWarningDialog = false;
-                        if(unPauseGame)
-                        {
-                            GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
-                        }
-                    }))
+                    .setCancelable(false)
                     .create();
 
             // 3. Setup YES button
@@ -199,6 +190,68 @@ public class UIManager extends Singleton<UIManager> {
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
+
+            dialog.show();
+        });
+    }
+
+    private boolean showSettingsDialog = false;
+    public void showSettingsDialog(UIElement... elementsToDisable) {
+        if(showSettingsDialog) return;
+
+        showSettingsDialog = true;
+
+        // Disable background buttons
+        for (UIElement e : elementsToDisable) if (e != null) e.interactable = false;
+
+        GameActivity.instance.runOnUiThread(() -> {
+            View v = GameActivity.instance.getLayoutInflater().inflate(R.layout.settings_screen, null);
+
+            AlertDialog dialog = new AlertDialog.Builder(GameActivity.instance)
+                    .setView(v)
+                    .setCancelable(false)
+                    .create();
+
+            // Setup SeekBars
+            SeekBar master = v.findViewById(R.id.seek_master);
+            SeekBar music = v.findViewById(R.id.seek_music);
+
+            // Set initial values from SoundManager (0.0 to 1.0 -> 0 to 100)
+            master.setProgress((int)(SoundManager.getInstance().getMasterVolume() * 100));
+            music.setProgress((int)(SoundManager.getInstance().getMusicVolume() * 100));
+
+            master.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar s, int p, boolean b) {
+                    SoundManager.getInstance().setMasterVolume(p / 100f);
+                }
+                @Override public void onStartTrackingTouch(SeekBar s) {
+                    SoundManager.getInstance().PlayAudio(SoundList.Click, .6f, 0.5f, 0.8f);
+                }
+                @Override public void onStopTrackingTouch(SeekBar s) {}
+            });
+
+            music.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar s, int p, boolean b) {
+                    SoundManager.getInstance().setMusicVolume(p / 100f);
+                }
+
+                @Override public void onStartTrackingTouch(SeekBar s) {
+                    SoundManager.getInstance().PlayAudio(SoundList.Click, .6f, 0.5f, 0.8f);
+                }
+
+                @Override public void onStopTrackingTouch(SeekBar s) {}
+            });
+
+            v.findViewById(R.id.btn_back).setOnClickListener(view -> {
+                // Re-enable buttons
+                for (UIElement e : elementsToDisable) if (e != null) e.interactable = true;
+                dialog.dismiss();
+                showSettingsDialog = false;
+                SoundManager.getInstance().PlayAudio(SoundList.Click, .6f, 0.5f, 0.8f);
+            });
+
+            if (dialog.getWindow() != null)
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
             dialog.show();
         });

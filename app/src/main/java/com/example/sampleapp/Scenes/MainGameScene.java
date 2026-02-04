@@ -61,8 +61,6 @@ public class MainGameScene extends GameScene {
 
     private boolean isTouching = false;
 
-
-
     @Override
     public void onCreate() {
         super.onCreate();
