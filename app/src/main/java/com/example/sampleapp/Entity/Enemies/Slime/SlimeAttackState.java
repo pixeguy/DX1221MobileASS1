@@ -1,7 +1,9 @@
 package com.example.sampleapp.Entity.Enemies.Slime;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Statemchine.State;
 import com.example.sampleapp.Utilities.Utilities;
 import com.example.sampleapp.mgp2d.core.GameEntity;
@@ -40,6 +42,7 @@ public class SlimeAttackState extends State {
     public void OnUpdate(float dt) {
         super.OnUpdate(dt);
         if(!isDamageDone && ((Slime)m_go).CheckIfPlayerNear(((Slime)m_go).ATTACK_RANGE)) {
+            SoundManager.getInstance().PlayAudio(SoundList.Slime_Attack, 1.0f, 0.56f, 1.33f);
             Random rand = new Random();
             float minDamage = 20.0f;
             float maxDamage = 45.0f;

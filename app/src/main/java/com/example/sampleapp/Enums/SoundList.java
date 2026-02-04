@@ -11,7 +11,14 @@ public enum SoundList {
     PlayerDamage(R.raw.damage, true),
     PlayerCompleteLevel(R.raw.level_complete, true),
     PlayerFailLevel(R.raw.level_fail, true),
-    PlayerDie(R.raw.die, true)
+    PlayerDie(R.raw.die, true),
+    PlayerDash(R.raw.dash, true),
+    EnemyHit(R.raw.enemy_hit, true),
+    EnemyShot(R.raw.enemy_shot, true),
+    Slime_Attack(R.raw.slime_attack, true),
+    Button_Click(R.raw.button_click, true),
+    Click(R.raw.click, true),
+    Drop_Loot(R.raw.drop_item_slot, true),
     ;
     public int resourceID;
     public int soundID;

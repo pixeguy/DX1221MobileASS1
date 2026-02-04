@@ -4,8 +4,10 @@ import android.graphics.Color;
 
 import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.MessageCount;
 import com.example.sampleapp.PostOffice.PostOffice;
@@ -91,6 +93,7 @@ public class Enemy extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void TakeDamage(float amount) {
         healthSystem.takeDamage(amount);
+        SoundManager.getInstance().PlayAudio(SoundList.EnemyHit, 1.0f, 1.0f, .5f);
     }
 
     public boolean CheckIfPlayerNear(float threshold) {

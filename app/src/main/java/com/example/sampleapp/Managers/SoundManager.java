@@ -11,8 +11,10 @@ import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.R;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Singleton;
+import com.example.sampleapp.mgp2d.core.Vector2;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class SoundManager extends Singleton<SoundManager> implements ObjectBase {
     private MediaPlayer bgmPlayer;
@@ -104,6 +106,43 @@ public class SoundManager extends Singleton<SoundManager> implements ObjectBase 
         soundPool.play(sound.soundID,vol,vol,1,1,1);
     }
 
+    public void PlayAudio(SoundList sound, float vol, float pitch, float pitchVariance)
+    {
+        if (!sound.loaded) return;
+
+        // Define the variance range (e.g., +/- 0.1)
+        Random random = new Random();
+
+        // Calculate a random pitch between (pitch - variance) and (pitch + variance)
+        // Formula: min + random * (max - min)
+        float minPitch = pitch - pitchVariance;
+        float maxPitch = pitch + pitchVariance;
+        float finalPitch = minPitch + random.nextFloat() * (maxPitch - minPitch);
+
+        // Ensure finalPitch stays within SoundPool's supported range (0.5 to 2.0)
+        finalPitch = Math.max(0.5f, Math.min(2.0f, finalPitch));
+        soundPool.play(sound.soundID, vol, vol, 1, 0, pitch);
+    }
+
+    public void PlayAudioAtPosition(SoundList sound, Vector2 sourcePos, Vector2 listenerPos, float maxDistance) {
+        // 1. Calculate distance
+        float distance = sourcePos.subtract(listenerPos).getMagnitude();
+
+        // 2. Calculate volume (1.0 at 0 distance, 0.0 at maxDistance)
+        float vol = 1.0f - (distance / maxDistance);
+
+        // Clamp volume between 0 and 1
+        if (vol < 0) vol = 0;
+        if (vol > 1) vol = 1;
+
+        // 3. Add a small random pitch for variety
+        float randomPitch = 0.95f + (new java.util.Random().nextFloat() * 0.1f);
+
+        // 4. Play only if audible
+        if (vol > 0.01f) {
+            PlayAudio(sound, vol, 1.0f, randomPitch);
+        }
+    }
 
     @Override
     public boolean handle(Message message) {

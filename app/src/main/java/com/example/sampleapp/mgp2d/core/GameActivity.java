@@ -65,9 +65,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.sampleapp.Managers.GameManager;
 import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
 
@@ -151,6 +153,21 @@ public class GameActivity extends FragmentActivity {
         SurfaceView surfaceView = new SurfaceView(this);
         setContentView(surfaceView);
         _updateThread = new UpdateThread(surfaceView);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                GameManager.getInstance().TransitionToState(GameManager.GameState.PAUSED);
+                // When back is pressed, show the warning dialog instead of closing the app
+                if (UIManager.getInstance() != null) {
+                    UIManager.getInstance().showWarningDialog(true);
+                } else {
+                    // Fallback: If UIManager isn't initialized, allow default back behavior
+                    setEnabled(false); // Disable this callback
+                    getOnBackPressedDispatcher().onBackPressed(); // Pass the event back
+                }
+            }
+        });
     }
 
     @Override
@@ -189,4 +206,5 @@ public class GameActivity extends FragmentActivity {
         SoundManager.getInstance().pauseSounds();
         GameScene.exitCurrent();
     }
+
 }

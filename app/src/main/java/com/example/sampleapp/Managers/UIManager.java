@@ -1,9 +1,16 @@
 package com.example.sampleapp.Managers;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
+import android.view.View;
 
+import com.example.sampleapp.Enums.SoundList;
+import com.example.sampleapp.R;
+import com.example.sampleapp.Scenes.MainMenu;
 import com.example.sampleapp.UI.Core.UIElement;
+import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
 import java.util.ArrayList;
@@ -131,6 +138,70 @@ public class UIManager extends Singleton<UIManager> {
                 activeTouches.put(pointerId, e);
             }
         }
+    }
+
+    private boolean showWarningDialog = false;
+
+    public void showWarningDialog(boolean unPauseGame, UIElement... elementsToDisable) {
+        if (showWarningDialog) return;
+
+        for (UIElement element : elementsToDisable) {
+            if (element != null) element.interactable = false;
+        }
+
+        GameActivity.instance.runOnUiThread(() -> {
+            if (GameActivity.instance == null || GameActivity.instance.isFinishing()) {
+                showWarningDialog = false;
+                return;
+            }
+
+            // 1. Inflate a FRESH view every time to avoid "View already has a parent" crash
+            View dialogView = GameActivity.instance.getLayoutInflater().inflate(R.layout.dialog_warning, null);
+
+            // 2. Build the dialog
+            AlertDialog dialog = new AlertDialog.Builder(GameActivity.instance)
+                    .setView(dialogView)
+                    .setCancelable(true) // Allows back button to close it
+                    .setOnCancelListener((dialogInterface -> {
+                        for (UIElement element : elementsToDisable) {
+                            if (element != null) element.interactable = true;
+                        }
+                        showWarningDialog = false;
+                        if(unPauseGame)
+                        {
+                            GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
+                        }
+                    }))
+                    .create();
+
+            // 3. Setup YES button
+            dialogView.findViewById(R.id.btn_yes).setOnClickListener(v -> {
+                SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.5f, 0.8f);
+                dialog.dismiss();
+                GameActivity.instance.startActivity(new Intent().setClass(GameActivity.instance, MainMenu.class));
+            });
+
+            // 4. Setup NO button
+            dialogView.findViewById(R.id.btn_no).setOnClickListener(v -> {
+                SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.5f, 0.8f);
+                for (UIElement element : elementsToDisable) {
+                    if (element != null) element.interactable = true;
+                }
+                showWarningDialog = false;
+                dialog.dismiss();
+                if(unPauseGame)
+                {
+                    GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
+                }
+            });
+
+            // Make background transparent so rounded corners/custom shapes show correctly
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            dialog.show();
+        });
     }
 
     public void clear() {

@@ -13,9 +13,12 @@ import com.example.sampleapp.Core.HealthSystem;
 import com.example.sampleapp.Entity.Abilities.Ability;
 import com.example.sampleapp.Entity.Abilities.DoubleShotAbi;
 import com.example.sampleapp.Entity.Abilities.RearShotAbi;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.GameManager;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
@@ -122,6 +125,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             hitVisualEffect.playHitFlash();
             if(hp <= 0) {
                 UIManager.getInstance().removeElement(healthBar);
+                SoundManager.getInstance().PlayAudio(SoundList.PlayerDie, 1.0f);
             }
 
             float ex = _position.x + Utilities.RandomFloat(-50, 50);
@@ -132,9 +136,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
             else
                 DamageTextManager.getInstance().spawnText("-" + (int)damage, ex, ey, Color.YELLOW);
 
-            float healthPer = hp / maxHealth;
-            if ((damage > 40.0f || healthPer < 0.5f) &&
-                    _vibrator.hasVibrator() &&
+            if (_vibrator.hasVibrator() &&
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 _vibrator.vibrate(VibrationEffect.createOneShot(100L, (int) (damage + 50)));
             }
@@ -152,6 +154,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         FindNearestEnemy();
         shootTimer -= dt;
         if(targetGO != null && shootTimer <= 0.0f && inputDirection.equals(0, 0)) {
+            SoundManager.getInstance().PlayAudio(SoundList.PlayerShoot, 0.5f, 0.8f, 1.2f);
             Vector2 projectilePosition = _position.add(facingDirection.multiply(100.0f));
             // Send Message To Spawn Projectile
             MessageSpawnProjectile message = new MessageSpawnProjectile(this,
@@ -286,12 +289,15 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     @Override
     public void TakeDamage(float amount) {
         healthSystem.takeDamage(amount);
+        SoundManager.getInstance().PlayAudio(SoundList.PlayerDamage, 1.0f, 1.0f, .5f);
     }
 
     public void Dash(Vector2 direction) {
         if (isDashing || dashCDTimer > 0.0f) return;
+        if(GameManager.getInstance().getCurrentState() == GameManager.GameState.PAUSED) return;
         isDashing = true;
         dashVelocity.set(direction.multiply(dashSpeed));
         dashTimer = dashDuration;
+        SoundManager.getInstance().PlayAudio(SoundList.PlayerDash, 1.0f, 1.2f, 0.5f);
     }
 }

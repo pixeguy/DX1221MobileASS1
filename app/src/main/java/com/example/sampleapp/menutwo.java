@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Managers.SaveManager;
+import com.example.sampleapp.Managers.SoundManager;
 
 public class menutwo extends Fragment implements View.OnClickListener {
     // ======== Strength ========
@@ -101,6 +103,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         PlayerObj player = PlayerObj.getInstance();
+        SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
 
         // ==================== Strength Upgrade ====================
         if (id == R.id.StrengthBtn) {

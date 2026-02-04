@@ -1,7 +1,9 @@
 package com.example.sampleapp.Entity.Enemies.Toxito;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteAnimationList;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.PostOffice.MessageSpawnProjectile;
 import com.example.sampleapp.PostOffice.PostOffice;
 import com.example.sampleapp.Statemchine.State;
@@ -39,6 +41,11 @@ public class ToxitoAttackState extends State {
                     projectilePosition, m_go.facingDirection);
             PostOffice.getInstance().send("Scene", message);
             isAttackDone = true;
+            SoundManager.getInstance().PlayAudioAtPosition(
+                    SoundList.EnemyShot,
+                    m_go._position,
+                    PlayerObj.getInstance()._position,
+                    1000.0f);
         }
 
         if(m_go.animatedSprite.hasFinished()) {

@@ -1,5 +1,6 @@
 package com.example.sampleapp.Scenes.GameLevel;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -149,6 +150,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         pausedBtn.setOnRelease(() -> {
             GameManager.getInstance().TransitionToState(GameManager.GameState.PAUSED);
             ScreenManager.setScreen(new PausedScreen());
+            SoundManager.getInstance().PlayAudio(SoundList.Click, 1.0f, 0.9f, 0.8f);
         });
         UIManager.getInstance().addElement(pausedBtn);
 
@@ -161,6 +163,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         swipeGestureDetector = new SwipeGestureDetector();
         swipeGestureDetector.setOnSwipeListener(new SwipeGestureDetector.OnSwipeListener() {
+
             @Override
             public void onSwipeUp() { player.Dash(new Vector2(0,-1)); }
 
@@ -758,8 +761,9 @@ public class GameLevelScene extends GameScene implements ObjectBase {
                         if (entity instanceof GenericBtn)
                         {
                             GenericBtn btn = (GenericBtn) entity;
-                            if(btn.checkIfPressed(touchPos))
+                            if(btn.checkIfPressed(touchPos) && btn.isActive)
                             {
+                                SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
                                 if (btn.getCallback() instanceof Ability) {
                                     if(PlayerObj.getInstance().currAbility == null)  {
                                         btn.OnClick();
@@ -920,6 +924,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
                         //check if item slots are valid
                         if(canPlaceItemInSlot(i,j,xSize,ySize)){
+                            SoundManager.getInstance().PlayAudio(SoundList.Drop_Loot, 1.0f, 1.4f, 0.5f);
                             draggingObj.setPosition(slots[i][j]._position);
                             loot.slotsOccupied.clear(); //clear all previous ones
                             //change all slots that it occupies to occupied

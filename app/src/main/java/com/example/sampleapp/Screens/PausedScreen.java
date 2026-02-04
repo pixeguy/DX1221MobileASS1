@@ -1,12 +1,17 @@
 package com.example.sampleapp.Screens;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.view.View;
 
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Managers.GameManager;
 import com.example.sampleapp.Managers.ScreenManager;
+import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.R;
 import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
 import com.example.sampleapp.Scenes.MainMenu;
 import com.example.sampleapp.UI.Buttons.UIButton;
@@ -23,6 +28,8 @@ public class PausedScreen extends BaseScreen{
     private static final Vector2 buttonSize = new Vector2(840, 240);
     private static final float textSize = 100.0f;
 
+    UIButton resume;
+    UIButton quit;
 
     @Override
     protected void init() {
@@ -39,19 +46,22 @@ public class PausedScreen extends BaseScreen{
         UIText label = new UIText("Paused", 200, new Vector2(GameLevelScene.screenWidth * 0.5f, 200), buttonSize.x, buttonSize.y);
 
         // Buttons
-        UIButton resume = new UIButton(GameLevelScene.screenWidth * 0.5f, 400, buttonSize.x, buttonSize.y, "Resume");
+        resume = new UIButton(GameLevelScene.screenWidth * 0.5f, 400, buttonSize.x, buttonSize.y, "Resume");
+        resume.setColor(Color.RED);
         resume.setTextSize(textSize);
         resume.setOnRelease(() -> {
+            SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
             ScreenManager.setScreen((Class<?>) null);
             GameManager.getInstance().TransitionToState(GameManager.GameState.RUNNING);
         });
 
-        UIButton quit = new UIButton(GameLevelScene.screenWidth * 0.5f, 700, buttonSize.x, buttonSize.y, "Quit");
+        quit = new UIButton(GameLevelScene.screenWidth * 0.5f, 700, buttonSize.x, buttonSize.y, "Quit");
+        quit.setColor(Color.RED);
         quit.setTextSize(textSize);
-        quit.setOnClick(() ->
+        quit.setOnRelease(() ->
         {
-
-            GameActivity.instance.startActivity(new Intent().setClass(GameActivity.instance, MainMenu.class));
+            SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
+            UIManager.getInstance().showWarningDialog(false, resume, quit);
         });
 
         uiElementList.add(label);

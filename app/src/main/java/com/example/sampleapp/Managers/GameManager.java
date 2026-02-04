@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
+import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.MessageEndGame;
 import com.example.sampleapp.PostOffice.ObjectBase;
@@ -96,6 +97,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             MessageEndGame msg = new MessageEndGame(MessageEndGame.END_CONDITION.LOOTING_PHASE);
             PostOffice.getInstance().send("Scene",msg);
             isGameOver = true;
+            SoundManager.getInstance().PlayAudio(SoundList.PlayerCompleteLevel, 1.0f, 0.7f, 0.5f);
             return;
         }
         if(PlayerObj.getInstance().healthSystem.getCurrentHealth() <= 0)
@@ -104,6 +106,7 @@ public class GameManager extends Singleton<GameManager> implements ObjectBase {
             MessageEndGame msg = new MessageEndGame(MessageEndGame.END_CONDITION.LOSE_PHASE);
             PostOffice.getInstance().send("Scene",msg);
             isGameOver = true;
+            SoundManager.getInstance().PlayAudio(SoundList.PlayerFailLevel, 1.0f, 1.5f, 0.8f);
             return;
         }
         EnemyManager.getInstance().updateWave(deltaTime);
