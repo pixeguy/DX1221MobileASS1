@@ -268,7 +268,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
         m_goListToAdd.clear();
         m_goListToRemove.clear();
-        SoundManager.getInstance().stopAudio();
+        //SoundManager.getInstance().stopAudio();
 
         Camera2D.getInstance().Reset();
         ColliderManager.GetInstance().ClearColliders();

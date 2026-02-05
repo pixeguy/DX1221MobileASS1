@@ -200,7 +200,7 @@ public class GameActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         _updateThread.terminate();
-        SoundManager.getInstance().pauseSounds();
+        //SoundManager.getInstance().pauseSounds();
         GameScene.exitCurrent();
     }
 
@@ -208,7 +208,7 @@ public class GameActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         _updateThread.terminate();
-        SoundManager.getInstance().pauseSounds();
+        //SoundManager.getInstance().pauseSounds();
         GameScene.exitCurrent();
     }
 
