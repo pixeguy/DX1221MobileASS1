@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,8 @@ import com.example.sampleapp.Scenes.MainMenu;
 import com.example.sampleapp.UI.Core.UIElement;
 import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameScene;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class menuone extends Fragment implements View.OnClickListener {
     public void menuone()
@@ -37,10 +41,42 @@ public class menuone extends Fragment implements View.OnClickListener {
         Log.d("FRAGMENT", "Host = " + getActivity().getClass().getSimpleName());
         SoundManager.getInstance().startMusic();
 
+        TextInputLayout nameLayout = rootView.findViewById(R.id.nameInputLayout);
+        TextInputEditText nameInput = rootView.findViewById(R.id.nameInput);
+
         //setting up buttons
         Button PlayButton = rootView.findViewById(R.id.button3);
+        PlayButton.setEnabled(false);
+
+        nameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString().trim();
+                boolean ok = !text.isEmpty();
+
+                PlayButton.setEnabled(ok);
+
+                // optional: show error when empty
+                if (!ok) nameLayout.setError("Required");
+                else nameLayout.setError(null);
+            }
+        });
+
         if (PlayButton != null){
-            PlayButton.setOnClickListener(this);
+            PlayButton.setOnClickListener(v -> {
+                SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
+                MainMenu menu = (MainMenu) getActivity();
+                if (menu != null) {
+                    String name = "";
+                    if (nameInput.getText() != null)
+                        name = nameInput.getText().toString().trim();
+
+                    menu.StartGame(name);
+                }
+            });
         }
 
         Button settingBtn = rootView.findViewById(R.id.button4);
@@ -61,11 +97,7 @@ public class menuone extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.button3) {
-            SoundManager.getInstance().PlayAudio(SoundList.Button_Click, 1.0f, 0.9f, 0.8f);
-            MainMenu menu = (MainMenu) getActivity();
-            if (menu != null) {
-                menu.StartGame();   // <<< THIS reproduces MAINMENU behavior
-            }
+
         }
     }
 }

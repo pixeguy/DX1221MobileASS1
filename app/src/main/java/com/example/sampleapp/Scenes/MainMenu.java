@@ -62,10 +62,14 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     }
 
     private boolean goingToGame = false;
+    public static final String EXTRA_PLAYER_NAME = "EXTRA_PLAYER_NAME";
 
-    public void StartGame() {
+    public void StartGame(String playerName) {
         goingToGame = true;
-        startActivity(new Intent(this, GameActivity.class));
+        Intent i = new Intent(this, GameActivity.class);
+        i.putExtra(EXTRA_PLAYER_NAME, playerName);
+        startActivity(i);
+
         GameScene.clearClass();
         GameScene.enter(GameLevelScene.class);
     }

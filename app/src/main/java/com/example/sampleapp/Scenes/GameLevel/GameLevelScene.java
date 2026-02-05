@@ -159,6 +159,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
 
         InitAbiLoot();
         StartAbilityPhase();
+        SetEntryName(GameActivity.pendingPlayerName);
 
         GameManager.getInstance().startGame();
 
@@ -177,6 +178,11 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             @Override
             public void onSwipeRight() { player.Dash(new Vector2(1,0)); }
         });
+    }
+
+    public void SetEntryName(String name)
+    {
+        currEntry.name = name;
     }
 
     @Override public void onEnter()

@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
@@ -68,15 +70,37 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         return val;
     }
 
+    public int addToLocalValueAndSave(Context ctx, int add)
+    {
+        int curr = LoadLocalValueJson(ctx);
+        int newVal = curr + add;
+        saveLocalValueJson(ctx, newVal);
+        return newVal; // optional, convenient for UI
+    }
+    private static String readAllText(InputStream input) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line); // no newline needed for JSON
+            }
+        }
+        return sb.toString();
+    }
     public void saveScoresJson(Context ctx, List<PlayerRecordEntry> scores)
     {
         JSONArray arr = new JSONArray();
+
         for (PlayerRecordEntry e : scores)
         {
             JSONObject o = new JSONObject();
             try {
                 o.put("score", e.score);
-                // o.put("name", e.name);
+
+                // NEW
+                o.put("lootValue", e.lootValue);
+                o.put("name", e.name == null ? "" : e.name);
+
                 arr.put(o);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -93,29 +117,10 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         }
     }
 
-    public int addToLocalValueAndSave(Context ctx, int add)
-    {
-        int curr = LoadLocalValueJson(ctx);
-        int newVal = curr + add;
-        saveLocalValueJson(ctx, newVal);
-        return newVal; // optional, convenient for UI
-    }
-
     public void addScoreAndSave(Context ctx, PlayerRecordEntry entry)
     {
         scores.add(entry);
         saveScoresJson(ctx, scores);
-    }
-
-    private static String readAllText(InputStream input) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line); // no newline needed for JSON
-            }
-        }
-        return sb.toString();
     }
 
     public List<PlayerRecordEntry> loadScoresJson(Context ctx)
@@ -130,8 +135,15 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
             for (int i = 0; i < arr.length(); i++)
             {
                 JSONObject o = arr.getJSONObject(i);
+
                 PlayerRecordEntry e = new PlayerRecordEntry();
-                e.score = o.getInt("score");
+
+                e.score = o.optInt("score", 0);
+
+                // NEW
+                e.lootValue = o.optInt("lootValue", 0);
+                e.name = o.optString("name", "");
+
                 list.add(e);
             }
         }
@@ -142,6 +154,23 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         }
 
         return list;
+    }
+
+    public void sortBestTimeToSlowest(List<PlayerRecordEntry> list)
+    {
+        if (list == null) return;
+
+        // Fastest time first (smallest value first)
+        Collections.sort(list, new Comparator<PlayerRecordEntry>() {
+            @Override
+            public int compare(PlayerRecordEntry a, PlayerRecordEntry b) {
+                // If score is int time-in-seconds:
+                return Float.compare(a.score, b.score);
+
+                // If score is float time-in-seconds instead, use:
+                // return Float.compare(a.score, b.score);
+            }
+        });
     }
 
     @Override

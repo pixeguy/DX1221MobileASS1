@@ -51,18 +51,48 @@
         tools:text="Leaderboard" />
 
     <TextView
-        android:id="@+id/leaderboardText"
-        android:layout_width="299dp"
-        android:layout_height="605dp"
+        android:id="@+id/timeText"
+        android:layout_width="103dp"
+        android:layout_height="604dp"
         android:fontFamily="@font/alagard"
-        android:text="TextView"
+        android:text="TIME\n________"
         android:textColor="#E7E6E6"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.584" />
+        app:layout_constraintVertical_bias="0.566" />
+
+    <TextView
+        android:id="@+id/leaderboardText"
+        android:layout_width="103dp"
+        android:layout_height="604dp"
+        android:fontFamily="@font/alagard"
+        android:text="NAME\n________"
+        android:textColor="#E7E6E6"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.194"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.566" />
+
+    <TextView
+        android:id="@+id/lootText"
+        android:layout_width="103dp"
+        android:layout_height="604dp"
+        android:fontFamily="@font/alagard"
+        android:text="LOOT\n________"
+        android:textColor="#E7E6E6"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.83"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.566" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

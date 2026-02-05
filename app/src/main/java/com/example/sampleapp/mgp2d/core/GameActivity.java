@@ -72,6 +72,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.sampleapp.Managers.GameManager;
 import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.Managers.UIManager;
+import com.example.sampleapp.Scenes.MainMenu;
 
 public class GameActivity extends FragmentActivity {
     private float deltaTime = 0;
@@ -145,6 +146,7 @@ public class GameActivity extends FragmentActivity {
         return true;
     }
     private UpdateThread _updateThread;
+    public static String pendingPlayerName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +155,9 @@ public class GameActivity extends FragmentActivity {
         SurfaceView surfaceView = new SurfaceView(this);
         setContentView(surfaceView);
         _updateThread = new UpdateThread(surfaceView);
+
+        pendingPlayerName = getIntent().getStringExtra(MainMenu.EXTRA_PLAYER_NAME);
+        if (pendingPlayerName == null) pendingPlayerName = "";
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
