@@ -8,6 +8,8 @@ import com.example.sampleapp.mgp2d.core.AnimatedSprite;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 
 public abstract class Ability extends GameEntity implements IActivatable {
+    protected float yPosition = 400.0f;
+
     public String name;
     public SpriteAnimationList banner;
     public SpriteAnimationList icon;

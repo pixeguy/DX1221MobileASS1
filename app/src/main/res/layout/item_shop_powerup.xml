@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Power Up Name"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/img_item_icon"
@@ -37,17 +38,20 @@
             android:id="@+id/tv_item_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
             android:text="Description goes here."
             app:layout_constraintEnd_toStartOf="@+id/btn_buy"
             app:layout_constraintStart_toStartOf="@id/tv_item_name"
             app:layout_constraintTop_toBottomOf="@id/tv_item_name" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_buy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price"
-            android:background="@drawable/bg_rounded_button"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/alagard"
+            android:background="@drawable/btn_shop_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -31,6 +31,8 @@ import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
 import com.example.sampleapp.Input.SwipeGestureDetector;
 import com.example.sampleapp.Managers.DamageTextManager;
+import com.example.sampleapp.Managers.DataManager;
+import com.example.sampleapp.Managers.PowerUpManager;
 import com.example.sampleapp.Managers.SaveManager;
 import com.example.sampleapp.Managers.ScreenManager;
 import com.example.sampleapp.Managers.SoundManager;
@@ -162,6 +164,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         SetEntryName(GameActivity.pendingPlayerName);
 
         GameManager.getInstance().startGame();
+        PowerUpManager.getInstance().useAll();
 
         swipeGestureDetector = new SwipeGestureDetector();
         swipeGestureDetector.setOnSwipeListener(new SwipeGestureDetector.OnSwipeListener() {
@@ -578,8 +581,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
 
         // ---- CREATE 3 ABILITIES ----
-        for (int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
             Ability ability;
             if(abilities[i] == 0)
                 ability = new MagicOrbAbi();
@@ -607,11 +609,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         for(GameEntity entity : m_goAbiLootList) {
             if (entity instanceof BackgroundEntity){
                 BackgroundEntity bg = (BackgroundEntity) entity;
-                entity.isActive = false;
-                if (bg.imageID == R.drawable.grassbg)
-                {
-                    entity.isActive = true;
-                }
+                entity.isActive = bg.imageID == R.drawable.grassbg;
             }
             if (entity instanceof Ability) {
                 Ability abi = (Ability) entity;
@@ -705,11 +703,7 @@ public class GameLevelScene extends GameScene implements ObjectBase {
             }
             else if (entity instanceof BackgroundEntity) {
                 BackgroundEntity bg = (BackgroundEntity) entity;
-                if (bg.imageID != R.drawable.grassbg) {
-                    entity.isActive = false;
-                } else {
-                    entity.isActive = true;
-                }
+                entity.isActive = bg.imageID == R.drawable.grassbg;
             }
         }
         for(GenericBtn btn : lootGenerics)
@@ -718,14 +712,13 @@ public class GameLevelScene extends GameScene implements ObjectBase {
         }
 
         currEntry.score = GameManager.getInstance().GetTimer();
-        SaveManager.getInstance().addToLocalValueAndSave(GameActivity.instance,currEntry.lootValue);
-        SaveManager.getInstance().addScoreAndSave(GameActivity.instance,currEntry);
-
+        int finalLootValue = (int) (currEntry.lootValue * PlayerObj.getInstance().coinMultiplier);
+        DataManager.getInstance().addDataAndSave(GameActivity.instance, "value", finalLootValue);
+        SaveManager.getInstance().addScoreAndSave(GameActivity.instance, currEntry);
 
         System.out.println(PlayerObj.getInstance().value);
         lootBtns = null;
         spawnPhase = false;
-        onExit();
         GameActivity.instance.startActivity(new Intent().setClass(GameActivity.instance, MainMenu.class));
     }
 

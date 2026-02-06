@@ -5,7 +5,6 @@ import android.content.Context;
 import com.example.sampleapp.Entity.Player.PlayerRecordEntry;
 import com.example.sampleapp.PostOffice.Message;
 import com.example.sampleapp.PostOffice.ObjectBase;
-import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.Singleton;
 
 import org.json.JSONArray;
@@ -66,7 +65,7 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
             JSONObject o = new JSONObject(json);
             val = (int) o.optDouble("value", 0.0);
         }
-        catch (FileNotFoundException f) { }
+        catch (FileNotFoundException ignored) { }
         catch (Exception e)
         {
             throw new RuntimeException(e);
@@ -85,7 +84,7 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
             JSONObject o = new JSONObject(json);
             val = (int) o.optDouble("value", 0.0);
         }
-        catch (FileNotFoundException f) { }
+        catch (FileNotFoundException ignored) { }
         catch (Exception e)
         {
             throw new RuntimeException(e);
@@ -94,11 +93,10 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         return val;
     }
 
-    public int addToLocalValueAndSave(Context ctx, int add) {
-        int curr = (int) loadValueJson(ctx, "coin");
+    public void addToLocalValueAndSave(Context ctx, int add) {
+        int curr = (int) loadValueJson(ctx, "value");
         int newVal = curr + add;
-        saveValueJson(ctx, "coin", newVal);
-        return newVal; // optional, convenient for UI
+        saveValueJson(ctx, "value", newVal);
     }
     private static String readAllText(InputStream input) throws IOException {
         StringBuilder sb = new StringBuilder();

@@ -1,5 +1,6 @@
 package com.example.sampleapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,9 @@ import com.example.sampleapp.Managers.SaveManager;
 import com.example.sampleapp.Managers.SoundManager;
 
 public class menutwo extends Fragment implements View.OnClickListener {
+
+    View rootView;
+
     // ======== Strength ========
     public int tempStrength = 0;
     public int showStrength = 0;
@@ -42,14 +46,15 @@ public class menutwo extends Fragment implements View.OnClickListener {
     private TextView xpText;
     private int tempXp;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_menutwo, container, false);
+        rootView = inflater.inflate(R.layout.fragment_menutwo, container, false);
 
         // ========== UI References ==========
-        xpText = rootView.findViewById(R.id.totalValueCount);
+        xpText = rootView.findViewById(R.id.tv_currency_amount);
 
         strengthValText = rootView.findViewById(R.id.StrengthText);
         strengthCostText = rootView.findViewById(R.id.StrengthCost);
@@ -60,8 +65,10 @@ public class menutwo extends Fragment implements View.OnClickListener {
         speedValText = rootView.findViewById(R.id.SpeedText);
         speedCostText = rootView.findViewById(R.id.SpeedCost);
 
+        int xp = DataManager.getInstance().getInt("value", 0);
+
         // ========== Update UI ==========
-        xpText.setText("Current G : " + DataManager.getInstance().getInt(requireContext(), "Coin", 0));
+        xpText.setText("" + xp);
 
         strengthValText.setText("Strength : " + PlayerObj.getInstance().strength + " + " + tempStrength);
         strengthCostText.setText("Cost : " + strengthCost);
@@ -80,7 +87,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         rootView.findViewById(R.id.ResetBtn).setOnClickListener(this);
 
         // ========== Initial Values ==========
-        tempXp = SaveManager.getInstance().LoadLocalValueJson(requireContext());
+        tempXp = xp;
 
         // Strength
         tempStrength = 0;
@@ -100,6 +107,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -118,7 +126,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 strengthValText.setText("Strength : " + player.strength + " + " + tempStrength);
                 strengthCostText.setText("Cost : " + strengthCost);
-                xpText.setText("Current G : " + tempXp);
+                xpText.setText("" + tempXp);
             }
 
         }
@@ -134,7 +142,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 defenceValText.setText("Defence : " + player.defence + " + " + tempDefence);
                 defenceCostText.setText("Cost : " + defenceCost);
-                xpText.setText("Current G : " + tempXp);
+                xpText.setText("" + tempXp);
             }
 
         }
@@ -150,7 +158,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
 
                 speedValText.setText("Speed : " + player.speed + " + " + tempSpeed);
                 speedCostText.setText("Cost : " + speedCost);
-                xpText.setText("Current G : " + tempXp);
+                xpText.setText("" + tempXp);
             }
 
         }
@@ -158,11 +166,16 @@ public class menutwo extends Fragment implements View.OnClickListener {
         else if (id == R.id.ConfirmBtn) {
 
             // Apply ALL upgrades
+            player.value = tempXp;
             player.strength += tempStrength;
             player.defence += tempDefence;
             player.speed += tempSpeed;
 
-            SaveManager.getInstance().saveValueJson(requireContext(), "XP", tempXp);
+            DataManager.getInstance().saveData(requireContext(), "value", tempXp);
+            DataManager.getInstance().saveData(requireContext(), "strength", player.strength);
+            DataManager.getInstance().saveData(requireContext(), "defence", player.defence);
+            DataManager.getInstance().saveData(requireContext(), "speed", player.speed);
+
 
             // Reset everything
             tempStrength = 0;
@@ -178,8 +191,6 @@ public class menutwo extends Fragment implements View.OnClickListener {
             speedCost = showSpeed * 15;
 
             // UI Refresh
-            xpText.setText("Current G : " + player.value);
-
             strengthValText.setText("Strength : " + player.strength + " + 0");
             strengthCostText.setText("Cost : " + strengthCost);
 
@@ -202,7 +213,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             showSpeed = player.speed;
 
             // Reset XP
-            tempXp = SaveManager.getInstance().LoadLocalValueJson(requireContext());
+            tempXp = DataManager.getInstance().getInt("value", 0);
 
             // Reset costs
             strengthCost = showStrength * 15;
@@ -219,8 +230,28 @@ public class menutwo extends Fragment implements View.OnClickListener {
             speedValText.setText("Speed : " + player.speed + " + 0");
             speedCostText.setText("Cost : " + speedCost);
 
-            xpText.setText("Current G : " + tempXp);
+            xpText.setText("" + tempXp);
         }
 
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void startCurrencySync() {
+        if (xpText != null) {
+            int currentVal = DataManager.getInstance().getInt("value", 0);
+            // Only update if text is different to prevent layout flickering
+            String valString = String.valueOf(currentVal);
+            if (!xpText.getText().toString().equals(valString)) {
+                xpText.setText(valString);
+            }
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startCurrencySync();
+    }
+
 }

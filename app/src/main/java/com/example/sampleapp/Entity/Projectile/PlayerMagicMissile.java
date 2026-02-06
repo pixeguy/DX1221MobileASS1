@@ -6,6 +6,7 @@ import com.example.sampleapp.Collision.Colliders.CircleCollider2D;
 import com.example.sampleapp.Collision.Colliders.Collider2D;
 import com.example.sampleapp.Collision.Detection.Collision;
 import com.example.sampleapp.Entity.Enemies.Enemy;
+import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SpriteAnimationList;
 import com.example.sampleapp.Interface.Damageable;
 import com.example.sampleapp.PostOffice.Message;
@@ -67,9 +68,12 @@ public class PlayerMagicMissile extends Projectile {
             boolean isCollided = Collision.CollisionDetection(collider, targetGO.collider, new Vector2(0, 0));
             if(isCollided) {
                 if(targetGO instanceof Damageable) {
-                    float minDamage = 50.0f;
-                    float maxDamage = 60.0f;
+                    float minDamage = 30.0f;
+                    float maxDamage = 45.0f;
                     float damage = (float) (Math.random() * (maxDamage - minDamage) + minDamage);
+                    float damageMul = (PlayerObj.getInstance().strength / 100.0f);
+                    damage *= 1.0f + damageMul;
+                    damage *= PlayerObj.getInstance().strengthMultiplier;
                     ((Damageable) targetGO).TakeDamage(damage);
                 }
                 destroy();

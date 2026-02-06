@@ -52,23 +52,30 @@ public class menuleader  extends Fragment {
         times.append("TIME\n");
         loots.append("LOOT\n");
 
-        names.append("________\n");
-        times.append("________");
-        loots.append("________");
+        names.append("______\n");
+        times.append("______\n");
+        loots.append("______\n");
 
         int rank = 1;
         for (PlayerRecordEntry e : entries) {
+            // 1. Handle Name (Column 1)
             String name = (e.name == null || e.name.trim().isEmpty()) ? "-" : e.name.trim();
-
-            // If "score" is your time-in-seconds:
-            String timeStr = FormatTime(e.score);
-
             names.append(rank).append(". ").append(name).append("\n");
+
+            // 2. Handle Time (Column 2)
+            // Using your FormatTime helper to convert seconds/score to mm:ss
+            String timeStr = FormatTime(e.score);
             times.append(timeStr).append("\n");
+
+            // 3. Handle Loot (Column 3)
             loots.append(e.lootValue).append("\n");
 
             rank++;
+
+            // Optional: Limit to top 10 to prevent overlapping the UI board
+            if (rank > 10) break;
         }
+
 
         nameTxt.setText(names.toString());
         timeTxt.setText(times.toString());

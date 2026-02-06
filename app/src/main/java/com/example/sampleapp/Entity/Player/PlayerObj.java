@@ -63,6 +63,10 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     public int defence = 0;
     public int speed = 0;
 
+    public float strengthMultiplier = 1;
+    public float defenseMultiplier = 1;
+    public float speedMultiplier = 1;
+
     private Vibrator _vibrator;
     public Vector2 targetPos;
 
@@ -76,6 +80,10 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private final float dashCDDuration = 2.0f;
     private boolean isDashing = false;
 
+    public boolean shieldActivate = false;
+    public float coinMultiplier = 1;
+    public UIIcon shieldIcon = null;
+
     public static PlayerObj getInstance() {
         if(instance == null) {
             instance = new PlayerObj();
@@ -83,6 +91,14 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         return instance;
     }
 
+
+    public void ResetMultiplier()
+    {
+        strengthMultiplier = 1;
+        defenseMultiplier = 1;
+        speedMultiplier = 1;
+        coinMultiplier = 1;
+    }
 
     @Override
     public void onCreate(Vector2 pos, Vector2 scale, SpriteAnimationList spriteAnim) {
@@ -98,7 +114,7 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         _ordinal = 1;
         isActive = true;
 
-        dashCDBar = new UICDBar(50, 950, 150, 150, false);
+        dashCDBar = new UICDBar(50, 350, 150, 150, false);
         dashCDBar.setPivot(1, 0);
         dashCDBar.setFillMode(UICDBar.FillMode.CounterClockwise360);
         dashCDBar.setCooldown(dashCDDuration);
@@ -143,6 +159,8 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
         });
 
         paint.reset();
+
+        ResetMultiplier();
     }
 
     @Override
@@ -244,8 +262,10 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
     private void HandMovement(float dt) {
         if(!isDashing) {
             Vector2 movementDirection = new Vector2(inputDirection.x, -inputDirection.y);
-            _position.x += movementDirection.x * movementSpeed * dt;
-            _position.y += -movementDirection.y * movementSpeed * dt;
+            float speedMul = speed / 100.0f;
+            float finalSpeed = movementSpeed * (1.0f + speedMul) * speedMultiplier;
+            _position.x += movementDirection.x * finalSpeed * dt;
+            _position.y += -movementDirection.y * finalSpeed * dt;
             if(!movementDirection.equals(new Vector2(0, 0))) {
                 facingDirection.set(movementDirection.x, -movementDirection.y);
                 Log.d("FacingRaw", "x=" + facingDirection.x + " y=" + facingDirection.y);
@@ -288,7 +308,23 @@ public class PlayerObj extends GameEntity implements ObjectBase, Damageable {
 
     @Override
     public void TakeDamage(float amount) {
-        healthSystem.takeDamage(amount);
+        if(shieldActivate)
+        {
+            if(shieldIcon != null)
+            {
+                UIManager.getInstance().removeElement(shieldIcon);
+                shieldIcon = null;
+            }
+
+            shieldActivate = false;
+            SoundManager.getInstance().PlayAudio(SoundList.Shield_Break, 1.0f, 1.0f, 0.8f);
+            return;
+        }
+
+        float defenseScore = defence / 100.0f;
+        float damageMultiplier = 1 - defenseScore;
+        float finalDamage = amount * damageMultiplier;
+        healthSystem.takeDamage(finalDamage * defenseMultiplier);
         SoundManager.getInstance().PlayAudio(SoundList.PlayerDamage, 1.0f, 1.0f, .5f);
     }
 

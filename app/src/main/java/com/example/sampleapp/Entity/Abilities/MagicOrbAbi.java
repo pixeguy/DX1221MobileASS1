@@ -31,7 +31,7 @@ public class MagicOrbAbi extends Ability {
         MessageSpawnProjectile msg = new MessageSpawnProjectile(PlayerObj.getInstance(), MessageSpawnProjectile.PROJECTILE_TYPE.PLAYER_FLYING_ORB, 5, new Vector2(0,0));
         PostOffice.getInstance().send("Scene", msg);
         PlayerObj.getInstance().currAbility = this;
-        iconUI.setPosition(new Vector2(50, 1000), new Vector2(200, 0));
+        iconUI.setPosition(new Vector2(50, yPosition), new Vector2(200, 0));
         iconUI.setPivot(1, 1);
         iconUI.setAlpha(125);
         iconUI.interactable = true;

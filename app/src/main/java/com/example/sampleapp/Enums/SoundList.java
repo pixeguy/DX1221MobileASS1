@@ -19,6 +19,7 @@ public enum SoundList {
     Button_Click(R.raw.button_click, true),
     Click(R.raw.click, true),
     Drop_Loot(R.raw.drop_item_slot, true),
+    Shield_Break(R.raw.shield_break, true),
     ;
     public int resourceID;
     public int soundID;

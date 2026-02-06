@@ -38,8 +38,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     private Button helpButton;
     private Button startButton;
     @Override
-    protected void onCreate(Bundle saveInstanceState)
-    {
+    protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         View decorView = getWindow().getDecorView();
         // Hide both the navigation bar and the status bar.
@@ -51,8 +50,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.layoutmainmenu);
 
-        DataManager.getInstance().loadAllData(this);
-
         ViewPager2 viewPager = findViewById(R.id.view_pager);
 
         // 1. Create an instance of the custom adapter
@@ -60,6 +57,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         // 2. Set the adapter to the ViewPager2
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1, false);
 
         TabLayout tabLayout = findViewById(R.id.tab_indicator);
 
@@ -75,7 +73,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             TextView tabText = tab.getCustomView().findViewById(R.id.tab_text);
             ImageView tabIcon = tab.getCustomView().findViewById(R.id.tab_icon);
 
-            // Now configure each tab based on its position
+            // Configure each tab based on its position
             switch (position) {
                 case 0:
                     tabText.setText("Shop");
@@ -100,12 +98,37 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             }
         }).attach();
 
+        // Handle tab clicks
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Play a sound when a new tab is selected
+                SoundManager.getInstance().PlayAudio(SoundList.Click, 0.6f, 1.0f, 1.0f);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
         View child = viewPager.getChildAt(0);
         if (child instanceof RecyclerView) {;
             child.setOverScrollMode(View.OVER_SCROLL_NEVER);
         }
+    }
 
-        viewPager.setCurrentItem(1, false);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DataManager.getInstance().loadAllData(this);
+
+        PlayerObj.getInstance().speed = DataManager.getInstance().getInt("speed", 0);
+        PlayerObj.getInstance().strength = DataManager.getInstance().getInt("strength", 0);
+        PlayerObj.getInstance().defence = DataManager.getInstance().getInt("defence", 0);
     }
 
     @Override

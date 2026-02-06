@@ -75,12 +75,11 @@ public enum SpriteList {
     DashIcon(R.drawable.dash_icon),
     PausedBtnIcon(R.drawable.paused_button),
     ResumeBtnIcon(R.drawable.resume_button),
-
     PlayerSpriteSheet(R.drawable.player_spritesheet)
     ;
 
     public final int spriteID;
-    public Bitmap sprite;
+    public final Bitmap sprite;
 
     SpriteList(int spriteID) {
         this.spriteID = spriteID;

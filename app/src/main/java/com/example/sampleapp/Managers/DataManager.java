@@ -51,29 +51,43 @@ public class DataManager extends Singleton<DataManager> {
         SaveManager.getInstance().saveValueJson(ctx, key, value);
     }
 
+    public void addDataAndSave(Context ctx, String key, Object value) {
+        // Get the current value
+        Object currentValue = getData(key);
+
+        // If it's an integer, add the new value to it
+        if (currentValue instanceof Integer) {
+            int newValue = (Integer) currentValue + (Integer) value;
+            saveData(ctx, key, newValue);
+        }// If it's a string, concatenate the new value to it
+        else if(currentValue instanceof String) {
+            String newValue = (String) currentValue + (String) value;
+            saveData(ctx, key, newValue);
+        }// If it's a float, add the new value to it
+        else if(currentValue instanceof Float) {
+            float newValue = (Float) currentValue + (Float) value;
+            saveData(ctx, key, newValue);
+        }
+        else {// Otherwise, just save the new value
+            saveData(ctx, key, value);
+        }
+
+    }
+
     /**
      * Retrieve data. Checks the memory cache first, then the disk.
      */
-    public Object getData(Context ctx, String key) {
+    public Object getData(String key) {
         // If it's already in memory, return it (Fast)
         if (data.containsKey(key)) {
             return data.get(key);
         }
-
-        // If not in memory, try to load it from the file (Slow)
-        Object value = SaveManager.getInstance().loadValueJson(ctx, key);
-
-        // Cache it for next time
-        if (value != null) {
-            data.put(key, value);
-        }
-
-        return value;
+        return null;
     }
 
     // Helper method for Integers (like Currency)
-    public int getInt(Context ctx, String key, int defaultValue) {
-        Object val = getData(ctx, key);
+    public int getInt(String key, int defaultValue) {
+        Object val = getData(key);
         if (val instanceof Integer) {
             return (Integer) val;
         }
@@ -81,8 +95,8 @@ public class DataManager extends Singleton<DataManager> {
     }
 
     // Helper method for Strings
-    public String getString(Context ctx, String key, String defaultValue) {
-        Object val = getData(ctx, key);
+    public String getString(String key, String defaultValue) {
+        Object val = getData(key);
         if (val instanceof String) {
             return (String) val;
         }

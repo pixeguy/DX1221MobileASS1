@@ -28,7 +28,7 @@ public class RearShotAbi extends Ability {
     public void onGetAbility() {
         System.out.println("Got Ability");
         PlayerObj.getInstance().currAbility = this;
-        iconUI.setPosition(new Vector2(50, 1000), new Vector2(200, 0));
+        iconUI.setPosition(new Vector2(50, yPosition), new Vector2(200, 0));
         iconUI.setPivot(1, 1);
         iconUI.setAlpha(125);
         iconUI.interactable = true;
