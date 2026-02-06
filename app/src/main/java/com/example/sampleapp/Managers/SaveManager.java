@@ -30,28 +30,52 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
 
     public static SaveManager getInstance() { return Singleton.getInstance(SaveManager.class);}
 
-    public void saveLocalValueJson(Context ctx, int value)
-    {
-        JSONObject o = new JSONObject();
-        try {
-            o.put("value", value);
+    public void saveValueJson(Context ctx, String key, Object value) {
+        JSONObject jsonObject;// 1. Try to load existing data first so we don't overwrite other saved keys
+        try (InputStream input = ctx.openFileInput(FILEGLOBAL)) {
+            String existingJson = readAllText(input);
+            jsonObject = new JSONObject(existingJson);
+        } catch (FileNotFoundException e) {
+            jsonObject = new JSONObject(); // File doesn't exist yet
+        } catch (Exception e) {
+            jsonObject = new JSONObject();
         }
-        catch (Exception ex){
+
+        // 2. Add/Update the new value
+        try {
+            jsonObject.put(key, value);
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
-        try (OutputStream os = ctx.openFileOutput(FILEGLOBAL, Context.MODE_PRIVATE))
-        {
-            os.write(o.toString().getBytes(StandardCharsets.UTF_8));
-        }
-        catch (IOException e)
-        {
+        // 3. Save the updated JSON back to the file
+        try (OutputStream os = ctx.openFileOutput(FILEGLOBAL, Context.MODE_PRIVATE)) {
+            os.write(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public int LoadLocalValueJson(Context ctx)
-    {
+    public Object loadValueJson(Context ctx, String key) {
+        Object val = null;
+
+        try (InputStream input = ctx.openFileInput(FILEGLOBAL))
+        {
+            String json = readAllText(input);
+
+            JSONObject o = new JSONObject(json);
+            val = (int) o.optDouble("value", 0.0);
+        }
+        catch (FileNotFoundException f) { }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return val;
+    }
+
+    public int LoadLocalValueJson(Context ctx) {
         int val = 0;
 
         try (InputStream input = ctx.openFileInput(FILEGLOBAL))
@@ -70,11 +94,10 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         return val;
     }
 
-    public int addToLocalValueAndSave(Context ctx, int add)
-    {
-        int curr = LoadLocalValueJson(ctx);
+    public int addToLocalValueAndSave(Context ctx, int add) {
+        int curr = (int) loadValueJson(ctx, "coin");
         int newVal = curr + add;
-        saveLocalValueJson(ctx, newVal);
+        saveValueJson(ctx, "coin", newVal);
         return newVal; // optional, convenient for UI
     }
     private static String readAllText(InputStream input) throws IOException {
@@ -87,8 +110,7 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         }
         return sb.toString();
     }
-    public void saveScoresJson(Context ctx, List<PlayerRecordEntry> scores)
-    {
+    public void saveScoresJson(Context ctx, List<PlayerRecordEntry> scores) {
         JSONArray arr = new JSONArray();
 
         for (PlayerRecordEntry e : scores)
@@ -117,14 +139,12 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         }
     }
 
-    public void addScoreAndSave(Context ctx, PlayerRecordEntry entry)
-    {
+    public void addScoreAndSave(Context ctx, PlayerRecordEntry entry) {
         scores.add(entry);
         saveScoresJson(ctx, scores);
     }
 
-    public List<PlayerRecordEntry> loadScoresJson(Context ctx)
-    {
+    public List<PlayerRecordEntry> loadScoresJson(Context ctx) {
         List<PlayerRecordEntry> list = new ArrayList<>();
 
         try (InputStream input = ctx.openFileInput(FILEBESTSCORE))
@@ -156,8 +176,7 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
         return list;
     }
 
-    public void sortBestTimeToSlowest(List<PlayerRecordEntry> list)
-    {
+    public void sortBestTimeToSlowest(List<PlayerRecordEntry> list) {
         if (list == null) return;
 
         // Fastest time first (smallest value first)
@@ -171,6 +190,14 @@ public class SaveManager extends Singleton<SaveManager> implements ObjectBase {
                 // return Float.compare(a.score, b.score);
             }
         });
+    }
+
+    public String getRawJsonString(Context ctx) {
+        try (java.io.InputStream input = ctx.openFileInput(FILEGLOBAL)) {
+            return readAllText(input); // This uses your existing readAllText helper
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override

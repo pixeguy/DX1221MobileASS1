@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class ViewPageAdapter extends FragmentStateAdapter {
     // Array to hold the list of fragments
     private final Fragment[] fragments = new Fragment[]{
+            new menushop(),
             new menuone(),
             new menutwo(),
             new menuleader(),

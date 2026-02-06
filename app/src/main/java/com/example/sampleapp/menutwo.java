@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SoundList;
+import com.example.sampleapp.Managers.DataManager;
 import com.example.sampleapp.Managers.SaveManager;
 import com.example.sampleapp.Managers.SoundManager;
 
@@ -60,7 +61,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
         speedCostText = rootView.findViewById(R.id.SpeedCost);
 
         // ========== Update UI ==========
-        xpText.setText("Current G : " + SaveManager.getInstance().LoadLocalValueJson(requireContext()));
+        xpText.setText("Current G : " + DataManager.getInstance().getInt(requireContext(), "Coin", 0));
 
         strengthValText.setText("Strength : " + PlayerObj.getInstance().strength + " + " + tempStrength);
         strengthCostText.setText("Cost : " + strengthCost);
@@ -161,7 +162,7 @@ public class menutwo extends Fragment implements View.OnClickListener {
             player.defence += tempDefence;
             player.speed += tempSpeed;
 
-            SaveManager.getInstance().saveLocalValueJson(requireContext(),tempXp);
+            SaveManager.getInstance().saveValueJson(requireContext(), "XP", tempXp);
 
             // Reset everything
             tempStrength = 0;

@@ -6,16 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;  // CORRECT
 
 
 import com.example.sampleapp.Entity.Player.PlayerObj;
 import com.example.sampleapp.Enums.SoundList;
 import com.example.sampleapp.Enums.SpriteList;
+import com.example.sampleapp.Managers.DataManager;
 import com.example.sampleapp.Managers.SoundManager;
 import com.example.sampleapp.R;
 import com.example.sampleapp.Scenes.GameLevel.GameLevelScene;
@@ -25,6 +28,8 @@ import com.example.sampleapp.mgp2d.core.GameActivity;
 import com.example.sampleapp.mgp2d.core.GameEntity;
 import com.example.sampleapp.mgp2d.core.GameScene;
 import com.example.sampleapp.mgp2d.core.Vector2;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +51,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.layoutmainmenu);
 
+        DataManager.getInstance().loadAllData(this);
+
         ViewPager2 viewPager = findViewById(R.id.view_pager);
 
         // 1. Create an instance of the custom adapter
@@ -54,6 +61,51 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         // 2. Set the adapter to the ViewPager2
         viewPager.setAdapter(adapter);
 
+        TabLayout tabLayout = findViewById(R.id.tab_indicator);
+
+        // This connects the dots to the ViewPager
+        // In MainMenu.java
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            // Inflate the custom view
+            tab.setCustomView(R.layout.custom_tab);
+
+            // Get the TextView and ImageView from the custom view
+            assert tab.getCustomView() != null;
+            TextView tabText = tab.getCustomView().findViewById(R.id.tab_text);
+            ImageView tabIcon = tab.getCustomView().findViewById(R.id.tab_icon);
+
+            // Now configure each tab based on its position
+            switch (position) {
+                case 0:
+                    tabText.setText("Shop");
+                    tabIcon.setImageResource(R.drawable.store); // Use setImageResource
+                    tabIcon.setVisibility(View.VISIBLE); // Make sure icon is visible
+                    break;
+                case 1:
+                    tabText.setText("Play");
+                    tabIcon.setImageResource(R.drawable.play); // Use setImageResource
+                    tabIcon.setVisibility(View.VISIBLE); // Hide icon if there is none
+                    break;
+                case 2:
+                    tabText.setText("Upgrade");
+                    tabIcon.setImageResource(R.drawable.upgrade); // Use setImageResource
+                    tabIcon.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    tabText.setText("LeaderBoard");
+                    tabIcon.setImageResource(R.drawable.leaderboard); // Use setImageResource
+                    tabIcon.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }).attach();
+
+        View child = viewPager.getChildAt(0);
+        if (child instanceof RecyclerView) {;
+            child.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        }
+
+        viewPager.setCurrentItem(1, false);
     }
 
     @Override
